@@ -1,10 +1,12 @@
 using System;
 using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 public class ObjectGrabbableComponent : GrabbableComponent
 {
     [SerializeField] public Vector3 grabOffset;
+    [SerializeField] private float moveToHoldTime = 0.1f;
 
     private IEnumerator grabUpdate;
     public override void OnGrab(Transform _grabTransform, Action releaseFunc)
@@ -21,7 +23,7 @@ public class ObjectGrabbableComponent : GrabbableComponent
             grabUpdate = GrabUpdateCorutine();
         }
 
-        StartCoroutine(grabUpdate);
+        transform.DOMove(_grabTransform.position, moveToHoldTime).SetEase(Ease.InQuad).OnComplete(() => StartCoroutine(grabUpdate));
     }
 
     public override void OnRelease()

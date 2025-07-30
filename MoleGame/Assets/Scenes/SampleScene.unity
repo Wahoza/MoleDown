@@ -735,18 +735,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -1944135623850531817, guid: 5086707d299c7ec45ba8bf7dfc2c58ab, type: 3}
-      propertyPath: maxRadius
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: -1944135623850531817, guid: 5086707d299c7ec45ba8bf7dfc2c58ab, type: 3}
-      propertyPath: minRadius
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: -1944135623850531817, guid: 5086707d299c7ec45ba8bf7dfc2c58ab, type: 3}
-      propertyPath: radiusIncrease
-      value: 2.2
-      objectReference: {fileID: 0}
     - target: {fileID: 3499392013066739132, guid: 5086707d299c7ec45ba8bf7dfc2c58ab, type: 3}
       propertyPath: m_Name
       value: Player
@@ -790,10 +778,6 @@ PrefabInstance:
     - target: {fileID: 6004993567254083292, guid: 5086707d299c7ec45ba8bf7dfc2c58ab, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8630903779725169836, guid: 5086707d299c7ec45ba8bf7dfc2c58ab, type: 3}
-      propertyPath: grabGroundWaitBuffer
-      value: 0.2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

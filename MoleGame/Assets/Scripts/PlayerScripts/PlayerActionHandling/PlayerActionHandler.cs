@@ -5,12 +5,13 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerInputHandler))]
 public class PlayerActionHandler : MonoBehaviour
 {
-    List<Action<Vector2>> moveActions = new();
+    List<Action<Vector3>> moveActions = new();
     List<Action> jumpActions = new();
     List<Action<bool>> grabbableActions = new(); //bool true: grabbed, false: released
+    List<Action<bool>> grabActions = new();
     List<Action<float>> landActions = new();
 
-    public void OnWalk(Vector2 walkDirection)
+    public void OnWalk(Vector3 walkDirection)
     {
         foreach (var action in moveActions)
         {
@@ -38,9 +39,15 @@ public class PlayerActionHandler : MonoBehaviour
             action(grabbed);
         }
     }
+    public void OnGrab(bool grab)
+    {
+        foreach( var action in grabActions)
+        {
+            action(grab);
+        }
+    }
 
-
-    public void RegisterMoveAction(Action<Vector2> action)
+    public void RegisterMoveAction(Action<Vector3> action)
     {
         moveActions.Add(action);
     }
@@ -56,8 +63,11 @@ public class PlayerActionHandler : MonoBehaviour
     {
         grabbableActions.Add(action);
     }
-
-    public void UnRegisterMoveAction(Action<Vector2> action)
+    public void RegisterGrabActions(Action<bool> action)
+    {
+        grabActions.Add(action);
+    }
+    public void UnregisterMoveAction(Action<Vector3> action)
     {
         if (moveActions.Contains(action))
         {
@@ -83,6 +93,14 @@ public class PlayerActionHandler : MonoBehaviour
         if (grabbableActions.Contains(action))
         {
             grabbableActions.Remove(action);
+        }
+    }
+
+    public void UnregisterGrabActions(Action<bool> action)
+    {
+        if (grabActions.Contains(action))
+        {
+            grabActions.Remove(action);
         }
     }
 }

@@ -37,7 +37,7 @@ public class MarchingWorld : MonoBehaviour
             while (pendingMeshUpdates.Count > 0)
             {
                 var chunk = pendingMeshUpdates.Dequeue();
-                chunk.SetMesh(); // Safe here
+                chunk.SetMesh();
             }
         }
     }

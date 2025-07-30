@@ -54,7 +54,6 @@ public class CubesMarching : MonoBehaviour
 
     private int m_worldWidth;
     private int m_worldHeight;
-    private int modCounter = 0;
 
     private Vector3Int worldPosition;
 
@@ -282,8 +281,6 @@ public class CubesMarching : MonoBehaviour
     }
     public void DeformSphere(Vector3 worldDeformPosition, float radius, float intensity)
     {
-        modCounter = 0;
-
         bool modified = false;
 
         Vector3 localCenter = worldDeformPosition - worldPosition;
@@ -312,7 +309,6 @@ public class CubesMarching : MonoBehaviour
 
                     if (dist <= radius)
                     {
-                        modCounter++;
                         modified = true;
                         float falloff = 1f - (dist / radius); // smooth falloff
                         heights[x, y, z] = Mathf.Clamp01(heights[x, y, z] - intensity * falloff);
@@ -321,7 +317,7 @@ public class CubesMarching : MonoBehaviour
             }
         }
         if (!modified) return;
-        Debug.Log("Modifications: " + modCounter);
+        //Debug.Log("Modifications: " + modCounter);
 
         MarchCubes();
     }

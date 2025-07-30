@@ -148,7 +148,7 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
     }
     private GameObject CreateObject()
     {
-        var newObject = Instantiate(grabResultPrefab);
+        var newObject = Instantiate(grabResultPrefab, position: grabLocation.position, rotation: Quaternion.identity);
 
         GetComponent<PlayerGrabComponent>().GrabGrabbable(newObject.GetComponent<GrabbableComponent>());
 

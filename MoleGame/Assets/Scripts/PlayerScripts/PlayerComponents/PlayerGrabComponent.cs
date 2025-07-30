@@ -44,6 +44,7 @@ public class PlayerGrabComponent : MonoBehaviour
             if (grabbedGrabbable != null)
             {
                 ReleaseGrabbable();
+
             }
             else
             {
@@ -54,6 +55,8 @@ public class PlayerGrabComponent : MonoBehaviour
                 grabStartTime = Time.time;
 
                 grabCanceled = false;
+
+                GetComponent<PlayerActionHandler>().OnGrab(true);
             }
 
             Debug.Log("StartedGrab");
@@ -62,8 +65,11 @@ public class PlayerGrabComponent : MonoBehaviour
         {
             grabTrigger.gameObject.SetActive(false);
 
+
             if (!grabCanceled)
             {
+                GetComponent<PlayerActionHandler>().OnGrab(false);
+
                 StopCoroutine(grabCoroutine);
 
                 TryGrabGround();
@@ -80,22 +86,29 @@ public class PlayerGrabComponent : MonoBehaviour
         grabTrigger.gameObject.SetActive(false);
 
         grabCanceled = true;
+
     }
     void CancelGrabAttemptGrab(bool grabbed)
     {
         if (grabbed)
         {
             CancelGrabAttemptAction();
+
+            GetComponent<PlayerActionHandler>().OnGrab(false);
         }
     }
     public void GrabGrabbable(GrabbableComponent grabbable)
     {
+        GetComponent<PlayerActionHandler>().OnGrab(false);
+
         CancelGrabAttemptAction();
 
         Debug.Log("Grabbed Object");
         grabbable.OnGrab(pocketTransform, ReleaseGrabbable);
 
         grabbedGrabbable = grabbable;
+
+        GetComponent<PlayerActionHandler>().OnGrab(true);
     }
 
     public void ReleaseGrabbable()
@@ -106,6 +119,9 @@ public class PlayerGrabComponent : MonoBehaviour
 
             grabbedGrabbable.OnRelease();
             grabbedGrabbable = null;
+
+
+            GetComponent<PlayerActionHandler>().OnGrab(false);
         }
     }
     private IEnumerator GrabDisableWaitCoroutine()
@@ -115,9 +131,9 @@ public class PlayerGrabComponent : MonoBehaviour
         grabTrigger.gameObject.SetActive(false);
     }
 
-    void TryGrabGround() {
+    bool TryGrabGround() {
 
-        float elapsedGrabTime = (Time.time + grabObjectAttemptDuration + grabGroundWaitBuffer) - grabStartTime;
+        float elapsedGrabTime = Time.time - grabStartTime - grabObjectAttemptDuration - grabGroundWaitBuffer;
 
         Debug.Log("GroundGrabAttempt " + elapsedGrabTime.ToString());
 
@@ -126,6 +142,8 @@ public class PlayerGrabComponent : MonoBehaviour
 
             GetComponent<PlayerGrabTerrainComponent>()?.GrabTerrain(elapsedGrabTime);
         }
+
+        return false;
     }
 
     void ThrowGrabbable()
@@ -134,6 +152,8 @@ public class PlayerGrabComponent : MonoBehaviour
         {
             grabbedGrabbable.OnThrow((pocketTransform.forward * throwVelocity.x + pocketTransform.up * throwVelocity.y + pocketTransform.right * throwVelocity.z).normalized * throwForce);
             grabbedGrabbable = null;
+
+            GetComponent<PlayerActionHandler>().OnGrab(false);
         }
     }
     private void OnDestroy()

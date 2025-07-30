@@ -99,7 +99,7 @@ public class PlayerMoveComponent : MonoBehaviour
         moveDirection *= moveSpeed;
         Vector3 mixedVelocity = Vector3.Lerp(rb.linearVelocity, moveDirection, (isGrounded ? groundControll : airControll));
 
-        if (isGrounded)
+        if (!isStunned)
         {
             actionHandler.OnWalk(mixedVelocity);
         }

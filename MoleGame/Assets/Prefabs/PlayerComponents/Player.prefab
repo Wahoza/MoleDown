@@ -236,13 +236,13 @@ GameObject:
   - component: {fileID: 2361190877465907972}
   - component: {fileID: 3008875034412384096}
   - component: {fileID: 7011818285878231233}
-  - component: {fileID: 4555668806030936635}
   - component: {fileID: 8469377371556191534}
   - component: {fileID: 8630903779725169836}
   - component: {fileID: 2902740112099622266}
   - component: {fileID: 9129663919670945170}
   - component: {fileID: 5339059133232227427}
   - component: {fileID: -1944135623850531817}
+  - component: {fileID: 452099481724079387}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -483,18 +483,6 @@ MonoBehaviour:
   jumpStrength: 7
   maxJumpVelocity: 5
   bufferedJumpInputDuration: 0.23
---- !u!114 &4555668806030936635
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3499392013066739132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4ec951f3b8db8654fb6999a6dbe3a849, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8469377371556191534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,7 +514,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grabObjectAttemptDuration: 0.1
-  grabGroundWaitBuffer: 0.2
+  grabGroundWaitBuffer: 0.25
   grabGroundMaxDuration: 10
   throwVelocity: {x: -5, y: 3, z: 0}
   throwForce: 0
@@ -595,6 +583,58 @@ MonoBehaviour:
   intensity: -5.13
   grabResultPrefab: {fileID: 962845958470146338, guid: 17a02ca3688674a4084ce21f3640fe38, type: 3}
   grabLocation: {fileID: 1154706176847551006}
+--- !u!114 &452099481724079387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3499392013066739132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ec951f3b8db8654fb6999a6dbe3a849, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HandL: {fileID: 6662349909267845393}
+  HandR: {fileID: 7326770510104815542}
+  FootL: {fileID: 360135978306071669}
+  FootR: {fileID: 4604190294719744428}
+  startFootRotation: {x: -60, y: 0, z: 0}
+  endFootRotation: {x: 30, y: 0, z: 0}
+  baseFootDuration: 0.4
+  moveSpeedFootImpact: 0.4
+  startHandRotation: {x: -30, y: 0, z: 0}
+  endHandRotation: {x: 40, y: 0, z: 0}
+  baseHandDuration: 0.3
+  moveSpeedHandImpact: 0.25
+  startGrabRotation: {x: 0, y: 0, z: 0}
+  endGrabRotation: {x: 180, y: 0, z: 0}
+  baseGrabDuration: 0.1
+  footEasing:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  moveSpeedMin: 0.2
 --- !u!1 &6834212019853587240
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,8 +782,28 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+--- !u!1 &360135978306071669 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -7220580779560672986, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+  m_PrefabInstance: {fileID: 2248472460301208915}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1783026017615342264 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+  m_PrefabInstance: {fileID: 2248472460301208915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4604190294719744428 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6858573867119360769, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+  m_PrefabInstance: {fileID: 2248472460301208915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &6662349909267845393 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4377140140577612734, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+  m_PrefabInstance: {fileID: 2248472460301208915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7326770510104815542 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -389060815399261467, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
   m_PrefabInstance: {fileID: 2248472460301208915}
   m_PrefabAsset: {fileID: 0}
