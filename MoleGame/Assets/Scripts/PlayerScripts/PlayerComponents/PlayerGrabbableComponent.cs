@@ -16,7 +16,7 @@ public class PlayerGrabbableComponent : GrabbableComponent
     {
         grabRoutine = GrabUpdateCorutine();
 
-        GetComponent<PlayerActionHandler>().RegisterJumpActions(IncrementJumpCtr);
+        GetComponent<PlayerActionHandler>().RegisterJumpAction(IncrementJumpCtr);
     }
     public override void OnGrab(Transform _grabTransform, Action releaseFunc)
     {

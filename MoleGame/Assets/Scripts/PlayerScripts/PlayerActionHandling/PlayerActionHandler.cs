@@ -51,11 +51,11 @@ public class PlayerActionHandler : MonoBehaviour
     {
         moveActions.Add(action);
     }
-    public void RegisterJumpActions(Action action)
+    public void RegisterJumpAction(Action action)
     {
         jumpActions.Add(action);
     }
-    public void RegisterLandActions(Action<float> action)
+    public void RegisterLandAction(Action<float> action)
     {
         landActions.Add(action);
     }
@@ -63,7 +63,7 @@ public class PlayerActionHandler : MonoBehaviour
     {
         grabbableActions.Add(action);
     }
-    public void RegisterGrabActions(Action<bool> action)
+    public void RegisterGrabAction(Action<bool> action)
     {
         grabActions.Add(action);
     }
@@ -96,7 +96,7 @@ public class PlayerActionHandler : MonoBehaviour
         }
     }
 
-    public void UnregisterGrabActions(Action<bool> action)
+    public void UnregisterGrabAction(Action<bool> action)
     {
         if (grabActions.Contains(action))
         {

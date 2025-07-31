@@ -26,7 +26,7 @@ public class PlayerGrabComponent : MonoBehaviour
         GetComponent<PlayerInputHandler>().RegisterGrabFuncs(OnGrabInput);
         GetComponent<PlayerInputHandler>().RegisterInputAttackFuncs((ctx) => ThrowGrabbable());
 
-        GetComponent<PlayerActionHandler>().RegisterJumpActions(CancelGrabAttemptAction);
+        GetComponent<PlayerActionHandler>().RegisterJumpAction(CancelGrabAttemptAction);
         GetComponent<PlayerActionHandler>().RegisterGrabbableActions(CancelGrabAttemptGrab);
 
         grabCoroutine = GrabDisableWaitCoroutine();

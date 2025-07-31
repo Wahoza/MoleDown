@@ -229,6 +229,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6004993567254083292}
   - component: {fileID: 4870167742645815269}
+  - component: {fileID: 4553958814744959246}
   - component: {fileID: 1817290571334412191}
   - component: {fileID: 4838814262743173219}
   - component: {fileID: 4948345345306402097}
@@ -357,6 +358,18 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &4553958814744959246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3499392013066739132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eb137e6e2c86fb4ba3d91fe2073763c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!136 &1817290571334412191
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -516,8 +529,8 @@ MonoBehaviour:
   grabObjectAttemptDuration: 0.1
   grabGroundWaitBuffer: 0.25
   grabGroundMaxDuration: 10
-  throwVelocity: {x: -5, y: 3, z: 0}
-  throwForce: 0
+  throwVelocity: {x: -5, y: 0.1, z: 0}
+  throwForce: 900
   grabTrigger: {fileID: 3339555456981503232}
   pocketTransform: {fileID: 3355335245420342889}
 --- !u!114 &2902740112099622266
@@ -595,10 +608,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ec951f3b8db8654fb6999a6dbe3a849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HandL: {fileID: 6662349909267845393}
-  HandR: {fileID: 7326770510104815542}
+  HandL: {fileID: 3926963424053655550}
+  HandR: {fileID: 2167961570456795006}
   FootL: {fileID: 360135978306071669}
   FootR: {fileID: 4604190294719744428}
+  Body: {fileID: 1722001169025067323}
+  Face: {fileID: 7992896915966816108}
+  ModelHolder: {fileID: 0}
   startFootRotation: {x: -60, y: 0, z: 0}
   endFootRotation: {x: 30, y: 0, z: 0}
   baseFootDuration: 0.4
@@ -610,14 +626,29 @@ MonoBehaviour:
   startGrabRotation: {x: 0, y: 0, z: 0}
   endGrabRotation: {x: 180, y: 0, z: 0}
   baseGrabDuration: 0.1
-  footEasing:
+  startJumpRotation: {x: 0, y: 0, z: 0}
+  endJumpRotation: {x: -46, y: 0, z: 0}
+  baseJumpDuration: 0.24
+  jumpHoldDuration: 0.15
+  startBodyPosition: {x: 0, y: 0, z: 0}
+  endBodyPosition: {x: 0, y: 0, z: 0}
+  bobAnimDuration: 0.2
+  bobAnimMSImpact: 0.3
+  startLandBodyPosition: {x: 0, y: 0, z: 0}
+  endLandBodyPosition: {x: 0, y: 0, z: -0.002}
+  landAnimDuration: 0.1
+  airTimeDurationImpact: 0.3
+  landHoldDuration: 0.05
+  popUpDuration: 0.06
+  airTimeMin: 1.1
+  animEasing:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 2
-      outSlope: 2
+      inSlope: 0
+      outSlope: 0
       tangentMode: 0
       weightedMode: 0
       inWeight: 0
@@ -635,6 +666,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   moveSpeedMin: 0.2
+  animationSpeed: 1
 --- !u!1 &6834212019853587240
 GameObject:
   m_ObjectHideFlags: 0
@@ -777,6 +809,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Mole
       objectReference: {fileID: 0}
+    - target: {fileID: 4167280743394806330, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -787,9 +823,24 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: -7220580779560672986, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
   m_PrefabInstance: {fileID: 2248472460301208915}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1722001169025067323 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 635547659545568360, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+  m_PrefabInstance: {fileID: 2248472460301208915}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1783026017615342264 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+  m_PrefabInstance: {fileID: 2248472460301208915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2167961570456795006 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -9141735197031073235, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+  m_PrefabInstance: {fileID: 2248472460301208915}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3926963424053655550 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6247814676056638803, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
   m_PrefabInstance: {fileID: 2248472460301208915}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &4604190294719744428 stripped
@@ -797,13 +848,8 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: -6858573867119360769, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
   m_PrefabInstance: {fileID: 2248472460301208915}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &6662349909267845393 stripped
+--- !u!1 &7992896915966816108 stripped
 GameObject:
-  m_CorrespondingSourceObject: {fileID: -4377140140577612734, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
-  m_PrefabInstance: {fileID: 2248472460301208915}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7326770510104815542 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: -389060815399261467, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
+  m_CorrespondingSourceObject: {fileID: -1019972202033520065, guid: 17c44654e42fc1e4a9ba90a353387676, type: 3}
   m_PrefabInstance: {fileID: 2248472460301208915}
   m_PrefabAsset: {fileID: 0}

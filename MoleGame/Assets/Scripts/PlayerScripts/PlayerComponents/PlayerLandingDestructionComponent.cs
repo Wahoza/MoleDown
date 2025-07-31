@@ -15,7 +15,7 @@ public class PlayerLandingDestructionComponent : MonoBehaviour
     
     private void Start()
     {
-        GetComponent<PlayerActionHandler>().RegisterLandActions(OnLand);
+        GetComponent<PlayerActionHandler>().RegisterLandAction(OnLand);
         rb = GetComponent<Rigidbody>();
     }
 

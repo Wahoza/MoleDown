@@ -44,7 +44,7 @@ public class PlayerMoveComponent : MonoBehaviour
         GetComponent<PlayerInputHandler>().RegisterMoveFuncs(SetInputVector);
 
         actionHandler = GetComponent<PlayerActionHandler>();
-        actionHandler.RegisterJumpActions(DisableGroundingForJump);
+        actionHandler.RegisterJumpAction(DisableGroundingForJump);
 
         StartCoroutine(ForceGround());
         StartCoroutine(UpdateGroundedState());

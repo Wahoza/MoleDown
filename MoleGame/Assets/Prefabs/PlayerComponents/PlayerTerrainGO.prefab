@@ -154,7 +154,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bad86da266af3847b373514438bdf2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grabOffset: {x: 0, y: 0, z: 0}
+  grabOffset: {x: 0, y: 0.1, z: 0}
+  moveToHoldTime: 0.1
 --- !u!114 &-8699311169939199182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,5 +215,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d5a1a1177accf42a3a13c82d4ba4f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeToMassConversion: 1.01
+  cubeToMassConversion: 1.001
   extraEffectRange: 1.43
