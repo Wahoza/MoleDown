@@ -3,10 +3,12 @@ using UnityEngine;
 public class TerrainObjectComponent : MonoBehaviour
 {
     [SerializeField] float cubeToMassConversion;
+    [SerializeField] float baseWeight;
     [SerializeField] float extraEffectRange;
     public void SetRigidbodyMassByCubeCount(int confirmedCubes)
     {
-        GetComponent<Rigidbody>().mass = (float)confirmedCubes * cubeToMassConversion;
+        Debug.Log(confirmedCubes);
+        GetComponent<Rigidbody>().mass = baseWeight + (float)confirmedCubes * cubeToMassConversion;
     }
 
     public void SetRadius(float radius)

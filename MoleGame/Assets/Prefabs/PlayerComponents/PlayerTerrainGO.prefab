@@ -215,5 +215,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d5a1a1177accf42a3a13c82d4ba4f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeToMassConversion: 1.001
+  cubeToMassConversion: 0.01
+  baseWeight: 1
   extraEffectRange: 1.43
