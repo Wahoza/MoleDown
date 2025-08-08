@@ -26,13 +26,14 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
     private List<Vector3> vertices = new List<Vector3>();
     private List<int> triangles = new List<int>();
     private int cubeCount;
+    private float lowestHeight;
     public async void GrabTerrain(float holdDuration)
     {
         radius = holdDuration * radiusIncrease;
 
         radius = radius < minRadius ? minRadius : radius > maxRadius ? maxRadius : radius;
 
-        var grabResult = await LevelMarchingPlatform.instance.DeformedSphereReturnValues(grabLocation.position, radius, intensity);
+        var grabResult = await LevelMarchingPlatform.Instance.DeformedSphereReturnValues(grabLocation.position, radius, intensity);
         modHeights = grabResult;
 
         m_width = grabResult.GetLength(0);
@@ -123,6 +124,8 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
     }
     private void MarchCubes()
     {
+        lowestHeight = float.MaxValue;
+
         vertices.Clear();
         triangles.Clear();
 
@@ -141,6 +144,12 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
                         cubeCorneres[i] = heights[corner.x, corner.y, corner.z];
                     }
 
+
+                    if(lowestHeight > y)
+                    {
+                        lowestHeight = y;
+                    }
+
                     MarchCube(new Vector3(x, y, z), GetConfigurationIndex(cubeCorneres));
                 }
             }
@@ -150,36 +159,19 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
     {
         var newObject = Instantiate(grabResultPrefab, position: grabLocation.position, rotation: Quaternion.identity);
 
-        GetComponent<PlayerGrabComponent>().GrabGrabbable(newObject.GetComponent<GrabbableComponent>());
-
+        newObject.GetComponent<TerrainObjectComponent>().Initialize();
         newObject.GetComponent<TerrainObjectComponent>()?.SetRigidbodyMassByCubeCount(cubeCount);
         newObject.GetComponent<TerrainObjectComponent>()?.SetRadius(radius);
+
+
+        GetComponent<PlayerGrabComponent>().GrabGrabbable(newObject.GetComponent<GrabbableComponent>());
 
         return newObject;
     }
 
     private void MarchCube(Vector3 position, int configIndex)
     {
-        if (configIndex == 0 || configIndex == 255)
-        {
-            return;
-        }
-
         int edgeIndex = 0;
-        int lowestHeight = int.MaxValue;
-
-        for (int y = 0; y < heights.GetLength(1); y++)
-        {
-            if (modHeights[m_width / 2, y, m_length / 2] && y < lowestHeight)
-            {
-                lowestHeight = y;
-            }
-        }
-
-        if (lowestHeight == int.MaxValue)
-        {
-            lowestHeight = m_height / 2;
-        }
 
         for (int t = 0; t < 5; t++)
         {
@@ -195,7 +187,7 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
                 Vector3 edgeStart = position + MarchingTable.Edges[triTableValue, 0];
                 Vector3 edgeEnd = position + MarchingTable.Edges[triTableValue, 1];
 
-                Vector3 vertex = (edgeStart + edgeEnd) / 2 - new Vector3(m_width, 0, m_length)/2 - Vector3.up * lowestHeight;
+                Vector3 vertex = (edgeStart + edgeEnd) / 2 - new Vector3(m_width, 0, m_length)/2;
 
                 vertices.Add(vertex);
                 triangles.Add(vertices.Count - 1);
@@ -204,7 +196,7 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
             }
         }
     }
-
+    
     private int GetConfigurationIndex(float[] cubeCorners)
     {
         int configIndex = 0;
@@ -223,6 +215,11 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
     private void SetMesh(GameObject newObject)
     {
         Mesh mesh = new Mesh();
+
+        for(int i = 0; i < vertices.Count; i++)
+        {
+            vertices[i] +=  Vector3.up * lowestHeight;
+        }
 
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();

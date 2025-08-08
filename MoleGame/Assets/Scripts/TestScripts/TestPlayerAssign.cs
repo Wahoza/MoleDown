@@ -3,12 +3,19 @@ using UnityEngine.InputSystem;
 
 public class TestPlayerAssign : MonoBehaviour
 {
+    [SerializeField] int playerId;
+    [SerializeField] Color modelColor;
     void Start()
     {
-        PlayerConfiguration pc = new PlayerConfiguration();
-        pc.playerID = 0;
-        pc.Input = GetComponent<PlayerInput>();
+        PlayerConfig pc = new PlayerConfig(GetComponent<PlayerInput>(), playerId);
 
+        //pc.playerID = playerId;
+        pc.playerColor = modelColor;
+
+        //if (pc.playerID == 0)
+        //{
+        //    pc.Input = GetComponent<PlayerInput>();
+        //}
 
         GetComponent<PlayerInputHandler>().Initialize(pc);
     }

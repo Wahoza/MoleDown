@@ -10,7 +10,9 @@ public class PlayerActionHandler : MonoBehaviour
     List<Action<bool>> grabbableActions = new(); //bool true: grabbed, false: released
     List<Action<bool>> grabActions = new();
     List<Action<float>> landActions = new();
-
+    List<Action> attackActions = new();
+    List<Action> deathActions = new();
+    List<Action> spawnActions = new();
     public void OnWalk(Vector3 walkDirection)
     {
         foreach (var action in moveActions)
@@ -47,6 +49,60 @@ public class PlayerActionHandler : MonoBehaviour
         }
     }
 
+    public void OnAttack()
+    {
+        foreach(var action in attackActions)
+        {
+            action();
+        }
+    }
+
+    public void OnDie()
+    {
+        var behaviors = GetComponents<MonoBehaviour>();
+
+        GameManager.Instance.OnPlayerDie(gameObject);
+
+        GetComponent<Rigidbody>().freezeRotation = false;
+        GetComponent<PlayerStateComponent>().SetIsDead(true);
+
+        foreach(var action in deathActions)
+        {
+            action();
+        }
+
+        foreach (var behavior in behaviors)
+        {
+            if(behavior != this)
+            {
+                behavior.enabled = false;
+            }
+        }
+
+        Debug.Log("Completed Die");
+    }
+
+    public void OnSpawn()
+    {
+        var behaviors = GetComponents<MonoBehaviour>();
+        foreach (var behavior in behaviors)
+        {
+            behavior.enabled = true;
+        }
+
+        GetComponent<Rigidbody>().freezeRotation = true;
+        GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
+        GetComponent<PlayerStateComponent>().SetIsDead(false);
+
+        foreach (var action in spawnActions)
+        {
+            action();
+        }
+    }
+    internal void RegisterAttackAction(Action action)
+    {
+        attackActions.Add(action);
+    }
     public void RegisterMoveAction(Action<Vector3> action)
     {
         moveActions.Add(action);
@@ -59,13 +115,23 @@ public class PlayerActionHandler : MonoBehaviour
     {
         landActions.Add(action);
     }
-    public void RegisterGrabbableActions(Action<bool> action)
+    public void RegisterGrabbableAction(Action<bool> action)
     {
         grabbableActions.Add(action);
     }
     public void RegisterGrabAction(Action<bool> action)
     {
         grabActions.Add(action);
+    }
+
+    public void RegisterDeathAction(Action action)
+    {
+        deathActions.Add(action);   
+    }
+
+    public void RegisterSpawnAction(Action action)
+    {
+        spawnActions.Add(action);
     }
     public void UnregisterMoveAction(Action<Vector3> action)
     {
@@ -88,7 +154,7 @@ public class PlayerActionHandler : MonoBehaviour
             landActions.Remove(action);
         }
     }
-    public void UnregisterGrabbableActions(Action<bool> action)
+    public void UnregisterGrabbableAction(Action<bool> action)
     {
         if (grabbableActions.Contains(action))
         {
@@ -101,6 +167,25 @@ public class PlayerActionHandler : MonoBehaviour
         if (grabActions.Contains(action))
         {
             grabActions.Remove(action);
+        }
+    }
+    public void UnregisterAttackAction(Action action)
+    {
+        if (attackActions.Contains(action))
+            attackActions.Remove(action); 
+    }
+    public void UnregisterSpawnAction(Action action)
+    {
+        if (spawnActions.Contains(action))
+        {
+            spawnActions.Remove(action);
+        }
+    }
+    public void UnregisterDeathAction(Action action)
+    {
+        if (deathActions.Contains(action))
+        {
+            deathActions.Remove(action);
         }
     }
 }

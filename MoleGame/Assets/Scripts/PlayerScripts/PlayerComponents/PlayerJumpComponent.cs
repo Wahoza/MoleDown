@@ -67,7 +67,6 @@ public class PlayerJumpComponent : MonoBehaviour
             TryBufferedJump();
             elapsed += Time.deltaTime;
             yield return null;
-            Debug.Log("BufferingJump");
         }
 
         jumpBufferCoroutine = null;

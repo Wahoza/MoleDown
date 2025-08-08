@@ -14,11 +14,11 @@ public class DeformTerrainOnCollisionComponent : MonoBehaviour
     {
         if (collisionWithKinematicRB)
         {
-            LevelMarchingPlatform.instance.DeformSphereAt(transform.position, range, intensity);
+            LevelMarchingPlatform.Instance.DeformSphereAt(transform.position, range, intensity);
         }
         else if (GetComponent<Rigidbody>() is var rb && rb != null && !rb.isKinematic)
         {
-            LevelMarchingPlatform.instance.DeformSphereAt(transform.position, Mathf.CeilToInt(range), intensity);
+            LevelMarchingPlatform.Instance.DeformSphereAt(transform.position, Mathf.CeilToInt(range), intensity);
         }
     }
 }

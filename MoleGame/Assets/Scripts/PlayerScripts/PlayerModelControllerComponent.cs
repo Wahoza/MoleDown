@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(PlayerStateComponent))]
 
@@ -13,7 +14,7 @@ public class PlayerModelControllerComponent : MonoBehaviour
     [SerializeField] GameObject FootL;
     [SerializeField] GameObject FootR;
     [SerializeField] GameObject Body;
-    [SerializeField] GameObject Face;
+    [SerializeField] GameObject Eyes;
     [SerializeField] GameObject ModelHolder;
 
     [Header("Foot Animation Settings")]
@@ -33,17 +34,32 @@ public class PlayerModelControllerComponent : MonoBehaviour
     [SerializeField] float moveSpeedHandImpact;
 
     private Coroutine playerHandWalkRoutine;
-    private Coroutine handLRoutine;
-    private Coroutine handRRoutine;
+    private Coroutine handLRotateRoutine;
+    private Coroutine handRRotateRoutine;
+    private Coroutine handRMoveRoutine;
+    private Coroutine handLMoveRoutine;
 
     [Header("Grab Animation Settings")]
     [SerializeField] Vector3 startGrabRotation;
     [SerializeField] Vector3 endGrabRotation;
+    [SerializeField] Vector3 startGrabPosition;
+    [SerializeField] Vector3 endGrabPosition;
     [SerializeField] float baseGrabDuration;
 
     private Coroutine playerGrabRoutine;
     private Coroutine playerReleaseRoutine;
     private bool lastGrabbed;
+
+    [Header("Attack Animation Settings")]
+    [SerializeField] Vector3 startAttackRotation;
+    [SerializeField] Vector3 endAttackRotation;
+    [SerializeField] Vector3 startAttackPosition;
+    [SerializeField] Vector3 endAttackPosition;
+    [SerializeField] float attackAnimDuration;
+    [SerializeField] float attackHoldDuration;
+    [SerializeField] float attackMoveBackDuration;
+
+    private Coroutine playerAttackRoutine;
 
     [Header("Jump Animation Settings")]
     [SerializeField] Vector3 startJumpRotation;
@@ -78,7 +94,18 @@ public class PlayerModelControllerComponent : MonoBehaviour
     [SerializeField] private float moveSpeedMin;
     [SerializeField] private float animationSpeed = 1;
 
+    [Header("HighlightBehindTerrainObjects")]
+    [SerializeField] List<MeshRenderer> highlightMeshes;
+    [SerializeField] Material highlightMat;
+    [SerializeField] float darkenStrength;
+
+    [Header("Other HighlightThings")]
+    [SerializeField] DecalProjector decalProjector;
+    [SerializeField] float decalOpacity;
+    [SerializeField] List<GameObject> winIndicators;
+
     private float moveSpeed;
+    private Material mat;
     private PlayerStateComponent playerState;
     private void Start()
     {
@@ -93,6 +120,7 @@ public class PlayerModelControllerComponent : MonoBehaviour
         GetComponent<PlayerActionHandler>().RegisterGrabAction(OnGrab);
         GetComponent<PlayerActionHandler>().RegisterJumpAction(OnJump);
         GetComponent<PlayerActionHandler>().RegisterLandAction(OnLand);
+        GetComponent<PlayerActionHandler>().RegisterAttackAction(OnAttack);
     }
     private void OnDestroy()
     {
@@ -100,6 +128,7 @@ public class PlayerModelControllerComponent : MonoBehaviour
         GetComponent<PlayerActionHandler>().UnregisterGrabAction(OnGrab);
         GetComponent<PlayerActionHandler>().UnregisterJumpAction(OnJump);
         GetComponent<PlayerActionHandler>().UnregisterLandAction(OnLand);
+        GetComponent<PlayerActionHandler>().UnregisterAttackAction(OnAttack);
     }
     IEnumerator HeadBobRoutine()
     {
@@ -118,14 +147,14 @@ public class PlayerModelControllerComponent : MonoBehaviour
         while (true)
         {
             // Forward
-            handRRoutine = StartCoroutine(LerpWalkRotationValue(HandR, endHandRotation, startHandRotation, baseHandDuration, moveSpeedHandImpact));
-            handLRoutine = StartCoroutine(LerpWalkRotationValue(HandL, startHandRotation, endHandRotation, baseHandDuration, moveSpeedHandImpact));
-            yield return handLRoutine;
+            handRRotateRoutine = StartCoroutine(LerpWalkRotationValue(HandR, endHandRotation, startHandRotation, baseHandDuration, moveSpeedHandImpact));
+            handLRotateRoutine = StartCoroutine(LerpWalkRotationValue(HandL, startHandRotation, endHandRotation, baseHandDuration, moveSpeedHandImpact));
+            yield return handLRotateRoutine;
 
             // Backward
-            handRRoutine = StartCoroutine(LerpWalkRotationValue(HandR, startHandRotation, endHandRotation, baseHandDuration, moveSpeedHandImpact));
-            handLRoutine = StartCoroutine(LerpWalkRotationValue(HandL, endHandRotation, startHandRotation, baseHandDuration, moveSpeedHandImpact));
-            yield return handLRoutine;
+            handRRotateRoutine = StartCoroutine(LerpWalkRotationValue(HandR, startHandRotation, endHandRotation, baseHandDuration, moveSpeedHandImpact));
+            handLRotateRoutine = StartCoroutine(LerpWalkRotationValue(HandL, endHandRotation, startHandRotation, baseHandDuration, moveSpeedHandImpact));
+            yield return handLRotateRoutine;
         }
     }
     IEnumerator WalkFootRoutine()
@@ -194,18 +223,23 @@ public class PlayerModelControllerComponent : MonoBehaviour
 
     IEnumerator HandGrabRoutine()
     {
-        handLRoutine = StartCoroutine(RotateRoutine(HandL, startGrabRotation, endGrabRotation, baseGrabDuration));
-        handRRoutine = StartCoroutine(RotateRoutine(HandR, startGrabRotation, endGrabRotation, baseGrabDuration));
+        handLRotateRoutine = StartCoroutine(RotateRoutine(HandL, startGrabRotation, endGrabRotation, baseGrabDuration));
+        handRRotateRoutine = StartCoroutine(RotateRoutine(HandR, startGrabRotation, endGrabRotation, baseGrabDuration));
 
+        handLMoveRoutine = StartCoroutine(LerpPositionValue(HandL, startGrabPosition, endGrabPosition, baseGrabDuration));
+        handRMoveRoutine = StartCoroutine(LerpPositionValue(HandR, startGrabPosition, endGrabPosition, baseGrabDuration));
         yield return null;
     }
 
     IEnumerator HandReleaseRoutine()
     {
-        handLRoutine = StartCoroutine(RotateRoutine(HandL, endGrabRotation, startGrabRotation, baseGrabDuration));
-        handRRoutine = StartCoroutine(RotateRoutine(HandR, endGrabRotation, startGrabRotation, baseGrabDuration));
+        handLRotateRoutine = StartCoroutine(RotateRoutine(HandL, endGrabRotation, startGrabRotation, baseGrabDuration));
+        handRRotateRoutine = StartCoroutine(RotateRoutine(HandR, endGrabRotation, startGrabRotation, baseGrabDuration));
 
-        yield return handRRoutine;
+        handLMoveRoutine = StartCoroutine(LerpPositionValue(HandL, endGrabPosition, startGrabPosition, baseGrabDuration));
+        handRMoveRoutine = StartCoroutine(LerpPositionValue(HandR, endGrabPosition, startGrabPosition, baseGrabDuration));
+
+        yield return handRRotateRoutine;
 
         if (playerHandWalkRoutine == null)
         {
@@ -299,6 +333,31 @@ public class PlayerModelControllerComponent : MonoBehaviour
 
         playerJumpRoutine = null;
     }
+
+    private IEnumerator AttackRoutine()
+    {
+        handLRotateRoutine = StartCoroutine(RotateRoutine(HandL, startAttackRotation, endAttackRotation, attackAnimDuration));
+        handRRotateRoutine = StartCoroutine(RotateRoutine(HandR, startAttackRotation, endAttackRotation, attackAnimDuration));
+
+        handLMoveRoutine = StartCoroutine(LerpPositionValue(HandL, startAttackPosition, endAttackPosition, attackAnimDuration));
+        handRMoveRoutine = StartCoroutine(LerpPositionValue(HandL, startAttackPosition, endAttackPosition, attackAnimDuration));
+
+        yield return handLRotateRoutine;
+
+        yield return new WaitForSeconds(attackHoldDuration);
+
+        handLRotateRoutine = StartCoroutine(RotateRoutine(HandL, endAttackRotation, startAttackRotation, attackMoveBackDuration));
+        handRRotateRoutine = StartCoroutine(RotateRoutine(HandR, endAttackRotation, startAttackRotation, attackMoveBackDuration));
+
+        handLMoveRoutine = StartCoroutine(LerpPositionValue(HandL, endAttackPosition, startAttackPosition, attackAnimDuration));
+        handRMoveRoutine = StartCoroutine(LerpPositionValue(HandR, endAttackPosition, startAttackPosition, attackAnimDuration));
+
+        yield return handLRotateRoutine;
+
+        playerHandWalkRoutine = StartCoroutine(WalkHandRoutine());
+
+        playerAttackRoutine = null;
+    }
     void OnGrab(bool grabbed)
     {
         Debug.Log("Grab " + grabbed);
@@ -313,14 +372,19 @@ public class PlayerModelControllerComponent : MonoBehaviour
 
                     playerHandWalkRoutine = null;
                 }
-                if (handLRoutine != null)
-                {
-                    StopCoroutine(handLRoutine);
-                    StopCoroutine(handRRoutine);
-                }
+
+                StopHandCoroutines();
+
                 if (playerReleaseRoutine != null)
                 {
                     StopCoroutine(playerReleaseRoutine);
+                    playerReleaseRoutine = null;
+                }
+
+                if (playerAttackRoutine != null)
+                {
+                    StopCoroutine(playerAttackRoutine);
+                    playerAttackRoutine = null;
                 }
 
                 playerGrabRoutine = StartCoroutine(HandGrabRoutine());
@@ -329,11 +393,7 @@ public class PlayerModelControllerComponent : MonoBehaviour
             }
             else
             {
-                if (handLRoutine != null)
-                {
-                    StopCoroutine(handLRoutine);
-                    StopCoroutine(handRRoutine);
-                }
+                StopHandCoroutines();
 
                 playerReleaseRoutine = StartCoroutine(HandReleaseRoutine());
 
@@ -390,6 +450,120 @@ public class PlayerModelControllerComponent : MonoBehaviour
             }
 
             bodyLandingRoutine = StartCoroutine(LandRoutine(airTime * airTimeDurationImpact));
+        }
+    }
+
+    void OnAttack()
+    {
+        Debug.Log(lastGrabbed);
+
+        if (lastGrabbed)
+        {
+            return;
+        }
+
+        if (playerAttackRoutine == null)
+        {
+            if (playerHandWalkRoutine != null)
+            {
+                StopCoroutine(playerHandWalkRoutine);
+            }
+
+            if (playerGrabRoutine != null)
+            {
+                StopCoroutine(playerGrabRoutine);
+            }
+
+            StopHandCoroutines();
+
+            playerAttackRoutine = StartCoroutine(AttackRoutine());
+        }
+    }
+
+    void StopHandCoroutines()
+    {
+        if (handLRotateRoutine != null)
+        {
+            StopCoroutine(handLRotateRoutine);
+            StopCoroutine(handRRotateRoutine);
+        }
+
+        if (handRMoveRoutine != null)
+        {
+            StopCoroutine(handRMoveRoutine);
+            StopCoroutine(handLMoveRoutine);
+        }
+
+        HandL.transform.localPosition = Vector3.zero;
+        HandR.transform.localPosition = Vector3.zero;
+        HandL.transform.localRotation = Quaternion.identity;
+        HandR.transform.localRotation = Quaternion.identity;
+    }
+
+    public void SetColor(Color color)
+    {
+        if(mat == null)
+        {
+            var bodyRenderer = Body.GetComponent<MeshRenderer>();
+            Material[] mats = bodyRenderer.materials;
+
+            // Clone the first material
+            mat = new Material(mats[0]);
+            mat.color = color;
+            mats[0] = mat;
+
+            Debug.Log("Setting new material");
+
+            // Apply updated materials array to each mesh
+            Body.GetComponent<MeshRenderer>().materials = mats;
+            Eyes.GetComponent<MeshRenderer>().materials = mats;
+            HandL.GetComponent<MeshRenderer>().materials = mats;
+            HandR.GetComponent<MeshRenderer>().materials = mats;
+            FootL.GetComponent<MeshRenderer>().materials = mats;
+            FootR.GetComponent<MeshRenderer>().materials = mats;
+
+            Material[] highlightMats = bodyRenderer.materials;
+            var newhighlightMat = new Material(highlightMat);
+
+            newhighlightMat.SetColor("_Color", color);
+            newhighlightMat.SetColor("_SecondaryColor", color * darkenStrength);
+            highlightMats[0] = newhighlightMat;
+
+            for(int i = 0; i < highlightMats.Length; i++)
+            {
+                highlightMats[i] = newhighlightMat;
+            }
+            foreach(var renderer in highlightMeshes)
+            {
+                renderer.materials = highlightMats;
+            }
+
+            Material decalMat = decalProjector.material;
+            var newDecalMat = new Material(decalMat);
+            var decalColor = color;
+            decalColor.a = decalOpacity;
+
+            newDecalMat.SetColor("_Color", decalColor);
+
+            decalProjector.material = newDecalMat;
+            Debug.Log("Set Color of decal Projector to" + color);
+        }
+
+    }
+
+    public void ShowWinObjects()
+    {
+        foreach (GameObject g in winIndicators)
+        {
+            g.SetActive(true);
+        }
+    }
+
+    public void HideWinObjects()
+    {
+        foreach(GameObject g in winIndicators)
+        {
+            g.SetActive(false);
         }
     }
 }

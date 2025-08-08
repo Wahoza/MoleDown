@@ -3,12 +3,14 @@ using System.Collections;
 using DG.Tweening;
 using UnityEngine;
 
+[RequireComponent(typeof(ObjectActionHandler))]
 public class ObjectGrabbableComponent : GrabbableComponent
 {
     [SerializeField] public Vector3 grabOffset;
     [SerializeField] private float moveToHoldTime = 0.1f;
 
     private IEnumerator grabUpdate;
+    public Transform pocketTransform { get; private set; }
     public override void OnGrab(Transform _grabTransform, Action releaseFunc)
     {
         if (GetComponent<Rigidbody>() is var rb && rb != null)
@@ -23,7 +25,11 @@ public class ObjectGrabbableComponent : GrabbableComponent
             grabUpdate = GrabUpdateCorutine();
         }
 
+        pocketTransform = _grabTransform;
+
         transform.DOMove(_grabTransform.position, moveToHoldTime).SetEase(Ease.InQuad).OnComplete(() => StartCoroutine(grabUpdate));
+
+        GetComponent<ObjectActionHandler>().OnGrab(true);
     }
 
     public override void OnRelease()
@@ -36,6 +42,12 @@ public class ObjectGrabbableComponent : GrabbableComponent
         {
             rb.isKinematic = false;
         }
+
+        transform.DOKill();
+
+        pocketTransform = null;
+
+        GetComponent<ObjectActionHandler>().OnGrab(false);
     }
 
     public override void OnThrow(Vector3 velocity)
@@ -51,14 +63,16 @@ public class ObjectGrabbableComponent : GrabbableComponent
 
             rb.AddForce(velocity, ForceMode.Impulse);
         }
+
+        GetComponent<ObjectActionHandler>().OnGrab(false);
     }
 
     private IEnumerator GrabUpdateCorutine()
     {
         while (true)
         {
-            transform.position = grabTransform.position + grabOffset;
-            transform.rotation = grabTransform.rotation;
+            transform.position = pocketTransform.position + grabOffset;
+            transform.rotation = pocketTransform.rotation;
             yield return null;
         }
     }

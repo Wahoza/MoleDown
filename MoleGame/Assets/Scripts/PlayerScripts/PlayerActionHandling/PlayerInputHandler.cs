@@ -8,9 +8,10 @@ using static UnityEngine.InputSystem.InputAction;
 [RequireComponent(typeof(PlayerActionHandler))]
 public class PlayerInputHandler : MonoBehaviour
 {
-    PlayerConfiguration playerConfig;
+    PlayerConfig playerConfig;
     private PlayerInputMap controls;
 
+    private PlayerStateComponent playerState;
     //input listeners
     private List<Action<Vector2>> inputMoveFuncs = new();
     private List<Action<CallbackContext>> inputGrabFuncs = new();
@@ -18,16 +19,28 @@ public class PlayerInputHandler : MonoBehaviour
     private List<Action<CallbackContext>> inputAttackFuncs = new();
 
 
-    public void Initialize(PlayerConfiguration pc)
+    public async void Initialize(PlayerConfig pc)
     {
         controls = new();
 
         playerConfig = pc;
 
-        playerConfig.Input.onActionTriggered += Input_onActionTriggered;
+        if(playerConfig.Input!= null)
+        {
+            playerConfig.Input.onActionTriggered += Input_onActionTriggered;
+        }
+
+        playerState = GetComponent<PlayerStateComponent>();
+
+        GameManager.Instance.JoinPlayer(pc, gameObject);
+
+        GetComponent<PlayerModelControllerComponent>().SetColor(pc.playerColor);
+        await GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatformAsync();
     }
     void Input_onActionTriggered(CallbackContext ctx)
     {
+        if(playerState.IsDead()) { return; }
+
         if (ctx.action.name == controls.Player.Move.name)
         {
             OnMove(ctx);
@@ -136,6 +149,9 @@ public class PlayerInputHandler : MonoBehaviour
         inputGrabFuncs.Clear();
         inputJumpFuncs.Clear();
 
-        playerConfig.Input.onActionTriggered -= Input_onActionTriggered;
+        if (playerConfig.Input != null && playerConfig.Input != null)
+        {
+            playerConfig.Input.onActionTriggered -= Input_onActionTriggered;
+        }
     }
 }

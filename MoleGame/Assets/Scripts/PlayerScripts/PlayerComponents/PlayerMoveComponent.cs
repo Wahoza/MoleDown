@@ -45,6 +45,7 @@ public class PlayerMoveComponent : MonoBehaviour
 
         actionHandler = GetComponent<PlayerActionHandler>();
         actionHandler.RegisterJumpAction(DisableGroundingForJump);
+        actionHandler.RegisterSpawnAction(OnSpawn);
 
         StartCoroutine(ForceGround());
         StartCoroutine(UpdateGroundedState());
@@ -78,6 +79,12 @@ public class PlayerMoveComponent : MonoBehaviour
         }
     }
 
+    private void OnSpawn()
+    {
+        rb.linearVelocity = Vector3.zero;
+        inputVector = Vector2.zero;
+        moveDirection = Vector3.zero;
+    }
     private void MovementUpdate()
     {
         if (!movementSettings.CanMove()) { return; }
@@ -164,6 +171,6 @@ public class PlayerMoveComponent : MonoBehaviour
     {
         GetComponent<PlayerInputHandler>().UnregisterInputMoveFuncs(SetInputVector);
         actionHandler.UnregisterJumpAction(DisableGroundingForJump);
-
+        actionHandler.UnregisterSpawnAction(OnSpawn);
     }
 }

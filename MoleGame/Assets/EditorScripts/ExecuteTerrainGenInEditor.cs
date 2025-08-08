@@ -33,7 +33,7 @@ public class ExecuteTerrainGenInEditor : EditorWindow
                 }
 
                 terrainParentsUsed.Add(currentTerrainParent);
-                currentTerrainParent.Start();
+                currentTerrainParent.GenerateWorld();
             }
         }
     }

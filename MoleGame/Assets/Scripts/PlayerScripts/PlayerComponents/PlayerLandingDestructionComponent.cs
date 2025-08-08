@@ -12,10 +12,11 @@ public class PlayerLandingDestructionComponent : MonoBehaviour
 
     private Rigidbody rb;
     private float terrainDestructionTimer;
-    
+    bool cancelLandUntilNext;
     private void Start()
     {
         GetComponent<PlayerActionHandler>().RegisterLandAction(OnLand);
+        //GetComponent<PlayerActionHandler>().RegisterGrabbableAction(OnGrab);
         rb = GetComponent<Rigidbody>();
     }
 
@@ -23,7 +24,14 @@ public class PlayerLandingDestructionComponent : MonoBehaviour
     {
         if (airTime > minAirTime && terrainDestructionRate <= Time.time - terrainDestructionRate)
         {
-            LevelMarchingPlatform.instance.DeformSphereAt(transform.position + Vector3.up * characterHeightOffset, baseRadius + (airTime - minAirTime) * radiusIncrease, intensity);
+            if (cancelLandUntilNext)
+            {
+                cancelLandUntilNext = false;
+                return;
+            } 
+                
+
+            LevelMarchingPlatform.Instance.DeformSphereAt(transform.position + Vector3.up * characterHeightOffset, baseRadius + (airTime - minAirTime) * radiusIncrease, intensity);
 
             terrainDestructionTimer = Time.time;
 
@@ -32,6 +40,11 @@ public class PlayerLandingDestructionComponent : MonoBehaviour
             rb.linearVelocity = velocity;
         }
     }
+
+    //void OnGrab(bool grabbed)
+    //{
+    //    cancelLandUntilNext = true;
+    //}
 
     private void OnDestroy()
     {

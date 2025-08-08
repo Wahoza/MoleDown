@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1558659850334616252}
   - component: {fileID: 6119961751877846927}
   - component: {fileID: 1794645245508636565}
+  - component: {fileID: 4262319974243082304}
   m_Layer: 0
   m_Name: GrabbableCubeTest
   m_TagString: Untagged
@@ -150,3 +151,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grabOffset: {x: 0, y: 0.53, z: 0}
+  moveToHoldTime: 0.1
+--- !u!114 &4262319974243082304
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4129667726704296796}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7deb1468e103d094bbc8f91673b2b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

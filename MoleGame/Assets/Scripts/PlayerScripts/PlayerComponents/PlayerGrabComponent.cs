@@ -18,7 +18,7 @@ public class PlayerGrabComponent : MonoBehaviour
     [SerializeField] Transform pocketTransform;
 
     private GrabbableComponent grabbedGrabbable;
-    private IEnumerator grabCoroutine;
+    private Coroutine grabCoroutine;
     private float grabStartTime;
     private bool grabCanceled = true;
     private void Start()
@@ -26,11 +26,15 @@ public class PlayerGrabComponent : MonoBehaviour
         GetComponent<PlayerInputHandler>().RegisterGrabFuncs(OnGrabInput);
         GetComponent<PlayerInputHandler>().RegisterInputAttackFuncs((ctx) => ThrowGrabbable());
 
-        GetComponent<PlayerActionHandler>().RegisterJumpAction(CancelGrabAttemptAction);
-        GetComponent<PlayerActionHandler>().RegisterGrabbableActions(CancelGrabAttemptGrab);
+        GetComponent<PlayerActionHandler>().RegisterDeathAction(OnDie);
+        GetComponent<PlayerActionHandler>().RegisterGrabbableAction(CancelGrabAttemptGrab);
 
-        grabCoroutine = GrabDisableWaitCoroutine();
         grabTrigger.SetPlayerGrabComponent(this);
+    }
+
+    void OnDie()
+    {
+        ReleaseGrabbable();
     }
 
     void OnGrabInput(InputAction.CallbackContext ctx)
@@ -50,7 +54,7 @@ public class PlayerGrabComponent : MonoBehaviour
             {
                 grabTrigger.gameObject.SetActive(true);
 
-                StartCoroutine(grabCoroutine);
+                grabCoroutine = StartCoroutine(GrabDisableWaitCoroutine());
 
                 grabStartTime = Time.time;
 
@@ -81,8 +85,10 @@ public class PlayerGrabComponent : MonoBehaviour
 
     void CancelGrabAttemptAction()
     {
-        StopCoroutine(grabCoroutine);
-
+        if (grabCoroutine != null)
+        {
+            StopCoroutine(grabCoroutine);
+        }
         grabTrigger.gameObject.SetActive(false);
 
         grabCanceled = true;
@@ -161,8 +167,8 @@ public class PlayerGrabComponent : MonoBehaviour
         GetComponent<PlayerInputHandler>().UnregisterInputGrabFuncs(OnGrabInput);
         GetComponent<PlayerInputHandler>().UnregisterInputAttackFuncs((ctx) => ThrowGrabbable());
 
-        GetComponent<PlayerActionHandler>().UnregisterJumpAction(CancelGrabAttemptAction);
-        GetComponent<PlayerActionHandler>().RegisterGrabbableActions(CancelGrabAttemptGrab);
-
+        //GetComponent<PlayerActionHandler>().UnregisterJumpAction(CancelGrabAttemptAction);
+        GetComponent<PlayerActionHandler>().RegisterGrabbableAction(CancelGrabAttemptGrab);
+        GetComponent<PlayerActionHandler>().UnregisterDeathAction(OnDie);
     }
 }

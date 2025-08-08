@@ -24,70 +24,71 @@ public class MouseDeform : MonoBehaviour
         mainCamera = Camera.main;
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0)) // Left-click
-        {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+    //private void Update()
+    //{
+    //    return;
+    //    if (Input.GetMouseButtonDown(0)) // Left-click
+    //    {
+    //        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f, chunkLayerMask))
-            {
-                var parent = hit.collider.transform.parent;
-                if (parent != null)
-                {
-                    var platform = parent.GetComponent<LevelMarchingPlatform>();
-                    if(platform != null)
-                    {
-                        switch (deform)
-                        {
-                            case DeformType.Sphere:
-                                platform.DeformSphereAt(hit.point, deformRadius, deformStrength);
+    //        if (Physics.Raycast(ray, out RaycastHit hit, 100f, chunkLayerMask))
+    //        {
+    //            var parent = hit.collider.transform.parent;
+    //            if (parent != null)
+    //            {
+    //                var platform = parent.GetComponent<LevelMarchingPlatform>();
+    //                if(platform != null)
+    //                {
+    //                    switch (deform)
+    //                    {
+    //                        case DeformType.Sphere:
+    //                            platform.DeformSphereAt(hit.point, deformRadius, deformStrength);
 
-                                return;
-                            case DeformType.Cylinder:
-                                platform.DeformCylinderAt(hit.point, deformRadius, deformHeight, deformStrength);
+    //                            return;
+    //                        case DeformType.Cylinder:
+    //                            platform.DeformCylinderAt(hit.point, deformRadius, deformHeight, deformStrength);
 
-                                return;
-                            case DeformType.Cube:
-                                platform.DeformCubeAt(new Bounds(hit.point, new Vector3(deformRadius, deformHeight, deformRadius)), -deformStrength);
+    //                            return;
+    //                        case DeformType.Cube:
+    //                            platform.DeformCubeAt(new Bounds(hit.point, new Vector3(deformRadius, deformHeight, deformRadius)), -deformStrength);
 
-                                return;
-                        }
-                    }
-                }
-            }
-        }
+    //                            return;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
 
-        if (Input.GetMouseButtonDown(1)) // Left-click
-        {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+    //    if (Input.GetMouseButtonDown(1)) // Left-click
+    //    {
+    //        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f, chunkLayerMask))
-            {
-                var parent = hit.collider.transform.parent;
-                if (parent != null)
-                {
-                    var platform = parent.GetComponent<LevelMarchingPlatform>();
-                    if (platform != null)
-                    {
-                        switch (deform)
-                        {
-                            case DeformType.Sphere:
-                                platform.DeformSphereAt(hit.point, deformRadius, -deformStrength);
+    //        if (Physics.Raycast(ray, out RaycastHit hit, 100f, chunkLayerMask))
+    //        {
+    //            var parent = hit.collider.transform.parent;
+    //            if (parent != null)
+    //            {
+    //                var platform = parent.GetComponent<LevelMarchingPlatform>();
+    //                if (platform != null)
+    //                {
+    //                    switch (deform)
+    //                    {
+    //                        case DeformType.Sphere:
+    //                            platform.DeformSphereAt(hit.point, deformRadius, -deformStrength);
 
-                                return;
-                            case DeformType.Cylinder:
-                                platform.DeformCylinderAt(hit.point, deformRadius, deformHeight, -deformStrength);
+    //                            return;
+    //                        case DeformType.Cylinder:
+    //                            platform.DeformCylinderAt(hit.point, deformRadius, deformHeight, -deformStrength);
 
-                                return;
-                            case DeformType.Cube:
-                                platform.DeformCubeAt(new Bounds(hit.point, new Vector3(deformRadius, deformHeight, deformRadius)), -deformStrength);
+    //                            return;
+    //                        case DeformType.Cube:
+    //                            platform.DeformCubeAt(new Bounds(hit.point, new Vector3(deformRadius, deformHeight, deformRadius)), -deformStrength);
 
-                                return;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    //                            return;
+    //                    }
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
 }

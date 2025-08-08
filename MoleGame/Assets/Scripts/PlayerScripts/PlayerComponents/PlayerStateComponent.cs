@@ -7,6 +7,7 @@ public class PlayerStateComponent : MonoBehaviour
     [SerializeField] private bool isCanMove;
     [SerializeField] private bool isGrounded;
     [SerializeField] private bool isGrabbed;
+    [SerializeField] private bool isDead;
 
     private PlayerGroundedComponent groundedComponent;
     private PlayerJumpComponent jumpComponent;
@@ -42,7 +43,10 @@ public class PlayerStateComponent : MonoBehaviour
     {
         return isCanMove;
     }
-
+    public bool IsDead()
+    {
+        return isDead;
+    }
     public bool IsStunned()
     {
         return isStunned;
@@ -62,6 +66,10 @@ public class PlayerStateComponent : MonoBehaviour
         isStunned = stunned;
     }
 
+    public void SetIsDead(bool isDead)
+    {
+        this.isDead = isDead;
+    }
     public void SetCanMove(bool canMove)
     {
         isCanMove = canMove;

@@ -9,6 +9,10 @@ public class KnockbackOnCollisionComponent : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         DoCollision(collision.contacts[0].point);
+    }    
+    private void OnCollisionStay(Collision collision)
+    {
+        DoCollision(collision.contacts[0].point);
     }
 
     void DoCollision(Vector3 collisionPoint)
@@ -19,9 +23,12 @@ public class KnockbackOnCollisionComponent : MonoBehaviour
 
             foreach (var hit in hits)
             {
+                if (hit.transform == transform)
+                    continue;
+
                 if (hit.transform.GetComponent<Rigidbody>() is var rb && rb != null) 
                 { 
-                    rb.AddForce((hit.point - collisionPoint).normalized * knockBackForce);
+                    rb.AddForce(-(hit.point - collisionPoint).normalized * knockBackForce);
                 }
             }
         }
@@ -29,11 +36,15 @@ public class KnockbackOnCollisionComponent : MonoBehaviour
         {
             var hits = Physics.SphereCastAll(collisionPoint, range, transform.forward, knockBackLayerMask);
 
+
             foreach (var hit in hits)
             {
+                if (hit.transform == transform)
+                    continue;
+
                 if (hit.transform.GetComponent<Rigidbody>() is var hitrb && hitrb != null)
                 {
-                    hitrb.AddForce((hit.point - collisionPoint).normalized * knockBackForce);
+                    hitrb.AddForce(-(hit.point - collisionPoint).normalized * knockBackForce);
                 }
             }
         }

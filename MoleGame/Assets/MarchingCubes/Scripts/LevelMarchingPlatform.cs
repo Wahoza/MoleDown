@@ -2,15 +2,14 @@ using UnityEngine;
 
 public class LevelMarchingPlatform : MarchingWorld
 {
-    public static LevelMarchingPlatform instance {get; private set;}
+    public static LevelMarchingPlatform Instance {get; private set;}
 
     public bool debugToggle = false;
-    public override void Start()
+    public void Awake()
     {
-        if(instance == null)
+        if(Instance == null)
         {
-            instance = this;
-            base.Start();
+            Instance = this;
         }
     }
     public void TestToggle()

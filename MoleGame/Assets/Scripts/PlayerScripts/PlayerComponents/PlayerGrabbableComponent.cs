@@ -16,7 +16,7 @@ public class PlayerGrabbableComponent : GrabbableComponent
     {
         grabRoutine = GrabUpdateCorutine();
 
-        GetComponent<PlayerActionHandler>().RegisterJumpAction(IncrementJumpCtr);
+        GetComponent<PlayerInputHandler>().RegisterInputJumpFuncs((ctx) => IncrementJumpCtr());
     }
     public override void OnGrab(Transform _grabTransform, Action releaseFunc)
     {
@@ -56,11 +56,16 @@ public class PlayerGrabbableComponent : GrabbableComponent
     {
         OnRelease();
 
+        if (GetComponent<Rigidbody>() is Rigidbody rb && rb != null)
+        {
+            rb.AddForce(velocity, ForceMode.Impulse);
+        }
         base.OnThrow(velocity);
     }
     private void IncrementJumpCtr()
     {
         jumpsSinceGrabbed++;
+        Debug.Log("JUMPPP" + jumpsSinceGrabbed);
     }
     private IEnumerator GrabUpdateCorutine()
     {
@@ -80,6 +85,6 @@ public class PlayerGrabbableComponent : GrabbableComponent
 
     private void OnDestroy()
     {
-        GetComponent<PlayerActionHandler>().UnregisterJumpAction(IncrementJumpCtr);
+        GetComponent<PlayerActionHandler>().GetComponent<PlayerInputHandler>().UnregisterInputJumpFuncs((ctx) => IncrementJumpCtr());
     }
 }

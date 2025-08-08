@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 1757085159142919666}
   - component: {fileID: -4536771514843895389}
   - component: {fileID: 4351415949233709142}
+  - component: {fileID: 474489790279873633}
   m_Layer: 0
   m_Name: PlayerTerrainGO
   m_TagString: Untagged
@@ -154,7 +155,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bad86da266af3847b373514438bdf2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grabOffset: {x: 0, y: 0.1, z: 0}
+  grabOffset: {x: 0, y: -0.6, z: 0}
   moveToHoldTime: 0.1
 --- !u!114 &-8699311169939199182
 MonoBehaviour:
@@ -168,8 +169,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 77e9ee1eba66cb24fb907da874dd6ae0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  range: 0
-  knockBackForce: 5.46
+  range: 4.11
+  knockBackForce: 300
   collisionWithKinematicRB: 0
   knockBackLayerMask:
     serializedVersion: 2
@@ -186,8 +187,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4eed1462be16fa64d96f08af265e128f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeUntilDestruction: 0
+  timeUntilDestruction: 0.1
+  dissapearSpeed: 2
   collisionWithKinematicRB: 0
+  collisionLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &-4536771514843895389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,7 +206,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 0
-  intensity: -0.3
+  intensity: -0.83
   collisionWithKinematicRB: 0
 --- !u!114 &4351415949233709142
 MonoBehaviour:
@@ -218,3 +223,21 @@ MonoBehaviour:
   cubeToMassConversion: 0.01
   baseWeight: 1
   extraEffectRange: 1.43
+  terrainGrabRadiusModifier: -0.5
+  moveHoldTime: 0.1
+  extraGrabOffset: {x: 0, y: 3, z: 0}
+  grabbableModLayer:
+    serializedVersion: 2
+    m_Bits: 1
+--- !u!114 &474489790279873633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962845958470146338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7deb1468e103d094bbc8f91673b2b3f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

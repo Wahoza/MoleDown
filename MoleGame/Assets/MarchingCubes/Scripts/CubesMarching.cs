@@ -50,6 +50,9 @@ public class CubesMarching : MonoBehaviour
     [SerializeField] int defaultSelectedMap;
     [SerializeField] MapHolder map;
 
+    [Header("Testing")]
+    [SerializeField] bool debugTick = false;
+
     Texture2D mapTexture;
 
     private int m_worldWidth;
@@ -114,7 +117,7 @@ public class CubesMarching : MonoBehaviour
         MarchCubes();
         SetMesh();
     }
-
+    
     public void SetMesh()
     {
         lock (vertices) lock (triangles)
@@ -133,7 +136,7 @@ public class CubesMarching : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("Invalid mesh data: check vertex and triangle count.");
+                //Debug.LogWarning("Invalid mesh data: check vertex and triangle count.");
                 MarchCubes();
             }
         }

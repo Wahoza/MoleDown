@@ -20,16 +20,28 @@ public class MarchingWorld : MonoBehaviour
 
     [Header("Visuals")]
     [SerializeField] Material mainMat;
+    [SerializeField] Material grabbedGroundMat;
 
+    [SerializeField] List<Color> grassColors;
+    [SerializeField] List<Color> groundPrimaryColors;
+    [SerializeField] List<Color> groundSecondaryColors;
+    [SerializeField] List<Color> spotColors;
+
+    [SerializeField] bool randomColorEnabled;
+
+    private string grassString = "_GrassColor";
+    private string groundPrimaryString = "_TopColor";
+    private string groundSecondaryString = "_BottomColor";
+    private string spotString = "_SpotColor";
 
     private Dictionary<Vector3Int, CubesMarching> chunks = new();
     private readonly Queue<CubesMarching> pendingMeshUpdates = new();
 
-    public virtual void Start()
+    private void FixedUpdate()
     {
-        GenerateWorld();
+        UpdateMeshes();
     }
-    void UpdateMeshes()
+    public void UpdateMeshes()
     {
         lock (pendingMeshUpdates)
         {
@@ -38,6 +50,41 @@ public class MarchingWorld : MonoBehaviour
                 var chunk = pendingMeshUpdates.Dequeue();
                 chunk.SetMesh();
             }
+        }
+    }
+    public void RegenerateWorld()
+    {
+        foreach(var chunkKVP in chunks)
+        {
+            Destroy(chunkKVP.Value.gameObject);
+        }
+        chunks.Clear();
+
+        for (int x = 0; x < chunksX; x++)
+        {
+            for (int y = 0; y < chunksY; y++)
+            {
+                for (int z = 0; z < chunksX; z++)
+                {
+                    Vector3Int chunkPos = new Vector3Int(x, y, z);
+                    Vector3 worldPos = new Vector3(x, y, z) * (chunkSize);
+
+                    GameObject chunkGO = Instantiate(chunkPrefab, worldPos, Quaternion.identity, transform);
+                    var chunk = chunkGO.GetComponent<CubesMarching>();
+
+                    chunks[chunkPos] = chunk;
+                }
+            }
+        }
+
+        foreach (var chunk in chunks)
+        {
+            chunk.Value.Initialize(chunk.Key * chunkSize, seed, mapTexture, chunkSize, chunkSize * chunksX, chunkSize, chunkSize * chunksY);
+        }
+
+        foreach (var chunk in chunks)
+        {
+            chunk.Value.gameObject.GetComponent<Renderer>().material = mainMat;
         }
     }
     public void GenerateWorld()
@@ -64,37 +111,33 @@ public class MarchingWorld : MonoBehaviour
             mapTexture = map.maps[0];
         }
 
+        if (randomColorEnabled)
+        {
+            mainMat = new Material(mainMat);
+
+            Color grassColor = grassColors[Random.Range(0, grassColors.Count)];
+            Color groundPrimaryColor = groundPrimaryColors[Random.Range(0, groundPrimaryColors.Count)];
+            Color groundSecondaryColor = groundSecondaryColors[Random.Range(0, groundSecondaryColors.Count)];
+            Color spotColor = spotColors[Random.Range(0, spotColors.Count)];
+
+            mainMat.SetColor(grassString, grassColor);
+            mainMat.SetColor(groundPrimaryString, groundPrimaryColor);
+            mainMat.SetColor(groundSecondaryString, groundSecondaryColor);
+            mainMat.SetColor(spotString, spotColor);
+            
+            grabbedGroundMat.SetColor(grassString, grassColor);
+            grabbedGroundMat.SetColor(groundPrimaryString, groundPrimaryColor);
+            grabbedGroundMat.SetColor(groundSecondaryString, groundSecondaryColor);
+            grabbedGroundMat.SetColor(spotString, spotColor);
+        }
         if (randomSeed)
         {
             seed = Random.Range(0, 1000);
         }
 
-        for (int x = 0; x < chunksX; x++)
-        {
-            for (int y = 0; y < chunksY; y++)
-            {
-                for (int z = 0; z < chunksX; z++)
-                {
-                    Vector3Int chunkPos = new Vector3Int(x, y, z);
-                    Vector3 worldPos = new Vector3(x, y, z) * (chunkSize);
+        mainMat = new(mainMat);
 
-                    GameObject chunkGO = Instantiate(chunkPrefab, worldPos, Quaternion.identity, transform);
-                    var chunk = chunkGO.GetComponent<CubesMarching>();
-
-                    chunks[chunkPos] = chunk;
-                }
-            }
-        }
-
-        foreach(var chunk in chunks)
-        {
-            chunk.Value.Initialize(chunk.Key * chunkSize, seed, mapTexture, chunkSize, chunkSize * chunksX, chunkSize, chunkSize * chunksY);
-        }
-        Material chunkMat = new(mainMat);
-        foreach (var chunk in chunks)
-        {
-            chunk.Value.gameObject.GetComponent<Renderer>().material = chunkMat;
-        }
+        RegenerateWorld();
     }
 
     public async Task<bool[,,]> DeformedSphereReturnValues(Vector3 worldPos, float radius, float intensity)
@@ -193,11 +236,12 @@ public class MarchingWorld : MonoBehaviour
         {
             foreach (var outChunk in results)
             {
-                pendingMeshUpdates.Enqueue(outChunk.chunk);
+                if (!pendingMeshUpdates.Contains(outChunk.chunk))
+                {
+                    pendingMeshUpdates.Enqueue(outChunk.chunk);
+                }
             }
         }
-
-        UpdateMeshes();
 
         return (CleanReturnBools(result));
     }
@@ -258,7 +302,7 @@ public class MarchingWorld : MonoBehaviour
 
         return trimmed;
     }
-    public async void DeformSphereAt(Vector3 worldPos, float radius, float intensity)
+    public async Task DeformSphereAt(Vector3 worldPos, float radius, float intensity)
     {
         List<ChunkDeformationResult> results = new();
         List<Task> tasks = new();
@@ -288,15 +332,16 @@ public class MarchingWorld : MonoBehaviour
         {
             foreach (var result in results)
             {
-                pendingMeshUpdates.Enqueue(result.chunk);
+                if (!pendingMeshUpdates.Contains(result.chunk))
+                {
+                    pendingMeshUpdates.Enqueue(result.chunk);
+                }
             }
         }
-
-        UpdateMeshes();
     }
 
 
-    public async void DeformCylinderAt(Vector3 worldPos, float radius, float height, float intensity)
+    public async Task DeformCylinderAt(Vector3 worldPos, float radius, float height, float intensity)
     {
         List<ChunkDeformationResult> results = new();
         List<Task> tasks = new();
@@ -326,16 +371,17 @@ public class MarchingWorld : MonoBehaviour
         {
             foreach (var result in results)
             {
-                pendingMeshUpdates.Enqueue(result.chunk);
+                if (!pendingMeshUpdates.Contains(result.chunk))
+                {
+                    pendingMeshUpdates.Enqueue(result.chunk);
+                }
             }
         }
-
-        UpdateMeshes();
-
     }
 
-    public async void DeformCubeAt(Bounds bounds, float intensity)
+    public async Task DeformCubeAt(Bounds bounds, float intensity)
     {
+        Debug.Log("Deforming CUbe!! min" + bounds.min + " max: " + bounds.max + " center: "+ bounds.center);
         List<ChunkDeformationResult> results = new();
         List<Task> tasks = new();
 
@@ -364,11 +410,12 @@ public class MarchingWorld : MonoBehaviour
         {
             foreach (var result in results)
             {
-                pendingMeshUpdates.Enqueue(result.chunk);
+                if (!pendingMeshUpdates.Contains(result.chunk))
+                {
+                    pendingMeshUpdates.Enqueue(result.chunk);
+                }
             }
         }
-
-        UpdateMeshes();
     }
 
     class ChunkDeformationResult

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Linq;
 using UnityEngine;
 
@@ -14,21 +15,50 @@ public class PlayerGroundedComponent : MonoBehaviour
 
     private bool isGrounded = true;
     private bool lastIsGrounded = true;
-
+    private bool groundedDisabled = false;
     private float lastWasGroundedTime;
+    private bool isGrabbed;
+    private Coroutine disableGroundedRoutine;
+
     private void Start()
     {
         GetComponent<PlayerStateComponent>().JoinComponent(this);
+        GetComponent<PlayerActionHandler>().RegisterGrabbableAction(OnGrab);
+        GetComponent<PlayerActionHandler>().RegisterSpawnAction(OnRespawn);
+    }
+    public void DisableGroundedForDuration(float duration)
+    {
+        if (disableGroundedRoutine != null)
+        {
+            StopCoroutine(disableGroundedRoutine);
+        }
+
+        disableGroundedRoutine = StartCoroutine(disableGrounded(duration));
+    }
+    private IEnumerator disableGrounded(float duration)
+    {
+        groundedDisabled = true;
+        yield return new WaitForSeconds(duration);
+        groundedDisabled = false;
+        disableGroundedRoutine = null;
     }
     public bool GetGrounded()
     {
         return isGrounded;
+    }
+
+    void OnRespawn()
+    {
+        lastIsGrounded = true;
+        isGrounded = true;
     }
     private void FixedUpdate()
     {
         if(FeetBox == null) return;
 
         isGrounded = false;
+        if(groundedDisabled) { return; }
+
         var colliders = Physics.OverlapBox(FeetBox.transform.position, FeetBox.size / 2, transform.rotation, canStandLayers);
 
         if (colliders.Count() > alreadyExistingCols)
@@ -49,15 +79,26 @@ public class PlayerGroundedComponent : MonoBehaviour
         if (!lastIsGrounded && isGrounded)
         {
             if (lastWasGroundedTime <= Time.time - landBufferTime) {
-                Debug.Log("Landing!");
-                GetComponent<PlayerActionHandler>().OnLand(Time.time - lastWasGroundedTime);
+
+                if (!isGrabbed)
+                {
+                    Debug.Log("Landing!");
+                    GetComponent<PlayerActionHandler>().OnLand(Time.time - lastWasGroundedTime);
+                }
             }
         }
 
         lastIsGrounded = isGrounded;
     }
-    public void Respawn()
+    void OnGrab(bool grabbed)
     {
-        isGrounded = true;
+        isGrabbed = grabbed;
+        lastWasGroundedTime = Time.time;
+    }
+
+    private void OnDestroy()
+    {
+        GetComponent<PlayerActionHandler>().UnregisterGrabbableAction(OnGrab);
+        GetComponent<PlayerActionHandler>().UnregisterSpawnAction(OnRespawn);
     }
 }
