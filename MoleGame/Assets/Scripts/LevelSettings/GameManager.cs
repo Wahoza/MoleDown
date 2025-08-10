@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Transform gameCamera;
     [SerializeField] CinemachineTargetGroup group;
     [SerializeField] Transform intermissionScoreEvalCamera;
-
+    [field : SerializeField] public Transform worldCenter { get; private set; }
     [SerializeField] float playerCameraRadius;
 
     [Header("PlayerCreation")]
@@ -31,6 +31,10 @@ public class GameManager : MonoBehaviour
 
     [Header("Ending")]
     [SerializeField] int endSceneId;
+
+    [Header("Music")]
+    [SerializeField] string menuMusic;
+
     public static GameManager Instance;
 
     public bool isPaused;
@@ -85,6 +89,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public List<Transform> GetAlivePlayers()
+    {
+        List<Transform> result = new List<Transform>();
+        foreach (var player in alivePlayers)
+        {
+            result.Add(players[player].player.transform);
+        }
+
+        return result;
+    }
     public void OnPlayerDie(GameObject player)
     {
         foreach (var playerKVP in players)
@@ -130,7 +144,9 @@ public class GameManager : MonoBehaviour
 
         EvaluateScores();
 
-        if(currentRound >= rounds)
+        ObjectManager.Instance.StopSpawning();
+
+        if (currentRound >= rounds)
         {
             StartCoroutine(DoFinalFinish());
         }
@@ -154,28 +170,37 @@ public class GameManager : MonoBehaviour
     private IEnumerator DoFinish()
     {
         isFinished = false;
-        isFinishedInput = false;
 
         UIManager.Instance.scoreBoardHolder.gameObject.SetActive(true);
-
+        
         Time.timeScale = 0;
 
         yield return StartCoroutine(UIManager.Instance.scoreBoardHolder.Appear());
+
+        AudioManager.Instance.SetMusic(menuMusic);
+        AudioManager.Instance.PlayMusic();
 
         var scoreList = players
             .OrderBy(kvp => kvp.Key.finalPoints)
             .Select(kvp => kvp.Value.scoreboard)
             .ToList();
 
+        scoreList.Reverse();
+
         var scores = players
             .OrderBy(kvp => kvp.Key.finalPoints)
             .Select(kvp => playerScores[kvp.Key])
             .ToList();
 
+        scores.Reverse();
+
         var finalScores = players
             .OrderBy(kvp => kvp.Key.finalPoints)
             .Select(kvp => kvp.Key.finalPoints)
             .ToList();
+
+        finalScores.Reverse();
+
         for (int i = 0; i < scoreList.Count; i++)
         {
             scoreList[i].transform.SetSiblingIndex(i);
@@ -208,7 +233,23 @@ public class GameManager : MonoBehaviour
             yield return StartCoroutine(scoreList[i].DoFall());
         }
 
+        deadPlayers.Clear();
+
         ReloadLevel();
+
+
+        LevelMarchingPlatform.Instance.UpdateMeshes();
+
+        Physics.simulationMode = SimulationMode.Script;
+
+        // Run one step manually using the fixed timestep
+        Physics.Simulate(Time.fixedDeltaTime);
+
+        Physics.simulationMode = SimulationMode.FixedUpdate;
+
+        UIManager.Instance.SetCurrentRound(currentRound + 1, rounds);
+
+        isFinishedInput = false;
 
         yield return new WaitUntil(() => isFinishedInput);
 
@@ -228,8 +269,11 @@ public class GameManager : MonoBehaviour
     {
         if(isFinishedInput) { return; }
 
-        if (ctx.phase == InputActionPhase.Performed && ctx.action.name == controls.UI.Submit.name)
+        if (ctx.phase == InputActionPhase.Started || ctx.phase == InputActionPhase.Performed && ctx.action.name == controls.UI.Submit.name)
         {
+
+            Debug.Log("Finished");
+
             isFinishedInput = true;
         }
     }
@@ -237,7 +281,7 @@ public class GameManager : MonoBehaviour
     {
         if (GameSettingsManager.Instance.GetScoreSettings() == GameSettingsManager.ScoringSettings.Winner)
         {
-            int score = deadPlayers.Count - 1;
+            int score = players.Count;
             
             if(alivePlayers.Count > 0)
             {
@@ -246,6 +290,14 @@ public class GameManager : MonoBehaviour
             else
             {
                 playerScores.Add(deadPlayers[deadPlayers.Count - 1], score);
+            }
+
+            foreach(var player in players)
+            {
+                if (!playerScores.ContainsKey(player.Key))
+                {
+                    playerScores[player.Key] = 0;
+                }
             }
         }
         else
@@ -259,7 +311,13 @@ public class GameManager : MonoBehaviour
 
             if(alivePlayers.Count > 0)
             {
-                playerScores.Add(alivePlayers[0], score + 1);
+                foreach(var alivePlayer in alivePlayers)
+                {
+                    if (!playerScores.ContainsKey(alivePlayer))
+                    {
+                        playerScores.Add(alivePlayer, score + 1);
+                    }
+                }
             }
         }
 
@@ -284,6 +342,8 @@ public class GameManager : MonoBehaviour
         countdown.StartCountdown(startCountdownValue, endCountdownValue, numberShowDuration);
 
         currentRound++;
+
+        ObjectManager.Instance.StartNewRound();
         UIManager.Instance.SetCurrentRound(currentRound, rounds);
     }
 
@@ -302,7 +362,7 @@ public class GameManager : MonoBehaviour
             player.Value.player.transform.localPosition = Vector3.zero;
             player.Value.player.transform.localRotation = Quaternion.identity;
 
-            if(player.Key == scoreList[0] && scoreList[0].finalPoints != scoreList[scoreList.Count == 1 ? 0 : 1].finalPoints)
+            if(player.Key == scoreList[scoreList.Count-1] && scoreList[scoreList.Count - 1].finalPoints != scoreList[scoreList.Count - (scoreList.Count == 1 ? 1 : 2)].finalPoints)
             {
                 player.Value.player.GetComponent<PlayerModelControllerComponent>().ShowWinObjects();
             }
@@ -321,7 +381,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var player in players)
         {
-            player.Value.player.GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatform();
+            player.Value.player.GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatform(false);
         }
     }
     private void OnDestroy()

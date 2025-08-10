@@ -32,7 +32,7 @@ public class ScoreboardItemScript : MonoBehaviour
         backgroundImage.color = playerConfig.playerColor;
         backgroundPointsImage.color = playerConfig.playerColor;
 
-        playerIDText.text = "P" + playerConfig.playerIndex;
+        playerIDText.text = "P" + (playerConfig.playerIndex +1);
         moleImage.color = playerConfig.playerColor;
 
         config = playerConfig;
@@ -55,6 +55,8 @@ public class ScoreboardItemScript : MonoBehaviour
 
     public void UpdatePoints()
     {
+        Debug.Log(config.finalPoints + "FinalPoints");
+
         playerPointText.text = config.finalPoints.ToString();
     }
 

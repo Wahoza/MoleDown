@@ -69,6 +69,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damping: 0
   dampingSpeed: 0
+  splashName: Splash
+  splashAudioName: Splash
 --- !u!1 &7663986743630663806
 GameObject:
   m_ObjectHideFlags: 0

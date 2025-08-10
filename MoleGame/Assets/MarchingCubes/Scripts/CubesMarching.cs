@@ -131,8 +131,9 @@ public class CubesMarching : MonoBehaviour
 
                 mesh.RecalculateNormals();
 
-                meshfilter.mesh = mesh;
-                meshcollider.sharedMesh = mesh;
+                    meshfilter.mesh = mesh;
+                    meshcollider.sharedMesh = mesh;
+
             }
             else
             {
@@ -282,7 +283,7 @@ public class CubesMarching : MonoBehaviour
 
         return configIndex;
     }
-    public void DeformSphere(Vector3 worldDeformPosition, float radius, float intensity)
+    public bool DeformSphere(Vector3 worldDeformPosition, float radius, float intensity)
     {
         bool modified = false;
 
@@ -314,15 +315,22 @@ public class CubesMarching : MonoBehaviour
                     {
                         modified = true;
                         float falloff = 1f - (dist / radius); // smooth falloff
+                        var prevVal = heights[x, y, z];
                         heights[x, y, z] = Mathf.Clamp01(heights[x, y, z] - intensity * falloff);
+
+                        if (prevVal != heights[x, y, z])
+                        {
+                            modified = true;
+                        }
                     }
                 }
             }
         }
-        if (!modified) return;
-        //Debug.Log("Modifications: " + modCounter);
+        if (!modified) return modified;
 
         MarchCubes();
+
+        return modified;
     }
 
     public bool[,,] DeformSphereReturnValues(Vector3 worldDeformPosition, float radius, float intensity)
@@ -380,7 +388,7 @@ public class CubesMarching : MonoBehaviour
         MarchCubes();
         return returnHeights;
     }
-    public void DeformCylinder(Vector3 worldDeformPosition, float radius, float height, float intensity)
+    public bool DeformCylinder(Vector3 worldDeformPosition, float radius, float height, float intensity)
     {
         bool modified = false;  
         Vector3 localCenter = worldDeformPosition - worldPosition;
@@ -409,20 +417,27 @@ public class CubesMarching : MonoBehaviour
 
                     if (dist <= radius)
                     {
-                        modified = true;
+                        var prevVal = heights[x,y,z];
                         heights[x, y, z] = Mathf.Clamp01(heights[x, y, z] - intensity);
+
+                        if(prevVal != heights[x, y, z])
+                        {
+                            modified = true;
+                        }
                     }
                 }
             }
         }
-        
-        if (!modified) return;
+
+        if (!modified) return modified;
 
         MarchCubes();
+
+        return modified;
     }
 
 
-    public void DeformCube(Vector3 worldDeformPosition, float width, float height, float length, float intensity)
+    public bool DeformCube(Vector3 worldDeformPosition, float width, float height, float length, float intensity)
     {
         bool modified = false;
         Vector3 localCenter = worldDeformPosition - worldPosition;
@@ -446,15 +461,22 @@ public class CubesMarching : MonoBehaviour
                 {
                     if (z < 0 || z > m_width) continue;
 
-                    modified = true;
+                    var prevVal = heights[x, y, z];
                     heights[x, y, z] = Mathf.Clamp01(heights[x, y, z] - intensity);
+
+                    if (prevVal != heights[x, y, z])
+                    {
+                        modified = true;
+                    }
                 }
             }
         }
 
-        if(!modified) return;
+        if(!modified) return modified;
 
         MarchCubes();
+
+        return modified;
     }
     private void OnDrawGizmosSelected()
     {

@@ -49,11 +49,7 @@ MonoBehaviour:
   spawnRadius: 13
   loadingScreen: {fileID: 0}
   heightChange: 3000
-  moveUpDuration: 0.1
-  countdown: {fileID: 0}
-  startCountdownValue: 3
-  endCountdownValue: 0
-  numberShowDuration: 0.8
+  moveUpDuration: 0.6
   playerPrefab: {fileID: 3499392013066739132, guid: 5086707d299c7ec45ba8bf7dfc2c58ab, type: 3}
   spawnPrefab: {fileID: 8181893847452916369}
 --- !u!1 &8181893847452916369

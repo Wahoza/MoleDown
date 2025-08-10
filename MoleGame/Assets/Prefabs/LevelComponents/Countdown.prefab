@@ -64,6 +64,9 @@ MonoBehaviour:
   numberShowSpeed: 0.2
   fadeOutDuration: 0.1
   startText: GO!
+  audioName: CountdownTick
+  finalAudioName: CountdownTickFinal
+  gameName: Game
 --- !u!114 &7185222866483162167
 MonoBehaviour:
   m_ObjectHideFlags: 0

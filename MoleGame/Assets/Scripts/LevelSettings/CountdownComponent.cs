@@ -11,6 +11,10 @@ public class CountdownComponent : MonoBehaviour
     [SerializeField] float numberShowSpeed;
     [SerializeField] float fadeOutDuration;
     [SerializeField] string startText;
+    [SerializeField] string audioName;
+    [SerializeField] string finalAudioName;
+    [SerializeField] string gameName;
+
     private Coroutine countDownCoroutine;
     public void StartCountdown(int startValue, int endValue, float numberShowTime)
     {
@@ -25,6 +29,7 @@ public class CountdownComponent : MonoBehaviour
     {
         float adjustedShowTime = numberShowSpeed < numberShowTime ? numberShowSpeed : numberShowTime;
         textBox.text = startValue.ToString();
+        AudioManager.Instance.StopMusic();
 
         yield return new WaitForSecondsRealtime(numberShowTime);
 
@@ -35,10 +40,16 @@ public class CountdownComponent : MonoBehaviour
                 textBox.color = Color.white;
                 if (i > endValue)
                 {
+                    AudioManager.Instance.Play2DAudio(audioName, false);
+
                     textBox.text = i.ToString();
                 }
                 else
                 {
+                    AudioManager.Instance.Play2DAudio(finalAudioName, false);
+                    AudioManager.Instance.SetMusic(gameName);
+                    AudioManager.Instance.PlayMusic();
+
                     textBox.text = startText;
                 }
 

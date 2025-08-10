@@ -150,7 +150,11 @@ public class GameSettingsSelector : MonoBehaviour
             currentSelectedField = currentSelectedField < 0 ? optionCount : (currentSelectedField > optionCount ? 0 : currentSelectedField);
 
             selectionArrows[currentSelectedField].SetActive(true);
+
         }
+
+        directionInput = direction;
+
         if (direction.x != 0)
         {
             switch (currentSelectedField)

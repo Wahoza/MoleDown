@@ -1,4 +1,6 @@
+using DG.Tweening.Core.Easing;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -21,6 +23,7 @@ public class MarchingWorld : MonoBehaviour
     [Header("Visuals")]
     [SerializeField] Material mainMat;
     [SerializeField] Material grabbedGroundMat;
+    [SerializeField] Material particleMat;
 
     [SerializeField] List<Color> grassColors;
     [SerializeField] List<Color> groundPrimaryColors;
@@ -28,6 +31,11 @@ public class MarchingWorld : MonoBehaviour
     [SerializeField] List<Color> spotColors;
 
     [SerializeField] bool randomColorEnabled;
+
+    [Header("Particles")]
+    [SerializeField] string particleName;
+    [SerializeField] string audioName;
+    [SerializeField] float particleRadiusAdjustment;
 
     private string grassString = "_GrassColor";
     private string groundPrimaryString = "_TopColor";
@@ -129,6 +137,9 @@ public class MarchingWorld : MonoBehaviour
             grabbedGroundMat.SetColor(groundPrimaryString, groundPrimaryColor);
             grabbedGroundMat.SetColor(groundSecondaryString, groundSecondaryColor);
             grabbedGroundMat.SetColor(spotString, spotColor);
+
+            particleMat.SetColor(grassString, grassColor);
+            particleMat.SetColor(groundPrimaryString, groundPrimaryColor);
         }
         if (randomSeed)
         {
@@ -243,6 +254,8 @@ public class MarchingWorld : MonoBehaviour
             }
         }
 
+        DoEffectRequest(worldPos, radius);
+
         return (CleanReturnBools(result));
     }
     private bool[,,] CleanReturnBools(bool[,,] source)
@@ -319,7 +332,7 @@ public class MarchingWorld : MonoBehaviour
                     {
                         var result = new ChunkDeformationResult();
                         result.chunk = localChunk;
-                        result.chunk.DeformSphere(worldPos, radius, intensity);
+                        result.deformed = result.chunk.DeformSphere(worldPos, radius, intensity);
                         lock (results) results.Add(result);
                     }));
                 }
@@ -328,11 +341,17 @@ public class MarchingWorld : MonoBehaviour
 
         await Task.WhenAll(tasks);
 
+        DoEffectRequest(worldPos, radius);
+
+        bool atLeastOneTrue = results.Any(item => item.deformed);
+        if (!atLeastOneTrue)
+            return;
+
         lock (pendingMeshUpdates)
         {
             foreach (var result in results)
             {
-                if (!pendingMeshUpdates.Contains(result.chunk))
+                if (!pendingMeshUpdates.Contains(result.chunk) && result.deformed)
                 {
                     pendingMeshUpdates.Enqueue(result.chunk);
                 }
@@ -358,7 +377,7 @@ public class MarchingWorld : MonoBehaviour
                     {
                         var result = new ChunkDeformationResult();
                         result.chunk = localChunk;
-                        chunk.DeformCylinder(worldPos, radius, height, intensity);
+                        result.deformed = chunk.DeformCylinder(worldPos, radius, height, intensity);
                         lock (results) results.Add(result);
                     }));
                 }
@@ -367,11 +386,17 @@ public class MarchingWorld : MonoBehaviour
 
         await Task.WhenAll(tasks);
 
+        bool atLeastOneTrue = results.Any(item => item.deformed);
+        if (!atLeastOneTrue)
+            return;
+
+        DoEffectRequest(worldPos, radius);
+
         lock (pendingMeshUpdates)
         {
             foreach (var result in results)
             {
-                if (!pendingMeshUpdates.Contains(result.chunk))
+                if (!pendingMeshUpdates.Contains(result.chunk) && result.deformed)
                 {
                     pendingMeshUpdates.Enqueue(result.chunk);
                 }
@@ -381,7 +406,7 @@ public class MarchingWorld : MonoBehaviour
 
     public async Task DeformCubeAt(Bounds bounds, float intensity)
     {
-        Debug.Log("Deforming CUbe!! min" + bounds.min + " max: " + bounds.max + " center: "+ bounds.center);
+        //Debug.Log("Deforming CUbe!! min" + bounds.min + " max: " + bounds.max + " center: "+ bounds.center);
         List<ChunkDeformationResult> results = new();
         List<Task> tasks = new();
 
@@ -397,7 +422,7 @@ public class MarchingWorld : MonoBehaviour
                     {
                         var result = new ChunkDeformationResult();
                         result.chunk = localChunk;
-                        chunk.DeformCube(bounds.center, bounds.size.x, bounds.size.y, bounds.size.z, intensity);
+                        result.deformed = chunk.DeformCube(bounds.center, bounds.size.x -1 , bounds.size.y -1 , bounds.size.z -1, intensity);
                         lock (results) results.Add(result);
                     }));
                 }
@@ -406,11 +431,17 @@ public class MarchingWorld : MonoBehaviour
 
         await Task.WhenAll(tasks);
 
+        bool atLeastOneTrue = results.Any(item => item.deformed);
+        if (!atLeastOneTrue)
+            return;
+
+        DoEffectRequest(bounds.center, Vector3.Magnitude(new Vector3(bounds.size.x, bounds.size.y, bounds.size.z)));
+
         lock (pendingMeshUpdates)
         {
             foreach (var result in results)
             {
-                if (!pendingMeshUpdates.Contains(result.chunk))
+                if (!pendingMeshUpdates.Contains(result.chunk) && result.deformed)
                 {
                     pendingMeshUpdates.Enqueue(result.chunk);
                 }
@@ -418,9 +449,16 @@ public class MarchingWorld : MonoBehaviour
         }
     }
 
+    void DoEffectRequest(Vector3 position, float radius)
+    {
+        ParticleManager.Instance?.DoParticles(particleName, position, Vector3.one * radius * particleRadiusAdjustment);
+        AudioManager.Instance.Play3DAudioAtPosition(audioName, position, true);
+    }
+
     class ChunkDeformationResult
     {
         public CubesMarching chunk;
         public float[,,] newHeights;
+        public bool deformed;
     }
 }

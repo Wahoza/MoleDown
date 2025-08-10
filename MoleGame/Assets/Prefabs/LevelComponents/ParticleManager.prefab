@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7013498240765615049
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8766942257898137763}
+  - component: {fileID: 1038332369552834782}
+  m_Layer: 0
+  m_Name: ParticleManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8766942257898137763
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7013498240765615049}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 32.181435, y: 11.718138, z: 130.03925}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1038332369552834782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7013498240765615049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c987cbd56f832214887daf93bdbd86fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  particleObjectCount: 10
+  particleEmitCount: 6
+  particleNameDictionary:
+    _serializedList:
+    - Key: {fileID: 3927077010944977547, guid: 01f584574d98f5f42818128266dac99c, type: 3}
+      Value: Splash
+    - Key: {fileID: 4418315005878345261, guid: 67a0789f1a2debe4db0a7b527140649c, type: 3}
+      Value: Feathers
+    - Key: {fileID: 4418315005878345261, guid: 0764f47c76fb961498520a006194decc, type: 3}
+      Value: Explosion
+    - Key: {fileID: 2115389511553989202, guid: 26a66a8872ea6924fb68def131779f55, type: 3}
+      Value: Ground

@@ -61,7 +61,9 @@ public class PlayerMoveComponent : MonoBehaviour
                 {
                     currentVelocity.y = maxGroundedYVelocity;
                 }
-                rb.linearVelocity = currentVelocity;
+                if(!rb.isKinematic) {
+                    rb.linearVelocity = currentVelocity;
+                }
             }
             yield return null;
         }
@@ -100,6 +102,7 @@ public class PlayerMoveComponent : MonoBehaviour
         //        return;
         //    }
         //}
+        if(rb.isKinematic) { return; }
 
         moveDirection.Set(inputVector.x, 0, inputVector.y);
 

@@ -5,9 +5,18 @@ public class WaterScript : MonoBehaviour
 {
     [SerializeField] float damping;
     [SerializeField] float dampingSpeed;
+    [SerializeField] string splashName;
+    [SerializeField] string splashAudioName;
+
     private void Awake()
     {
         damping = 1/damping;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        ParticleManager.Instance.DoParticles(splashName, other.transform.position);
+        AudioManager.Instance.Play3DAudioAtPosition(splashAudioName, other.transform.position, true);
     }
     //private void OnTriggerStay(Collider other)
     //{

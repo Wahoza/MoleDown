@@ -74,6 +74,8 @@ public class LevelLoadManager : MonoBehaviour
     {
         GameManager.Instance.StartRound();
 
-        yield return loadingScreen.transform.DOLocalMoveY(heightChange, moveUpDuration).SetEase(Ease.InSine).SetUpdate(true).OnComplete(() => { loadingScreen.SetActive(false); }).WaitForCompletion();
+        yield return loadingScreen.transform.DOLocalMoveY(heightChange, moveUpDuration).SetEase(Ease.InSine).SetUpdate(UpdateType.Normal ,true).WaitForCompletion();
+
+        loadingScreen.gameObject.SetActive(false);
     }
 }

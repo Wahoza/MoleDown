@@ -35,7 +35,7 @@ public class PlayerInputHandler : MonoBehaviour
         GameManager.Instance.JoinPlayer(pc, gameObject);
 
         GetComponent<PlayerModelControllerComponent>().SetColor(pc.playerColor);
-        await GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatformAsync();
+        await GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatformAsync(true);
     }
     void Input_onActionTriggered(CallbackContext ctx)
     {

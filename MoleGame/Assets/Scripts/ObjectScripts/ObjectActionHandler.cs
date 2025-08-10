@@ -5,6 +5,10 @@ using UnityEngine;
 public class ObjectActionHandler : MonoBehaviour
 {
     List<Action<bool>> GrabActions = new();
+    private void Start()
+    {
+        ObjectManager.Instance.RegisterObject(gameObject);
+    }
     public void RegisterGrabAction(Action<bool> action)
     {
         GrabActions.Add(action);

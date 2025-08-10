@@ -87,6 +87,8 @@ public class LoadingScreenComponent : MonoBehaviour
         // Now unload the old scene
         SceneManager.UnloadSceneAsync(oldScene);
 
+        AudioManager.Instance.StopMusic();
+
         LevelLoadManager.Instance.CompleteLoad();
 
         yield return null;

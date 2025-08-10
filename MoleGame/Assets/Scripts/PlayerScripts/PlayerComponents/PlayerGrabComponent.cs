@@ -28,7 +28,6 @@ public class PlayerGrabComponent : MonoBehaviour
 
         GetComponent<PlayerActionHandler>().RegisterDeathAction(OnDie);
         GetComponent<PlayerActionHandler>().RegisterGrabbableAction(CancelGrabAttemptGrab);
-
         grabTrigger.SetPlayerGrabComponent(this);
     }
 
@@ -101,6 +100,8 @@ public class PlayerGrabComponent : MonoBehaviour
             CancelGrabAttemptAction();
 
             GetComponent<PlayerActionHandler>().OnGrab(false);
+
+            grabTrigger.gameObject.SetActive(false);
         }
     }
     public void GrabGrabbable(GrabbableComponent grabbable)

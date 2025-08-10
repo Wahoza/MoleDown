@@ -47,7 +47,7 @@ public class EndPlayerVisualSetup : MonoBehaviour
 
         pointText.text = $"<{playerConfig.finalPoints}";
 
-        nameText.text = $"{playerConfig.playerIndex + 1}";
+        nameText.text = $"P{playerConfig.playerIndex + 1}";
         nameText.color = playerConfig.playerColor;
     }
 }

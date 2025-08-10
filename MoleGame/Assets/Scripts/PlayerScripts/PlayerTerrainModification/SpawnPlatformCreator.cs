@@ -4,7 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class SpawnPlatformCreator : MonoBehaviour
 {
-    public async Task SpawnPlatformAsync()
+    public async Task SpawnPlatformAsync(bool updateMeshes)
     {
         Debug.Log("SpawningPlatform");
         var bounds = GetComponent<BoxCollider>().bounds;
@@ -12,11 +12,14 @@ public class SpawnPlatformCreator : MonoBehaviour
 
         await LevelMarchingPlatform.Instance.DeformCubeAt(bounds, intensity: 4);
 
-        LevelMarchingPlatform.Instance.UpdateMeshes();
+        if (updateMeshes)
+        {
+            LevelMarchingPlatform.Instance.UpdateMeshes();
+        }
     }
 
-    public async void SpawnPlatform()
+    public async void SpawnPlatform(bool updateMeshes)
     {
-        await SpawnPlatformAsync();
+        await SpawnPlatformAsync(updateMeshes);
     }
 }

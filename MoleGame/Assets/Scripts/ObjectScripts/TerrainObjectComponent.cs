@@ -34,12 +34,12 @@ public class TerrainObjectComponent : MonoBehaviour
 
         var newRadius = radius + extraEffectRange;
 
-        if(GetComponent<DeformTerrainOnCollisionComponent>() is var dftoc && dftoc != null)
+        if(GetComponent<DeformTerrainOnActionComponent>() is var dftoc && dftoc != null)
         {
             dftoc.range = newRadius;
         }
 
-        if (GetComponent<KnockbackOnCollisionComponent>() is var kboc && kboc != null)
+        if (GetComponent<KnockbackOnActionComponent>() is var kboc && kboc != null)
         {
             kboc.range = newRadius;
         }

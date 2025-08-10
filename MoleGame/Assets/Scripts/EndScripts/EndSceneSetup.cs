@@ -25,7 +25,9 @@ public class EndSceneSetup : MonoBehaviour
              .OrderBy(config => config.finalPoints)
              .ToList();
 
-        float currentHighest = 0;
+        sortedConfigs.Reverse();
+
+        float currentHighest = -1;
 
         List<string> winnerNames = new List<string>();
 

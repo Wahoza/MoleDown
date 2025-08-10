@@ -762,7 +762,7 @@ GameObject:
   - component: {fileID: 5049774840314961946}
   - component: {fileID: 3060198557294047599}
   - component: {fileID: 6883240187016175085}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: SpawnPlatformCreator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1156,6 +1156,7 @@ GameObject:
   - component: {fileID: 2086198951386445555}
   - component: {fileID: 452099481724079387}
   - component: {fileID: 5994785200135569574}
+  - component: {fileID: 364350084524875561}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1536,9 +1537,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6f0adcc8a35e9439568f1f5218d844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lowestHeight: 0
+  lowestHeight: 3
   highestHeight: 100
   graceTimer: 0.1
+--- !u!114 &364350084524875561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3499392013066739132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02d501ca9a26a02448fd3d54b873bcdc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabAudioName: Grab
+  jumpAudioName: Jump
+  landAudioName: Land
+  dieAudioName: Die
 --- !u!1 &3926963424053655550
 GameObject:
   m_ObjectHideFlags: 0
@@ -2695,11 +2712,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 16
   depthBefSub: 0.2
-  displacementAmt: 2
+  displacementAmt: 0.87
   floaters: 4
-  waterDrag: 1.1
-  waterAngularDrag: 1.1
-  floatieness: 1.32
+  waterDrag: 0.76
+  waterAngularDrag: 1.12
+  floatieness: 1
 --- !u!1 &8751085682985560426
 GameObject:
   m_ObjectHideFlags: 0
