@@ -12,7 +12,7 @@ public class PlayerAttackComponent : MonoBehaviour
     [SerializeField] float terrainModIntensity;
     [SerializeField] float terrainModRange;
     [SerializeField] Transform pushHelper;
-    
+    [SerializeField] LayerMask terrainLayer;
     private bool isGrabbing;
     
     void Start()

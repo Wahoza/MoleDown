@@ -1428,6 +1428,9 @@ MonoBehaviour:
   terrainModIntensity: -2
   terrainModRange: 2
   pushHelper: {fileID: 178376192724768397}
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &452099481724079387
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1537,7 +1540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6f0adcc8a35e9439568f1f5218d844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lowestHeight: 3
+  lowestHeight: 5
   highestHeight: 100
   graceTimer: 0.1
 --- !u!114 &364350084524875561

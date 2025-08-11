@@ -43,8 +43,10 @@ public class ChickenScript : MonoBehaviour
         while (!isInRange)
         {
             var direction = target.position - transform.position;
+            var yVelocity = GetComponent<Rigidbody>().linearVelocity.y;
+            direction.y = 0;
 
-            GetComponent<Rigidbody>().linearVelocity = direction.normalized * moveSpeed;
+            GetComponent<Rigidbody>().linearVelocity = direction.normalized * moveSpeed + Vector3.up * yVelocity;
 
             if(Vector3.Magnitude(transform.position - target.position) < range)
             {

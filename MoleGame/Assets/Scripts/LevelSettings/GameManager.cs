@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using Unity.Cinemachine;
 using UnityEngine;
-using System.Threading.Tasks;
 using System.Collections;
-using System.Diagnostics.Contracts;
-using Mono.Cecil;
 using System.Linq;
 using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputAction;
@@ -140,8 +137,6 @@ public class GameManager : MonoBehaviour
         intermissionScoreEvalCamera.gameObject.SetActive(true);
         gameCamera.gameObject.SetActive(false);
 
-        playerScores.Clear();
-
         EvaluateScores();
 
         ObjectManager.Instance.StopSpawning();
@@ -235,10 +230,10 @@ public class GameManager : MonoBehaviour
 
         deadPlayers.Clear();
 
-        ReloadLevel();
+        yield return StartCoroutine(ReloadLevel());
 
 
-        LevelMarchingPlatform.Instance.UpdateMeshes();
+        LevelMarchingPlatform.Instance.ForceUpdateAllMeshes();
 
         Physics.simulationMode = SimulationMode.Script;
 
@@ -279,9 +274,11 @@ public class GameManager : MonoBehaviour
     }
     void EvaluateScores()
     {
+        playerScores.Clear();
+
         if (GameSettingsManager.Instance.GetScoreSettings() == GameSettingsManager.ScoringSettings.Winner)
         {
-            int score = players.Count;
+            int score = 1;//players.Count;
             
             if(alivePlayers.Count > 0)
             {
@@ -324,11 +321,17 @@ public class GameManager : MonoBehaviour
         foreach(var score in playerScores)
         {
             score.Key.finalPoints += score.Value;
+            Debug.Log($"Game Manager: Score Player : {score.Key.playerIndex} Score: {score.Value} Final Score: {score.Key.finalPoints}");
+            Debug.Log("AlivePlayers" + alivePlayers.Count);
+            Debug.Log("DeadPlayers" + deadPlayers.Count);
+
         }
+
     }
     public void StartRound()
     {
         deadPlayers.Clear();
+        alivePlayers.Clear();
 
         foreach(var player in players)
         {
@@ -347,7 +350,7 @@ public class GameManager : MonoBehaviour
         UIManager.Instance.SetCurrentRound(currentRound, rounds);
     }
 
-    public void ReloadLevel()
+    public IEnumerator ReloadLevel()
     {
         LevelMarchingPlatform.Instance.RegenerateWorld();
         ObjectManager.Instance.DestroyAllObjects();
@@ -381,8 +384,10 @@ public class GameManager : MonoBehaviour
 
         foreach (var player in players)
         {
-            player.Value.player.GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatform(false);
+            yield return StartCoroutine(player.Value.player.GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatformWithWait());
         }
+
+        LevelMarchingPlatform.Instance.ForceUpdateAllMeshes();
     }
     private void OnDestroy()
     {

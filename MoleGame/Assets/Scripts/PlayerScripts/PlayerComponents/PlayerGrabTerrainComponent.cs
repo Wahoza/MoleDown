@@ -1,7 +1,5 @@
-using NUnit.Framework.Internal;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.Searcher.SearcherWindow.Alignment;
 
 public class PlayerGrabTerrainComponent : MonoBehaviour
 {

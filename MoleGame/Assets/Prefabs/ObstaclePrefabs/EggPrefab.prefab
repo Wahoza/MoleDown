@@ -206,7 +206,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24804112e450a1d4d85a43a62d01ff5b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clipName: 
+  clipName: Egg
   spatial: 0
 --- !u!114 &6486328322873189519
 MonoBehaviour:

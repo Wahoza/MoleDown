@@ -11,7 +11,7 @@ public class DistanceFieldGenerator : EditorWindow
     public string mapName = "Default";
     public float falloffPower = 2;
 
-    [MenuItem("Tools/Generate Distance Field")]
+    //[MenuItem("Tools/Generate Distance Field")]
     public static void ShowWindow()
     {
         GetWindow<DistanceFieldGenerator>("Distance Field Generator");

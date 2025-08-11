@@ -1,4 +1,3 @@
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 [RequireComponent(typeof(PlayerActionHandler), typeof(PlayerStateComponent), typeof(Rigidbody))]
 public class PlayerLookComponent : MonoBehaviour

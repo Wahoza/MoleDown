@@ -70,6 +70,10 @@ MonoBehaviour:
       Value: {fileID: 8300000, guid: 19b1128efbdb35044a01622be6fa526d, type: 3}
     - Key: Splash
       Value: {fileID: 8300000, guid: f72c588f6f0e6484ca279d25d3b8731d, type: 3}
+    - Key: Egg
+      Value: {fileID: 8300000, guid: c25d75cf1afd4b84e823ea28bca6537d, type: 3}
+    - Key: Chicken
+      Value: {fileID: 8300000, guid: 29601486f7facee4cac0965d8fc3f31f, type: 3}
   audioMusicNameDict:
     _serializedList:
     - Key: Game

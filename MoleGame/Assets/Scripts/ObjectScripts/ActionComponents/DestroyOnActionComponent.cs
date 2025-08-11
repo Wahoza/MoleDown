@@ -1,7 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using UnityEngine.UI;
 using DG.Tweening;
 
 public class DestroyOnActionComponent : IActionComponent

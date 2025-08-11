@@ -9,7 +9,8 @@ public class SpawnPrefabOnAction : IActionComponent
     {
         foreach (GameObject prefab in prefabList)
         {
-            Instantiate(prefab);
+            var go = Instantiate(prefab);
+            go.transform.position = transform.position;
         }
     }
 }

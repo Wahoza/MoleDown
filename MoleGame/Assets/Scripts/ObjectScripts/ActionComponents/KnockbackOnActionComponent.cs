@@ -34,7 +34,7 @@ public class KnockbackOnActionComponent : IActionComponent
                     var force = -(hit.point - collisionPoint).normalized * knockBackForce;
                     force.y = Mathf.Abs(force.y);
 
-                    rb.AddForce(force);
+                    rb.AddForce(force, ForceMode.Impulse);
                 }
             }
         }
@@ -53,7 +53,7 @@ public class KnockbackOnActionComponent : IActionComponent
                     var force = -(hit.point - collisionPoint).normalized * knockBackForce;
                     force.y = Mathf.Abs(force.y);
 
-                    hitrb.AddForce(force);
+                    hitrb.AddForce(force, ForceMode.Impulse);
                 }
             }
         }

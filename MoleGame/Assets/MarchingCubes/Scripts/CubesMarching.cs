@@ -1,9 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor.SceneManagement;
+using System.Threading;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 
@@ -61,6 +60,10 @@ public class CubesMarching : MonoBehaviour
     private Vector3Int worldPosition;
 
     public Bounds bounds {  get; private set; }
+
+    private Vector3[] cachedVertices;
+    private int[] cachedTriangles;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //public virtual void Start()
     //{
@@ -118,29 +121,50 @@ public class CubesMarching : MonoBehaviour
         SetMesh();
     }
     
-    public void SetMesh()
+    public bool SetMesh()
     {
-        lock (vertices) lock (triangles)
+        bool updated = false;
+
+        if (Monitor.TryEnter(vertices))
         {
-            if (vertices.Count >= 3 && triangles.Count % 3 == 0 && triangles.All(i => i >= 0 && i < vertices.Count))
+            try
             {
-                Mesh mesh = new Mesh();
-
-                mesh.vertices = vertices.ToArray();
-                mesh.triangles = triangles.ToArray();
-
-                mesh.RecalculateNormals();
-
-                    meshfilter.mesh = mesh;
-                    meshcollider.sharedMesh = mesh;
-
+                if (Monitor.TryEnter(triangles))
+                {
+                    try
+                    {
+                        if (vertices.Count >= 3 &&
+                            triangles.Count % 3 == 0 &&
+                            triangles.All(i => i >= 0 && i < vertices.Count))
+                        {
+                            // Store a safe copy
+                            cachedVertices = vertices.ToArray();
+                            cachedTriangles = triangles.ToArray();
+                            updated = true;
+                        }
+                    }
+                    finally { Monitor.Exit(triangles); }
+                }
             }
-            else
+            finally { Monitor.Exit(vertices); }
+        }
+
+        // Build mesh from cached data (either updated this frame or old)
+        if (cachedVertices != null && cachedTriangles != null)
+        {
+            Mesh mesh = new Mesh();
+            mesh.vertices = cachedVertices;
+            mesh.triangles = cachedTriangles;
+            mesh.RecalculateNormals();
+
+            if (meshfilter != null)
             {
-                //Debug.LogWarning("Invalid mesh data: check vertex and triangle count.");
-                MarchCubes();
+                meshfilter.mesh = mesh;
+                meshcollider.sharedMesh = mesh;
             }
         }
+
+        return updated;
     }
 
     private void SetHeights()
@@ -420,7 +444,7 @@ public class CubesMarching : MonoBehaviour
                         var prevVal = heights[x,y,z];
                         heights[x, y, z] = Mathf.Clamp01(heights[x, y, z] - intensity);
 
-                        if(prevVal != heights[x, y, z])
+                        if (prevVal != heights[x, y, z])
                         {
                             modified = true;
                         }

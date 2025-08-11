@@ -49,14 +49,30 @@ public class MarchingWorld : MonoBehaviour
     {
         UpdateMeshes();
     }
+    public void ForceUpdateAllMeshes()
+    {
+        foreach(var kvp in chunks)
+        {
+            kvp.Value.SetMesh();
+        }
+    }
     public void UpdateMeshes()
     {
         lock (pendingMeshUpdates)
         {
+            Queue<CubesMarching> notUpdatedMeshes = new();
             while (pendingMeshUpdates.Count > 0)
             {
                 var chunk = pendingMeshUpdates.Dequeue();
-                chunk.SetMesh();
+                if(!chunk.SetMesh())
+                {
+                    notUpdatedMeshes.Enqueue(chunk);
+                }
+            }
+
+            while(notUpdatedMeshes.Count > 0)
+            {
+                pendingMeshUpdates.Enqueue(notUpdatedMeshes.Dequeue());
             }
         }
     }

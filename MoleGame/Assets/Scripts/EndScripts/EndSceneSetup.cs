@@ -33,6 +33,8 @@ public class EndSceneSetup : MonoBehaviour
 
         for (int i = 0; i < sortedConfigs.Count; i++)
         {
+            Debug.Log("P: " + sortedConfigs[i].playerIndex + " Score: " + sortedConfigs[i].finalPoints);
+
             if (i < endSetups.Count) {
 
                 bool isWinner = false;

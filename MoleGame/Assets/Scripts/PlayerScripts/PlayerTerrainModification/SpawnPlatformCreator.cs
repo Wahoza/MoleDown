@@ -4,6 +4,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 public class SpawnPlatformCreator : MonoBehaviour
 {
+    private bool spawnedPlatform;
     public async Task SpawnPlatformAsync(bool updateMeshes)
     {
         Debug.Log("SpawningPlatform");
@@ -16,10 +17,24 @@ public class SpawnPlatformCreator : MonoBehaviour
         {
             LevelMarchingPlatform.Instance.UpdateMeshes();
         }
+
+
+        spawnedPlatform = true;
     }
 
     public async void SpawnPlatform(bool updateMeshes)
     {
         await SpawnPlatformAsync(updateMeshes);
+    }
+
+    public IEnumerator SpawnPlatformWithWait()
+    {
+        spawnedPlatform = false;
+        SpawnPlatformAsync(false);
+
+        while (!spawnedPlatform)
+        {
+            yield return null;
+        }
     }
 }

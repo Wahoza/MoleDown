@@ -17,6 +17,7 @@ public class PlayerGrabbableComponent : GrabbableComponent
         grabRoutine = GrabUpdateCorutine();
 
         GetComponent<PlayerInputHandler>().RegisterInputJumpFuncs((ctx) => IncrementJumpCtr());
+        GetComponent<PlayerActionHandler>().RegisterDeathAction(OnDie);
     }
     public override void OnGrab(Transform _grabTransform, Action releaseFunc)
     {
@@ -62,6 +63,11 @@ public class PlayerGrabbableComponent : GrabbableComponent
         }
         base.OnThrow(velocity);
     }
+
+    void OnDie()
+    {
+        OnRelease();
+    }
     private void IncrementJumpCtr()
     {
         jumpsSinceGrabbed++;
@@ -86,5 +92,6 @@ public class PlayerGrabbableComponent : GrabbableComponent
     private void OnDestroy()
     {
         GetComponent<PlayerActionHandler>().GetComponent<PlayerInputHandler>().UnregisterInputJumpFuncs((ctx) => IncrementJumpCtr());
+        GetComponent<PlayerActionHandler>().UnregisterDeathAction(OnDie);
     }
 }
