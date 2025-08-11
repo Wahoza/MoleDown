@@ -483,8 +483,8 @@ MonoBehaviour:
   chunksY: 2
   seed: 0
   randomSeed: 1
-  randomShapeEnabled: 1
-  defaultSelectedMap: 2
+  randomShapeEnabled: 0
+  defaultSelectedMap: 4
   map: {fileID: 11400000, guid: d737760eb1b4ee940afbbb370dee0a16, type: 2}
   mainMat: {fileID: 1092436929}
   grabbedGroundMat: {fileID: 2100000, guid: dd8cd228914d4314089465ea58831cc0, type: 2}

@@ -9,6 +9,11 @@ public class ScoreboardAppearScript : MonoBehaviour
     [SerializeField] float appearDuration;
     [SerializeField] Transform scoreHolder;
     [SerializeField] Image bgImage;
+
+    private void Awake()
+    {
+        bgImage.material.SetFloat("_FillAmount", 0);
+    }
     public IEnumerator Appear()
     {
         bgImage.material.SetFloat("_FillAmount", 0);

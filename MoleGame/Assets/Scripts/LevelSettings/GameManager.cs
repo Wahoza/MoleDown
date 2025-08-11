@@ -244,6 +244,8 @@ public class GameManager : MonoBehaviour
 
         UIManager.Instance.SetCurrentRound(currentRound + 1, rounds);
 
+        yield return StartCoroutine(UIManager.Instance.StartContinuePrompt());
+
         isFinishedInput = false;
 
         yield return new WaitUntil(() => isFinishedInput);
@@ -253,6 +255,8 @@ public class GameManager : MonoBehaviour
             yield return StartCoroutine(scoreList[i].DoRise());
             scoreList[i].gameObject.SetActive(false);
         }
+
+        StartCoroutine(UIManager.Instance.EndContinuePrompt());
 
         yield return StartCoroutine(UIManager.Instance.scoreBoardHolder.Disapear());
 

@@ -1,3 +1,5 @@
+using DG.Tweening;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -10,11 +12,19 @@ public class UIManager : MonoBehaviour
     [SerializeField] public Transform playerStatsHolder;
     [SerializeField] private TextMeshProUGUI currentRoundText;
     [SerializeField] string currentRoundString;
+
+    [Header("Continue Move In Settigns")]
+    [SerializeField] private float startHeight;
+    [SerializeField] private float moveUpTime;
+    [SerializeField] private Transform aToContinue;
+    private float initHeight;
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+
+            initHeight = aToContinue.localPosition.y;
         }
         else
         {
@@ -26,4 +36,27 @@ public class UIManager : MonoBehaviour
     {
         currentRoundText.text = $"{currentRoundString}: {currentRound}/{maxRound}";
     }
+
+    public IEnumerator StartContinuePrompt()
+    {
+        var pos = aToContinue.localPosition;
+        pos.y = startHeight;
+        aToContinue.localPosition = pos;
+
+        aToContinue.gameObject.SetActive(true);
+
+        aToContinue.DOKill();
+        yield return aToContinue.DOLocalMoveY(initHeight, moveUpTime).SetEase(Ease.OutSine).SetUpdate(UpdateType.Normal, true).WaitForCompletion();
+    }
+    public IEnumerator EndContinuePrompt()
+    {
+        var pos = aToContinue.localPosition;
+        pos.y = initHeight;
+        aToContinue.localPosition = pos;
+
+        aToContinue.DOKill();
+        yield return aToContinue.DOLocalMoveY(startHeight, moveUpTime).SetEase(Ease.OutSine).SetUpdate(UpdateType.Normal, true).WaitForCompletion();
+        aToContinue.gameObject.SetActive(false);
+    }
+
 }
