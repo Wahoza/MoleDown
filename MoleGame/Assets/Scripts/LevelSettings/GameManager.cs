@@ -207,9 +207,14 @@ public class GameManager : MonoBehaviour
             //Adjust placement
             if(scoreList.Count > 0)
             {
-                for(int scoreIterator = i; scoreIterator > 0; scoreIterator--)
+                for(int scoreIterator = i; scoreIterator >= 0; scoreIterator--)
                 {
-                    if(finalScores[scoreIterator] >= finalScores[i])
+                    if(scoreIterator == 0)
+                    {
+                        scoreList[i].SetPlacement(0);
+                        break;
+                    }
+                    if(finalScores[scoreIterator - 1] > finalScores[i])
                     {
                         scoreList[i].SetPlacement(scoreIterator);
                         break;
@@ -303,10 +308,11 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            Debug.Log("All score");
             int score = 0;
             for (int i = 0; i < deadPlayers.Count; i++)
             {
-                score = i;
+                score++;
                 playerScores.Add(deadPlayers[i], score);
             }
 
@@ -356,7 +362,19 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator ReloadLevel()
     {
-        LevelMarchingPlatform.Instance.RegenerateWorld();
+        switch (GameSettingsManager.Instance.GetReloadSettings())
+        {
+            case GameSettingsManager.LevelReloadSettings.GenerateNew:
+            {
+                LevelMarchingPlatform.Instance.GenerateWorld();
+                break;
+            }
+            default:
+            {
+                LevelMarchingPlatform.Instance.RegenerateWorld();
+                break;
+            }
+        }
         ObjectManager.Instance.DestroyAllObjects();
 
         var scoreList = players

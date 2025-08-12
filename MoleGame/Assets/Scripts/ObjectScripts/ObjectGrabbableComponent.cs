@@ -36,7 +36,10 @@ public class ObjectGrabbableComponent : GrabbableComponent
     {
         base.OnRelease();
 
-        StopCoroutine(grabUpdate);
+        if (grabUpdate != null)
+        {
+            StopCoroutine(grabUpdate);
+        }
 
         if (GetComponent<Rigidbody>() is var rb && rb != null)
         {

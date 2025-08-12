@@ -42,7 +42,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _CellDensity: 7.72
-    - _CellOffset: 2.2240694
+    - _CellOffset: 2.4775703
     - _CellSize: 0
     - _ColorMask: 15
     - _FillAmount: 0.533

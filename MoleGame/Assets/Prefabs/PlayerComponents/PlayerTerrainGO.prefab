@@ -197,7 +197,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 4.11
-  knockBackForce: 300
+  knockBackForce: 20
   collisionWithKinematicRB: 0
   knockBackLayerMask:
     serializedVersion: 2
@@ -216,10 +216,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeUntilDestruction: 0.1
   dissapearSpeed: 2
-  collisionWithKinematicRB: 0
-  collisionLayerMask:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!114 &-4536771514843895389
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -289,7 +289,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   destroyRadiusIncrease: 2.2
-  knockBackRadiusIncrease: 5
+  knockBackRadiusIncrease: 1.4
   modelController: {fileID: 1844926384365054358}
   projector: {fileID: 1725808316721839093}
   projectorExpandDuration: 1.2
@@ -310,7 +310,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   range: 0
-  knockBackForce: 40.6
+  knockBackForce: 29.3
   collisionWithKinematicRB: 0
   knockBackLayerMask:
     serializedVersion: 2

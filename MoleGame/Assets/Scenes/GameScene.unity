@@ -119,6 +119,59 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!21 &41742023
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FancyGroundMat
+  m_Shader: {fileID: -6465566751694194690, guid: bda6237ac7c827e48b3678039cd12910, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _CellDensity: 0.5
+    - _ChunkCountX: 4
+    - _ChunkCountY: 3
+    - _ChunkSize: 10.43
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _SpotFrequency: 0.8
+    - _StartOffset: 0
+    m_Colors:
+    - _BottomColor: {r: 0.05856173, g: 0.20966281, b: 0.3962264, a: 1}
+    - _GrassColor: {r: 0.523451, g: 1, b: 0.13199997, a: 1}
+    - _SpotColor: {r: 0, g: 0.7411765, b: 0.33541283, a: 1}
+    - _TopColor: {r: 0.26666674, g: 0.6427221, b: 0.8862745, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
 --- !u!1 &140418124
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,12 +534,12 @@ MonoBehaviour:
   chunkSize: 16
   chunksX: 4
   chunksY: 2
-  seed: 0
+  seed: 819
   randomSeed: 1
-  randomShapeEnabled: 0
+  randomShapeEnabled: 1
   defaultSelectedMap: 4
   map: {fileID: 11400000, guid: d737760eb1b4ee940afbbb370dee0a16, type: 2}
-  mainMat: {fileID: 1092436929}
+  mainMat: {fileID: 41742023}
   grabbedGroundMat: {fileID: 2100000, guid: dd8cd228914d4314089465ea58831cc0, type: 2}
   particleMat: {fileID: 2100000, guid: 62b6a71cf75368c43b6f81128525a493, type: 2}
   grassColors:
@@ -563,16 +616,16 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 2
+  m_Intensity: 1.24
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.796
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
@@ -605,8 +658,8 @@ Light:
   m_Lightmapping: 4
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
-  m_ColorTemperature: 5000
+  m_BounceIntensity: 1.5
+  m_ColorTemperature: 4869
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
@@ -1271,59 +1324,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 941030163}
   m_Enabled: 1
---- !u!21 &1092436929
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: FancyGroundMat
-  m_Shader: {fileID: -6465566751694194690, guid: bda6237ac7c827e48b3678039cd12910, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 2
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses:
-  - MOTIONVECTORS
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _CellDensity: 0.5
-    - _ChunkCountX: 4
-    - _ChunkCountY: 3
-    - _ChunkSize: 10.43
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    - _SpotFrequency: 0.8
-    - _StartOffset: 0
-    m_Colors:
-    - _BottomColor: {r: 0.39607844, g: 0.2166868, b: 0.058823537, a: 1}
-    - _GrassColor: {r: 1, g: 0.13333333, b: 0.9316668, a: 1}
-    - _SpotColor: {r: 0, g: 0.7411765, b: 0.33541283, a: 1}
-    - _TopColor: {r: 0.26666674, g: 0.8862745, b: 0.61388564, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &1223106037
 GameObject:
   m_ObjectHideFlags: 0
@@ -2000,26 +2000,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 214899615017077285, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3791756202586340112, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
-      propertyPath: objectSpawnDictionary._serializedList.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3791756202586340112, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
-      propertyPath: objectSpawnDictionary._serializedList.Array.data[0].Key
-      value: 
-      objectReference: {fileID: 3400822585114527883, guid: 99caae26a943126489b6c5d9e50f3414, type: 3}
-    - target: {fileID: 3791756202586340112, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
-      propertyPath: objectSpawnDictionary._serializedList.Array.data[1].Key
-      value: 
-      objectReference: {fileID: 5370920783011278471, guid: b7b82ec80474e3344af822404876ef74, type: 3}
-    - target: {fileID: 3791756202586340112, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
-      propertyPath: objectSpawnDictionary._serializedList.Array.data[0].Value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3791756202586340112, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
-      propertyPath: objectSpawnDictionary._serializedList.Array.data[1].Value
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5758559166580457566, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}

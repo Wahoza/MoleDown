@@ -6,11 +6,16 @@ public class GameSettingsManager : MonoBehaviour
 
     public enum ScoringSettings {
         Winner = 0,
-        All = 0
+        All = 1
+    }
+    public enum LevelReloadSettings
+    {
+        GenerateNew = 0,
+        ReloadOld = 1
     }
     private int rounds;
     private ScoringSettings scoring;
-
+    private LevelReloadSettings levelReload;
     public void SetScoringSettings(ScoringSettings settings)
     {
         scoring = settings;
@@ -19,7 +24,10 @@ public class GameSettingsManager : MonoBehaviour
     {
         this.rounds = rounds;
     }
-
+    public void SetReloadSettings(LevelReloadSettings reload)
+    {
+        this.levelReload = reload;
+    }
     public int GetRounds()
     {
         return rounds;
@@ -27,6 +35,11 @@ public class GameSettingsManager : MonoBehaviour
     public ScoringSettings GetScoreSettings()
     {
         return scoring;
+    }
+
+    public LevelReloadSettings GetReloadSettings()
+    {
+        return levelReload;
     }
     void Start()
     {

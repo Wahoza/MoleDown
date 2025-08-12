@@ -108,6 +108,13 @@ public class PlayerGrabComponent : MonoBehaviour
     {
         GetComponent<PlayerActionHandler>().OnGrab(false);
 
+        if (grabbable.releaseAction != null)
+        {
+            grabbable.releaseAction();
+        }
+
+        grabbable.OnRelease();
+
         CancelGrabAttemptAction();
 
         Debug.Log("Grabbed Object");

@@ -48,7 +48,7 @@ MonoBehaviour:
   group: {fileID: 0}
   intermissionScoreEvalCamera: {fileID: 0}
   <worldCenter>k__BackingField: {fileID: 0}
-  playerCameraRadius: 3
+  playerCameraRadius: 7
   playerPointerPrefab: {fileID: 1690702877994427623, guid: c9bf212d37592d348a5616e2dc54e9bb, type: 3}
   playerScorePrefab: {fileID: 196581265423297708, guid: 51fb520d0756b9f4d9e4c35c783b512c, type: 3}
   playerBoardItemPrefab: {fileID: 4403180360672278775, guid: 15a059b0a04f23d479c5b92359242d19, type: 3}

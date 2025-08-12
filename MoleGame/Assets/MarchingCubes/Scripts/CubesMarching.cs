@@ -64,6 +64,7 @@ public class CubesMarching : MonoBehaviour
     private Vector3[] cachedVertices;
     private int[] cachedTriangles;
 
+    private object triVertLock = new();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //public virtual void Start()
     //{
@@ -125,28 +126,24 @@ public class CubesMarching : MonoBehaviour
     {
         bool updated = false;
 
-        if (Monitor.TryEnter(vertices))
+        if (Monitor.TryEnter(triVertLock))
         {
+       
             try
             {
-                if (Monitor.TryEnter(triangles))
+                if (vertices.Count >= 3 &&
+                    triangles.Count % 3 == 0 &&
+                    triangles.All(i => i >= 0 && i < vertices.Count))
                 {
-                    try
-                    {
-                        if (vertices.Count >= 3 &&
-                            triangles.Count % 3 == 0 &&
-                            triangles.All(i => i >= 0 && i < vertices.Count))
-                        {
-                            // Store a safe copy
-                            cachedVertices = vertices.ToArray();
-                            cachedTriangles = triangles.ToArray();
-                            updated = true;
-                        }
-                    }
-                    finally { Monitor.Exit(triangles); }
+                    // Store a safe copy
+                    cachedVertices = vertices.ToArray();
+                    cachedTriangles = triangles.ToArray();
+                    updated = true;
                 }
             }
-            finally { Monitor.Exit(vertices); }
+            
+            
+            finally { Monitor.Exit(triVertLock); }
         }
 
         // Build mesh from cached data (either updated this frame or old)
@@ -232,28 +229,29 @@ public class CubesMarching : MonoBehaviour
 
     private void MarchCubes()
     {
-        lock (vertices) lock (triangles)
+        lock (triVertLock)
         {
             vertices.Clear();
             triangles.Clear();
-        }
 
-        for (int x = 0; x < m_width; x++)
-        {
-            for (int y = 0; y < m_height; y++)
+
+            for (int x = 0; x < m_width; x++)
             {
-                for (int z = 0; z < m_width; z++)
+                for (int y = 0; y < m_height; y++)
                 {
-                    float[] cubeCorneres = new float[8];
-
-
-                    for(int i = 0; i < 8; i++)
+                    for (int z = 0; z < m_width; z++)
                     {
-                        Vector3Int corner = new Vector3Int(x, y, z) + MarchingTable.Corners[i];
-                        cubeCorneres[i] = heights[corner.x, corner.y, corner.z];
-                    }
+                        float[] cubeCorneres = new float[8];
 
-                    MarchCube(new Vector3(x, y, z), GetConfigurationIndex(cubeCorneres));
+
+                        for (int i = 0; i < 8; i++)
+                        {
+                            Vector3Int corner = new Vector3Int(x, y, z) + MarchingTable.Corners[i];
+                            cubeCorneres[i] = heights[corner.x, corner.y, corner.z];
+                        }
+
+                        MarchCube(new Vector3(x, y, z), GetConfigurationIndex(cubeCorneres));
+                    }
                 }
             }
         }
@@ -267,7 +265,7 @@ public class CubesMarching : MonoBehaviour
         }
 
         int edgeIndex = 0;
-        lock (vertices) lock (triangles)
+        lock (triVertLock)
         {
             for (int t = 0; t < 5; t++)
             {

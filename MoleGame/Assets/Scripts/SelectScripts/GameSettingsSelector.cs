@@ -12,12 +12,13 @@ public class GameSettingsSelector : MonoBehaviour
     [Header("Intro Anim")]
     [SerializeField] Vector3 startOffset;
     [SerializeField] float introDuration;
-
+    [SerializeField] Transform holderTransform;
     [Header("SelectionThings")]
     [SerializeField] GameObject AToJoinText;
     [SerializeField] LoadingScreenComponent loadingComp;
     [SerializeField] TextMeshProUGUI selectRoundsText;
     [SerializeField] TextMeshProUGUI selectScoringSettingsText;
+    [SerializeField] TextMeshProUGUI selectReloadSettingsText;
     [SerializeField] List<GameObject> selectionArrows;
 
     [Header("DefaultSettings")]
@@ -25,7 +26,9 @@ public class GameSettingsSelector : MonoBehaviour
     [SerializeField] private int defaultScoring;
     [SerializeField] private string allScoreString;
     [SerializeField] private string winnerScoreString;
-
+    [SerializeField] private int defaultReload;
+    [SerializeField] private string generateNewString;
+    [SerializeField] private string reloadOldString;
     [Header("Option Settings")]
     [SerializeField] private int maxRounds;
     [SerializeField] int optionCount;
@@ -40,10 +43,11 @@ public class GameSettingsSelector : MonoBehaviour
 
     private int currentRounds;
     private int currentScoring;
+    private int currentReload;
 
     private float timeInPhase;
     private float invertedCurrentSpeed;
-    private Vector2 directionInput;
+    private Vector2 lastDirectionInput;
 
     private void Start()
     {
@@ -51,7 +55,7 @@ public class GameSettingsSelector : MonoBehaviour
         {
             Instance = this;
 
-            transform.localPosition = startOffset;
+            holderTransform.localPosition = startOffset;
 
             selectRoundsText.text = defaultRounds.ToString();
             currentRounds = defaultRounds;
@@ -71,6 +75,21 @@ public class GameSettingsSelector : MonoBehaviour
             }
 
             selectScoringSettingsText.text = currentScoringSettings;
+
+            currentReload = defaultReload;
+            string currentReloadSettings = "";
+
+            switch (currentReload)
+            {
+                case 0:
+                    currentReloadSettings = generateNewString;
+                    break;
+                case 1:
+                    currentReloadSettings = reloadOldString;
+                    break;
+            }
+
+            selectReloadSettingsText.text = currentReloadSettings;
 
             Debug.Log("Here");
         }
@@ -92,9 +111,9 @@ public class GameSettingsSelector : MonoBehaviour
 
         selectionArrows[0].SetActive(true);
 
-        transform.DOKill();
-        transform.DOLocalMove(Vector3.zero, introDuration).OnComplete(() => { settingsStarted = true; });
-        transform.localPosition = startOffset;
+        holderTransform.DOKill();
+        holderTransform.localPosition = startOffset;
+        holderTransform.DOLocalMove(Vector3.zero, introDuration).OnComplete(() => { settingsStarted = true; });
 
         SetPlayerInput(PlayerConfigManager.Instance.GetPlayerConfigs()[0]);
     }
@@ -142,7 +161,7 @@ public class GameSettingsSelector : MonoBehaviour
         direction.y = direction.y > 0 ? -1 : (direction.y < 0 ? 1 : 0); //kinda weird but makes sense trust
 
         
-        if (direction.y != 0 && direction.y != directionInput.y)
+        if (direction.y != 0 && direction.y != lastDirectionInput.y)
         {
             selectionArrows[currentSelectedField].SetActive(false);
 
@@ -153,9 +172,8 @@ public class GameSettingsSelector : MonoBehaviour
 
         }
 
-        directionInput = direction;
 
-        if (direction.x != 0)
+        if (direction.x != 0 && direction.x != lastDirectionInput.x)
         {
             switch (currentSelectedField)
             {
@@ -166,7 +184,7 @@ public class GameSettingsSelector : MonoBehaviour
 
                     selectRoundsText.text = currentRounds.ToString();
 
-                    return;
+                    break;
 
                 case 1:
                     currentScoring += (int)(1 * direction.x);
@@ -185,9 +203,29 @@ public class GameSettingsSelector : MonoBehaviour
                     }
 
                     selectScoringSettingsText.text = currentScoringSettings;
-                    return;
+                    break;
+                case 2:
+                    currentReload += (int)(1 * direction.x);
+                    currentReload = currentReload < 0 ? 1 : (currentReload > 1 ? 0 : currentReload);
+
+                    string currentReloadSettings = "";
+
+                    switch (currentReload)
+                    {
+                        case 0:
+                            currentReloadSettings = generateNewString;
+                            break;
+                        case 1:
+                            currentReloadSettings = reloadOldString;
+                            break;
+                    }
+
+                    selectReloadSettingsText.text = currentReloadSettings;
+                    break;
             }
         }
+
+        lastDirectionInput = direction;
     }
     public void Cancel()
     {
@@ -202,8 +240,8 @@ public class GameSettingsSelector : MonoBehaviour
             AToJoinText.SetActive(true);
         }
         //OptionField.SetActive(false);
-        transform.DOKill();
-        transform.DOLocalMove(startOffset, introDuration);
+        holderTransform.DOKill();
+        holderTransform.DOLocalMove(startOffset, introDuration);
         settingsStarted = false;
     }
     private void Confirm()
@@ -214,6 +252,7 @@ public class GameSettingsSelector : MonoBehaviour
 
             GameSettingsManager.Instance.SetRounds(currentRounds);
             GameSettingsManager.Instance.SetScoringSettings((GameSettingsManager.ScoringSettings)currentScoring);
+            GameSettingsManager.Instance.SetReloadSettings((GameSettingsManager.LevelReloadSettings)currentReload);
 
             loadingComp.LoadScene(2);
 
@@ -251,10 +290,10 @@ public class GameSettingsSelector : MonoBehaviour
     //        switch (currentSelectedField)
     //        {
     //            case 0:
-    //                currentRounds += (int)(1 * directionInput.x);
+    //                currentRounds += (int)(1 * lastDirectionInput.x);
     //                currentRounds = currentRounds < 1 ? 1 : (currentRounds > maxRounds ? maxRounds : currentRounds);
 
-    //                if (invertedCurrentSpeed > maxInvertedTimeIncrease && directionInput.x != 0)
+    //                if (invertedCurrentSpeed > maxInvertedTimeIncrease && lastDirectionInput.x != 0)
     //                {
     //                    invertedCurrentSpeed *= invertedSpeedIncrease;
     //                }
@@ -264,7 +303,7 @@ public class GameSettingsSelector : MonoBehaviour
     //                return;
 
     //            case 1:
-    //                currentScoring += (int)(1 * directionInput.x);
+    //                currentScoring += (int)(1 * lastDirectionInput.x);
     //                currentScoring = currentScoring < 0 ? 1 : (currentScoring > 1 ? 0 : currentScoring);
 
     //                string currentScoringSettings = "";

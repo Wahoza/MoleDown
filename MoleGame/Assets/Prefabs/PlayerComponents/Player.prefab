@@ -1540,7 +1540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be6f0adcc8a35e9439568f1f5218d844, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lowestHeight: 5
+  lowestHeight: 4
   highestHeight: 100
   graceTimer: 0.1
 --- !u!114 &364350084524875561

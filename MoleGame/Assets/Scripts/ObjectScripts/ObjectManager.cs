@@ -109,8 +109,11 @@ public class ObjectManager : MonoBehaviour
     }
     public void StopSpawning()
     {
-        StopCoroutine(spawnRoutine);
-        spawnRoutine = null;
+        if(spawnRoutine != null)
+        {
+            StopCoroutine(spawnRoutine);
+            spawnRoutine = null;
+        }
     }
     public void RegisterObject(GameObject obj)
     {
