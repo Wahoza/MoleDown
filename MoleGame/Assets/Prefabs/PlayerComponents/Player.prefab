@@ -230,7 +230,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 118
@@ -1157,6 +1157,7 @@ GameObject:
   - component: {fileID: 452099481724079387}
   - component: {fileID: 5994785200135569574}
   - component: {fileID: 364350084524875561}
+  - component: {fileID: 4356065259864137762}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -1196,7 +1197,7 @@ CapsuleCollider:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 12
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
@@ -1247,7 +1248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isStunned: 0
   isCanMove: 1
-  isGrounded: 0
+  isAlwaysGrounded: 0
   isGrabbed: 0
   isDead: 0
 --- !u!114 &2655929573217427236
@@ -1359,6 +1360,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3e16929ccb33ff4798d666584bd4f5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGrabbed: 0
+  isReleasable: 1
   grabOffset: {x: 0, y: 0.7, z: 0}
   jumpsRequiredForEscape: 3
 --- !u!114 &9129663919670945170
@@ -1559,6 +1562,18 @@ MonoBehaviour:
   jumpAudioName: Jump
   landAudioName: Land
   dieAudioName: Die
+--- !u!114 &4356065259864137762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3499392013066739132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 69d4b313ab78a5340a4217a79a576274, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3926963424053655550
 GameObject:
   m_ObjectHideFlags: 0
@@ -2714,8 +2729,8 @@ MonoBehaviour:
   waterLayer:
     serializedVersion: 2
     m_Bits: 16
-  depthBefSub: 0.2
-  displacementAmt: 0.87
+  depthBefSub: 0.01
+  displacementAmt: 1
   floaters: 4
   waterDrag: 0.76
   waterAngularDrag: 1.12

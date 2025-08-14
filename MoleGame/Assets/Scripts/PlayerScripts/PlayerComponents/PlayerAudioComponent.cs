@@ -1,13 +1,13 @@
 using UnityEngine;
 
-public class PlayerAudioComponent : MonoBehaviour
+public class PlayerAudioComponent : IPlayerComponent
 {
     [SerializeField] string grabAudioName;
     [SerializeField] string jumpAudioName;
     [SerializeField] string landAudioName;
     [SerializeField] string dieAudioName;
 
-    private void Start()
+    internal override void Start()
     {
         GetComponent<PlayerActionHandler>().RegisterGrabAction((b) => PlayAudioOnEvent(grabAudioName));
         GetComponent<PlayerActionHandler>().RegisterJumpAction(() => PlayAudioOnEvent(jumpAudioName));
@@ -20,8 +20,10 @@ public class PlayerAudioComponent : MonoBehaviour
         AudioManager.Instance?.Play3DAudioAtPosition(audioName, transform.position, true);
     }
 
-    public void OnDestroy()
+    internal override void OnDestroy()
     {
+        base.OnDestroy();
+
         GetComponent<PlayerActionHandler>().UnregisterGrabAction((b) => PlayAudioOnEvent(grabAudioName));
         GetComponent<PlayerActionHandler>().UnregisterJumpAction(() => PlayAudioOnEvent(jumpAudioName));
         GetComponent<PlayerActionHandler>().UnregisterLandAction((f) => PlayAudioOnEvent(landAudioName));

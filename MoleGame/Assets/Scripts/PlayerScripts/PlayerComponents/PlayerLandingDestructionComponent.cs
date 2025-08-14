@@ -1,28 +1,46 @@
 using UnityEngine;
 [RequireComponent(typeof(PlayerActionHandler), typeof(Rigidbody))]
-public class PlayerLandingDestructionComponent : MonoBehaviour
+public class PlayerLandingDestructionComponent : IPlayerComponent
 {
     [SerializeField] float baseRadius;
     [SerializeField] float radiusIncrease;
     [SerializeField] float characterHeightOffset;
     [SerializeField] float intensity;
     [SerializeField] float minAirTime;
-
     [SerializeField] float terrainDestructionRate;
+
+
+    internal float currentBaseRadius;
+    internal float currentRadiusIncrease;
+    internal float currentCharacterHeightOffset;
+    internal float currentIntensity;
+    internal float currentMinAirTime;
+    internal float currentTerrainDestructionRate;
 
     private Rigidbody rb;
     private float terrainDestructionTimer;
     bool cancelLandUntilNext;
-    private void Start()
+    internal override void Start()
     {
         GetComponent<PlayerActionHandler>().RegisterLandAction(OnLand);
         //GetComponent<PlayerActionHandler>().RegisterGrabbableAction(OnGrab);
         rb = GetComponent<Rigidbody>();
+
+        base.Start();
     }
 
+    internal override void ResetStatsOnRespawn()
+    {
+        currentBaseRadius = baseRadius;
+        currentRadiusIncrease         = radiusIncrease;
+        currentCharacterHeightOffset  = characterHeightOffset;
+        currentIntensity              = intensity;
+        currentMinAirTime             = minAirTime;
+        currentTerrainDestructionRate = terrainDestructionRate;
+    }
     void OnLand(float airTime)
     {
-        if (airTime > minAirTime && terrainDestructionRate <= Time.time - terrainDestructionRate)
+        if (airTime > currentMinAirTime && currentTerrainDestructionRate <= Time.time - currentTerrainDestructionRate)
         {
             if (cancelLandUntilNext)
             {
@@ -31,7 +49,7 @@ public class PlayerLandingDestructionComponent : MonoBehaviour
             } 
                 
 
-            LevelMarchingPlatform.Instance.DeformSphereAt(transform.position + Vector3.up * characterHeightOffset, baseRadius + (airTime - minAirTime) * radiusIncrease, intensity);
+            LevelMarchingPlatform.Instance.DeformSphereAt(transform.position + Vector3.up * currentCharacterHeightOffset, currentBaseRadius + (airTime - minAirTime) * currentRadiusIncrease, currentIntensity);
 
             terrainDestructionTimer = Time.time;
 
@@ -46,8 +64,9 @@ public class PlayerLandingDestructionComponent : MonoBehaviour
     //    cancelLandUntilNext = true;
     //}
 
-    private void OnDestroy()
+    internal override void OnDestroy()
     {
+        base.OnDestroy();
         GetComponent<PlayerActionHandler>().UnregisterLandAction(OnLand);
     }
 }

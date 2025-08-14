@@ -59,7 +59,7 @@ public class LevelLoadManager : MonoBehaviour
 
         foreach (var player in players)
         {
-            player.Value.GetComponent<PlayerInputHandler>().Initialize(player.Key);
+            player.Value.GetComponent<PlayerInputHandler>().Initialize(player.Key, false);
         }
 
         UIManager.Instance.scoreBoardHolder.gameObject.SetActive(false);
@@ -73,6 +73,7 @@ public class LevelLoadManager : MonoBehaviour
     private IEnumerator CompleteLoadRoutine()
     {
         GameManager.Instance.StartRound();
+        loadingScreen.SetActive(true);
 
         yield return loadingScreen.transform.DOLocalMoveY(heightChange, moveUpDuration).SetEase(Ease.InSine).SetUpdate(UpdateType.Normal ,true).WaitForCompletion();
 

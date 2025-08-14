@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class PlayerDeathComponent : MonoBehaviour
+public class PlayerDeathComponent : IPlayerComponent
 {
     [SerializeField] float lowestHeight;
     [SerializeField] float highestHeight;
@@ -9,9 +9,10 @@ public class PlayerDeathComponent : MonoBehaviour
 
     private Coroutine checkDeathRoutine;
     private Coroutine deathTimerRoutine;
-    private void Start()
+    internal override void Start()
     {
         checkDeathRoutine = StartCoroutine(DeathCoroutine());
+        base.Start();
     }
 
     private IEnumerator DeathCoroutine()

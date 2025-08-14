@@ -137,3 +137,6 @@ MonoBehaviour:
   randomShapeEnabled: 0
   defaultSelectedMap: 0
   map: {fileID: 0}
+  minFullCubes: 71
+  minTris: 30
+  debugTick: 0

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerGrabTerrainComponent : MonoBehaviour
+public class PlayerGrabTerrainComponent : IPlayerComponent
 {
     [Header("grabSettings")]
     [SerializeField] private float minRadius;
@@ -10,6 +10,12 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
     [SerializeField] private float heightThreshold = 0.5f;
     [SerializeField] private float intensity;
     private float radius;
+
+
+    internal float currentMinRadius;
+    internal float currentMaxRadius;
+    internal float currentRadiusIncrease;
+    internal float currentIntensity;
 
     [Header("GrabObjects")]
     [SerializeField] GameObject grabResultPrefab;
@@ -27,11 +33,11 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
     private float lowestHeight;
     public async void GrabTerrain(float holdDuration)
     {
-        radius = holdDuration * radiusIncrease;
+        radius = holdDuration * currentRadiusIncrease;
 
-        radius = radius < minRadius ? minRadius : radius > maxRadius ? maxRadius : radius;
+        radius = radius < currentMinRadius ? currentMinRadius : radius > currentMaxRadius ? currentMaxRadius : radius;
 
-        var grabResult = await LevelMarchingPlatform.Instance.DeformedSphereReturnValues(grabLocation.position, radius, intensity);
+        var grabResult = await LevelMarchingPlatform.Instance.DeformedSphereReturnValues(grabLocation.position, radius, currentIntensity);
         modHeights = grabResult;
 
         m_width = grabResult.GetLength(0);
@@ -41,6 +47,13 @@ public class PlayerGrabTerrainComponent : MonoBehaviour
         CreateTerrain(heights);
     }
 
+    internal override void ResetStatsOnRespawn()
+    {
+        currentMinRadius = minRadius;
+        currentMaxRadius           = maxRadius;
+        currentRadiusIncrease      = radiusIncrease;
+        currentIntensity           = intensity;
+    }
 
     void CreateTerrain(float[,,] newHeights)
     {

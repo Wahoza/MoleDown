@@ -1,12 +1,13 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(PlayerStateComponent))]
 
-public class PlayerModelControllerComponent : MonoBehaviour
+public class PlayerModelControllerComponent : IPlayerComponent
 {
     [Header("ObjectsToAnimate")]
     [SerializeField] GameObject HandL;
@@ -107,14 +108,26 @@ public class PlayerModelControllerComponent : MonoBehaviour
     private float moveSpeed;
     private Material mat;
     private PlayerStateComponent playerState;
-    private void Start()
+    internal override void Start()
     {
+        base.Start();
+
         playerState = GetComponent<PlayerStateComponent>();
 
-        playerFootWalkRoutine = StartCoroutine(WalkFootRoutine()); 
-        playerHandWalkRoutine = StartCoroutine(WalkHandRoutine());
+        if(playerFootWalkRoutine == null)
+        {
+            playerFootWalkRoutine = StartCoroutine(WalkFootRoutine());
+        }
 
-        bodyAnimRoutine = StartCoroutine(HeadBobRoutine());
+        if(playerHandWalkRoutine == null)
+        {
+            playerHandWalkRoutine = StartCoroutine(WalkHandRoutine());
+        }
+
+        if(bodyAnimRoutine == null)
+        {
+            bodyAnimRoutine = StartCoroutine(HeadBobRoutine());
+        }
 
         GetComponent<PlayerActionHandler>().RegisterMoveAction(UpdateMoveSpeed);
         GetComponent<PlayerActionHandler>().RegisterGrabAction(OnGrab);
@@ -122,8 +135,33 @@ public class PlayerModelControllerComponent : MonoBehaviour
         GetComponent<PlayerActionHandler>().RegisterLandAction(OnLand);
         GetComponent<PlayerActionHandler>().RegisterAttackAction(OnAttack);
     }
-    private void OnDestroy()
+    internal override void ResetStatsOnRespawn()
     {
+        StopHandCoroutines();
+
+        if(playerFootWalkRoutine != null)
+        {
+            StopCoroutine(playerFootWalkRoutine);
+        }
+        playerFootWalkRoutine = StartCoroutine(WalkFootRoutine());
+
+        if(playerHandWalkRoutine != null)
+        {
+            StopCoroutine(playerHandWalkRoutine);
+        }
+        playerHandWalkRoutine = StartCoroutine(WalkHandRoutine());
+
+        if(bodyAnimRoutine != null)
+        {
+            StopCoroutine(bodyAnimRoutine);
+        }
+        bodyAnimRoutine = StartCoroutine(HeadBobRoutine());
+        lastGrabbed = false;
+        base.ResetStatsOnRespawn();
+    }
+    internal override void OnDestroy()
+    {
+        base.OnDestroy();
         GetComponent<PlayerActionHandler>().UnregisterMoveAction(UpdateMoveSpeed);
         GetComponent<PlayerActionHandler>().UnregisterGrabAction(OnGrab);
         GetComponent<PlayerActionHandler>().UnregisterJumpAction(OnJump);
@@ -243,7 +281,7 @@ public class PlayerModelControllerComponent : MonoBehaviour
 
         if (playerHandWalkRoutine == null)
         {
-            StartCoroutine(WalkHandRoutine());
+            playerHandWalkRoutine = StartCoroutine(WalkHandRoutine());
         }
     }
     IEnumerator LerpPositionValue(GameObject goToAnimate, Vector3 from, Vector3 to, float time)
@@ -354,9 +392,17 @@ public class PlayerModelControllerComponent : MonoBehaviour
 
         yield return handLRotateRoutine;
 
-        playerHandWalkRoutine = StartCoroutine(WalkHandRoutine());
+        if (playerHandWalkRoutine == null)
+        {
+            playerHandWalkRoutine = StartCoroutine(WalkHandRoutine());
+        }
 
         playerAttackRoutine = null;
+    }
+    private IEnumerator GrabReleaseRoutine()
+    {
+        yield return HandGrabRoutine();
+        playerReleaseRoutine = StartCoroutine(HandReleaseRoutine());
     }
     void OnGrab(bool grabbed)
     {
@@ -366,38 +412,28 @@ public class PlayerModelControllerComponent : MonoBehaviour
         {
             if (grabbed)
             {
-                if (playerHandWalkRoutine != null)
-                {
-                    StopCoroutine(playerHandWalkRoutine);
-
-                    playerHandWalkRoutine = null;
-                }
-
                 StopHandCoroutines();
 
-                if (playerReleaseRoutine != null)
+                if(playerHandWalkRoutine != null)
                 {
-                    StopCoroutine(playerReleaseRoutine);
-                    playerReleaseRoutine = null;
+                    StopCoroutine(playerHandWalkRoutine);
                 }
-
-                if (playerAttackRoutine != null)
-                {
-                    StopCoroutine(playerAttackRoutine);
-                    playerAttackRoutine = null;
-                }
-
                 playerGrabRoutine = StartCoroutine(HandGrabRoutine());
 
-                lastGrabbed = grabbed;
             }
             else
             {
-                StopHandCoroutines();
+                if(playerGrabRoutine == null)
+                {
+                    StopHandCoroutines();
 
-                playerReleaseRoutine = StartCoroutine(HandReleaseRoutine());
+                    playerReleaseRoutine = StartCoroutine(HandReleaseRoutine());
+                }
+                else
+                {
+                    playerReleaseRoutine = StartCoroutine(GrabReleaseRoutine());
+                }
 
-                lastGrabbed = grabbed;
             }
 
             lastGrabbed = grabbed;
@@ -492,6 +528,21 @@ public class PlayerModelControllerComponent : MonoBehaviour
         {
             StopCoroutine(handRMoveRoutine);
             StopCoroutine(handLMoveRoutine);
+        }
+
+        if(playerGrabRoutine != null)
+        {
+            StopCoroutine(playerGrabRoutine);
+        }
+
+        if(playerAttackRoutine != null)
+        {
+            StopCoroutine(playerAttackRoutine);
+        }
+
+        if(playerReleaseRoutine != null)
+        {
+            StopCoroutine(playerReleaseRoutine);
         }
 
         HandL.transform.localPosition = Vector3.zero;

@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputAction;
 using UnityEngine.SceneManagement;
+using static UnityEngine.Rendering.STP;
 
 public class GameManager : MonoBehaviour
 {
@@ -45,6 +46,9 @@ public class GameManager : MonoBehaviour
     private List<PlayerConfig> deadPlayers = new();
     private List<PlayerConfig> alivePlayers = new();
 
+    //note i manage clones here to!
+    private Dictionary<PlayerConfig, PlayerCloneSetup> clonedPlayers = new();
+
     private PlayerInputMap controls;
     private void Awake()
     {
@@ -67,6 +71,7 @@ public class GameManager : MonoBehaviour
         {
             var pointer = Instantiate(playerPointerPrefab, UIManager.Instance.pointerHolder);
             pointer.GetComponent<PointerScript>().InitializePlayer(config, player.transform);
+            player.GetComponent<PlayerStateComponent>().SetPlayerPointer(pointer.GetComponent<PointerScript>());    
 
             var scorer = Instantiate(playerScorePrefab, UIManager.Instance.playerStatsHolder);
             scorer.GetComponent<PlayerStatsComponent>().Initialize(config);
@@ -77,7 +82,6 @@ public class GameManager : MonoBehaviour
 
             PlayerSetup playerSetup = new PlayerSetup();
             playerSetup.player = player;
-            playerSetup.pointer = pointer.GetComponent<PointerScript>();
             playerSetup.stats = scorer.GetComponent<PlayerStatsComponent>();
             playerSetup.scoreboard = board.GetComponent<ScoreboardItemScript>();
 
@@ -86,18 +90,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public List<Transform> GetAlivePlayers()
+    public List<PlayerConfig> GetAlivePlayers()
     {
-        List<Transform> result = new List<Transform>();
+        List<PlayerConfig> result = new List<PlayerConfig>();
         foreach (var player in alivePlayers)
         {
-            result.Add(players[player].player.transform);
+            result.Add(player);
         }
 
         return result;
     }
     public void OnPlayerDie(GameObject player)
     {
+        group.RemoveMember(player.transform);
+
+        if (player.GetComponent<PlayerInputHandler>() != null)
+        {
+            OnPlayerDie(player.GetComponent<PlayerInputHandler>().playerConfig);
+            return;
+        }
+
         foreach (var playerKVP in players)
         {
             if(playerKVP.Value.player == player)
@@ -109,6 +121,21 @@ public class GameManager : MonoBehaviour
     }
     public void OnPlayerDie(PlayerConfig player)
     {
+        Debug.Log("Player Died :" + player.playerIndex);
+        if (clonedPlayers.ContainsKey(player))
+        {
+            clonedPlayers[player].deadCloneCount++;
+
+
+            Debug.Log(clonedPlayers[player].deadCloneCount + "counter value " + clonedPlayers[player].clones.Count + " list count");
+
+            if (clonedPlayers[player].deadCloneCount <= clonedPlayers[player].clones.Count)
+            {
+                return;
+            }
+        }
+
+
         if (!deadPlayers.Contains(player))
         {
             deadPlayers.Add(player);
@@ -116,13 +143,6 @@ public class GameManager : MonoBehaviour
             group.RemoveMember(players[player].player.transform);
         }
 
-        foreach (var playerKVP in players)
-        {
-            if(playerKVP.Key == player)
-            {
-                playerKVP.Value.pointer.ShowDead();
-            }
-        }
         Debug.Log(deadPlayers.Count + "DeadP");
         Debug.Log(players.Count + "Players");
         if (deadPlayers.Count >= players.Count - 1) //-1 to account for one winner
@@ -137,9 +157,21 @@ public class GameManager : MonoBehaviour
         intermissionScoreEvalCamera.gameObject.SetActive(true);
         gameCamera.gameObject.SetActive(false);
 
+        foreach(var clonedPlayer in clonedPlayers)
+        {
+            foreach(var clone in clonedPlayer.Value.clones)
+            {
+                Destroy(clone);
+                Debug.Log("DestroyedClone");
+            }
+        }
+
+        clonedPlayers.Clear();
+
         EvaluateScores();
 
         ObjectManager.Instance.StopSpawning();
+        ParticleManager.Instance.ClearParticles();
 
         if (currentRound >= rounds)
         {
@@ -295,7 +327,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                playerScores.Add(deadPlayers[deadPlayers.Count - 1], score);
+                playerScores.Add(deadPlayers[deadPlayers.Count], score);
             }
 
             foreach(var player in players)
@@ -399,7 +431,6 @@ public class GameManager : MonoBehaviour
             player.Value.player.GetComponent<PlayerActionHandler>().OnSpawn();
 
             player.Value.stats.UpdateStats();
-            player.Value.pointer.ShowAlive();
         }
         
         Physics.SyncTransforms();
@@ -411,6 +442,43 @@ public class GameManager : MonoBehaviour
 
         LevelMarchingPlatform.Instance.ForceUpdateAllMeshes();
     }
+
+    public void RegisterClone(PlayerConfig pc, GameObject cloneGo)
+    {
+        if (!clonedPlayers.ContainsKey(pc))
+        {
+            clonedPlayers.Add(pc, new PlayerCloneSetup());
+        }
+        if (clonedPlayers[pc].clones == null)
+        {
+            var cloneSetup = clonedPlayers[pc];
+            cloneSetup.clones = new();
+            clonedPlayers[pc] = cloneSetup;
+        }
+        Debug.Log("Registered Clone of " + pc.playerIndex);
+
+        var pointer = Instantiate(playerPointerPrefab, UIManager.Instance.pointerHolder);
+        pointer.GetComponent<PointerScript>().InitializePlayer(pc, cloneGo.transform);
+        cloneGo.GetComponent<PlayerStateComponent>().SetPlayerPointer(pointer.GetComponent<PointerScript>());
+
+        clonedPlayers[pc].clones.Add(cloneGo);
+        group.AddMember(cloneGo.transform, 1, playerCameraRadius);
+    }
+    public List<Transform> GetAllObjectsOfPlayerconfig(PlayerConfig pc)
+    {
+        List<Transform> allPlayersOfConfig = new();
+
+        allPlayersOfConfig.Add(players[pc].player.transform);
+
+        if (clonedPlayers.ContainsKey(pc))
+        {
+            foreach (var player in clonedPlayers[pc].clones)
+            {
+                allPlayersOfConfig.Add(player.transform);
+            }
+        }
+        return allPlayersOfConfig;
+    }
     private void OnDestroy()
     {
         PlayerConfigManager.Instance.GetPlayerConfigs()[0].Input.onActionTriggered -= CallFinished;
@@ -418,8 +486,15 @@ public class GameManager : MonoBehaviour
     private struct PlayerSetup
     {
         public GameObject player;
-        public PointerScript pointer;
         public PlayerStatsComponent stats;
         public ScoreboardItemScript scoreboard;
     }
+
+    private class PlayerCloneSetup
+    {
+ 
+        public List<GameObject> clones;
+        public int deadCloneCount;
+    }
+
 }

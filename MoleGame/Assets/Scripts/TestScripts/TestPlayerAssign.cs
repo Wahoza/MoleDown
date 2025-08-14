@@ -17,7 +17,7 @@ public class TestPlayerAssign : MonoBehaviour
         //    pc.Input = GetComponent<PlayerInput>();
         //}
 
-        GetComponent<PlayerInputHandler>().Initialize(pc);
+        GetComponent<PlayerInputHandler>().Initialize(pc, false);
     }
 
 }

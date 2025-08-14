@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(PlayerInputHandler), typeof(Rigidbody), typeof(PlayerStateComponent))]
-public class PlayerMoveComponent : MonoBehaviour
+public class PlayerMoveComponent : IPlayerComponent
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed;
@@ -19,6 +19,11 @@ public class PlayerMoveComponent : MonoBehaviour
     [Header("Grounding Jump Disable")]
     [SerializeField] private float groundingDisableDuration;
 
+    internal float currentMoveSpeed;
+    internal float currentgroundControll;
+    internal float currentairControll;
+    internal float currentMaxUpVelocity;
+    internal float currentMaxUpAdjustmentSpeed;
 
     private Vector2 inputVector;
     private Vector3 moveDirection;
@@ -49,6 +54,14 @@ public class PlayerMoveComponent : MonoBehaviour
 
         StartCoroutine(ForceGround());
         StartCoroutine(UpdateGroundedState());
+    }
+    internal override void ResetStatsOnRespawn()
+    {
+        currentMoveSpeed = moveSpeed;
+        currentgroundControll       = groundControll;
+        currentairControll          = airControll;
+        currentMaxUpVelocity        = maxUpVelocity;
+        currentMaxUpAdjustmentSpeed = maxUpAdjustmentSpeed;
     }
     private IEnumerator ForceGround()
     {
@@ -106,17 +119,17 @@ public class PlayerMoveComponent : MonoBehaviour
 
         moveDirection.Set(inputVector.x, 0, inputVector.y);
 
-        moveDirection *= moveSpeed;
-        Vector3 mixedVelocity = Vector3.Lerp(rb.linearVelocity, moveDirection, (isGrounded ? groundControll : airControll));
+        moveDirection *= currentMoveSpeed;
+        Vector3 mixedVelocity = Vector3.Lerp(rb.linearVelocity, moveDirection, (isGrounded ? currentgroundControll : currentairControll));
 
         if (!isStunned)
         {
             actionHandler.OnWalk(mixedVelocity);
         }
 
-        if (maxUpVelocity < rb.linearVelocity.y && !isGrounded)
+        if (currentMaxUpVelocity < rb.linearVelocity.y && !isGrounded)
         {
-            float upVelocity = Mathf.Lerp(rb.linearVelocity.y, maxUpVelocity, maxUpAdjustmentSpeed);
+            float upVelocity = Mathf.Lerp(rb.linearVelocity.y, currentMaxUpVelocity, currentMaxUpAdjustmentSpeed);
             rb.linearVelocity = new Vector3(mixedVelocity.x, upVelocity, mixedVelocity.z);
         }
         else
@@ -170,8 +183,9 @@ public class PlayerMoveComponent : MonoBehaviour
 
         yield return null;
     }
-    private void OnDestroy()
+    internal override void OnDestroy()
     {
+        base.OnDestroy();
         GetComponent<PlayerInputHandler>().UnregisterInputMoveFuncs(SetInputVector);
         actionHandler.UnregisterJumpAction(DisableGroundingForJump);
         actionHandler.UnregisterSpawnAction(OnSpawn);

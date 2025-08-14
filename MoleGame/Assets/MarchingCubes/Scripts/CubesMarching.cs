@@ -99,7 +99,7 @@ public class CubesMarching : MonoBehaviour
     public void Initialize(Vector3Int worldChunkPos, int worldSeed, Texture2D worldMap, int width, int worldWidth, int height, int worldHeight)
     {
         Random.InitState(worldSeed);
-        m_width = width;
+        m_width = width + 2;
         m_height = height;
 
         m_worldWidth = worldWidth;
@@ -116,7 +116,7 @@ public class CubesMarching : MonoBehaviour
         seededZ = Random.value * 1000;
 
         //Debug.Log(worldPosition);
-        bounds = new(center: worldPosition + new Vector3((float)width / 2, (float)height / 2, (float)width / 2),  size: new Vector3((float) width, (float) height, (float) width));
+        bounds = new(center: worldPosition + new Vector3((float)m_width / 2, (float)m_height / 2, (float)m_width / 2),  size: new Vector3((float) m_width, (float) m_height, (float) m_width));
         SetHeights();
         MarchCubes();
         SetMesh();
@@ -131,9 +131,9 @@ public class CubesMarching : MonoBehaviour
        
             try
             {
-                if (vertices.Count >= 3 &&
-                    triangles.Count % 3 == 0 &&
-                    triangles.All(i => i >= 0 && i < vertices.Count))
+                //if (vertices.Count >= 3 &&
+                //    triangles.Count % 3 == 0 &&
+                //    triangles.All(i => i >= 0 && i < vertices.Count))
                 {
                     // Store a safe copy
                     cachedVertices = vertices.ToArray();
@@ -149,6 +149,8 @@ public class CubesMarching : MonoBehaviour
         // Build mesh from cached data (either updated this frame or old)
         if (cachedVertices != null && cachedTriangles != null)
         {
+            
+
             Mesh mesh = new Mesh();
             mesh.vertices = cachedVertices;
             mesh.triangles = cachedTriangles;
@@ -159,6 +161,7 @@ public class CubesMarching : MonoBehaviour
                 meshfilter.mesh = mesh;
                 meshcollider.sharedMesh = mesh;
             }
+            
         }
 
         return updated;
@@ -234,7 +237,6 @@ public class CubesMarching : MonoBehaviour
             vertices.Clear();
             triangles.Clear();
 
-
             for (int x = 0; x < m_width; x++)
             {
                 for (int y = 0; y < m_height; y++)
@@ -261,8 +263,12 @@ public class CubesMarching : MonoBehaviour
     {
         if(configIndex == 0 || configIndex == 255)
         {
+
             return;
         }
+
+        if(position.x == 0 || position.z == 0 || position.x == m_width - 1 || position.z == m_width - 1)
+            { return; }
 
         int edgeIndex = 0;
         lock (triVertLock)
@@ -308,15 +314,12 @@ public class CubesMarching : MonoBehaviour
     public bool DeformSphere(Vector3 worldDeformPosition, float radius, float intensity)
     {
         bool modified = false;
-
         Vector3 localCenter = worldDeformPosition - worldPosition;
 
         int minX = Mathf.FloorToInt(localCenter.x - radius);
         int maxX = Mathf.CeilToInt(localCenter.x + radius);
-
         int minY = Mathf.FloorToInt(localCenter.y - radius);
         int maxY = Mathf.CeilToInt(localCenter.y + radius);
-
         int minZ = Mathf.FloorToInt(localCenter.z - radius);
         int maxZ = Mathf.CeilToInt(localCenter.z + radius);
 
@@ -335,22 +338,18 @@ public class CubesMarching : MonoBehaviour
 
                     if (dist <= radius)
                     {
-                        modified = true;
-                        float falloff = 1f - (dist / radius); // smooth falloff
+                        float falloff = 1f - (dist / radius);
                         var prevVal = heights[x, y, z];
-                        heights[x, y, z] = Mathf.Clamp01(heights[x, y, z] - intensity * falloff);
+                        heights[x, y, z] = Mathf.Clamp01(prevVal - intensity * falloff);
 
                         if (prevVal != heights[x, y, z])
-                        {
                             modified = true;
-                        }
                     }
                 }
             }
         }
-        if (!modified) return modified;
 
-        MarchCubes();
+        if (modified) MarchCubes();
 
         return modified;
     }
@@ -442,7 +441,7 @@ public class CubesMarching : MonoBehaviour
                         var prevVal = heights[x,y,z];
                         heights[x, y, z] = Mathf.Clamp01(heights[x, y, z] - intensity);
 
-                        if (prevVal != heights[x, y, z])
+                        if(prevVal != heights[x, y, z])
                         {
                             modified = true;
                         }
@@ -484,19 +483,16 @@ public class CubesMarching : MonoBehaviour
                     if (z < 0 || z > m_width) continue;
 
                     var prevVal = heights[x, y, z];
-                    heights[x, y, z] = Mathf.Clamp01(heights[x, y, z] - intensity);
+                    heights[x, y, z] = Mathf.Clamp01(prevVal - intensity);
 
                     if (prevVal != heights[x, y, z])
-                    {
                         modified = true;
-                    }
                 }
             }
         }
 
-        if(!modified) return modified;
-
-        MarchCubes();
+        if (modified)
+            MarchCubes();
 
         return modified;
     }

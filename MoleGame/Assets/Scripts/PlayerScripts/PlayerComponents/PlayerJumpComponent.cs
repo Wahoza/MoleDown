@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerInputHandler), typeof(Rigidbody), typeof(PlayerStateComponent))]
-public class PlayerJumpComponent : MonoBehaviour
+public class PlayerJumpComponent : IPlayerComponent
 {
     [SerializeField] float jumpInputBuffer;
     [SerializeField] float jumpStrength;
@@ -18,7 +18,12 @@ public class PlayerJumpComponent : MonoBehaviour
     private float jumpTimer;
     private Coroutine jumpBufferCoroutine;
 
-    private void Start()
+    internal float currentJumpInputBuffer;
+    internal float currentJumpStrength;
+    internal float currentMaxJumpVelocity;
+    internal float currentBufferedJumpInputDuration;
+
+    internal override void Start()
     {
         GetComponent<PlayerInputHandler>().RegisterInputJumpFuncs(ctx => TryJump());
 
@@ -28,6 +33,17 @@ public class PlayerJumpComponent : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         StartCoroutine(JumpVelocityReduction());
+
+        base.Start();
+    }
+    internal override void ResetStatsOnRespawn()
+    {
+        base.ResetStatsOnRespawn();
+
+        currentJumpInputBuffer = jumpInputBuffer;
+        currentJumpStrength                = jumpStrength;
+        currentMaxJumpVelocity             = maxJumpVelocity;
+        currentBufferedJumpInputDuration   = bufferedJumpInputDuration;
     }
     public void TryJump()
     {
@@ -45,13 +61,13 @@ public class PlayerJumpComponent : MonoBehaviour
     }
     private void Jump()
     {
-        jumpTimer = Time.time + jumpInputBuffer;
+        jumpTimer = Time.time + currentJumpInputBuffer;
 
         Vector3 adjustedVelocity = rb.linearVelocity;
         adjustedVelocity.y = 0;
         rb.linearVelocity = adjustedVelocity;
 
-        rb.AddForce(Vector3.up * jumpStrength, ForceMode.Impulse);
+        rb.AddForce(Vector3.up * currentJumpStrength, ForceMode.Impulse);
 
         actionHandler.OnJump();
     }
@@ -88,17 +104,18 @@ public class PlayerJumpComponent : MonoBehaviour
     {
         while (true)
         {
-            if (!movementSettings.IsGrounded() && rb.linearVelocity.y > maxJumpVelocity)
+            if (!movementSettings.IsGrounded() && rb.linearVelocity.y > currentMaxJumpVelocity)
             {
                 var velocity = rb.linearVelocity;
-                velocity.y = maxJumpVelocity;
+                velocity.y = currentMaxJumpVelocity;
                 rb.linearVelocity = velocity;   
             }
             yield return null;
         }
     }
-    public void OnDestroy()
+    internal override void OnDestroy()
     {
+        base.OnDestroy();
         GetComponent<PlayerInputHandler>().UnregisterInputJumpFuncs(ctx => TryJump());
     }
 }

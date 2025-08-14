@@ -1,10 +1,11 @@
 using System.Collections;
+using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Scripting;
 
 [RequireComponent(typeof(PlayerInputHandler))]
-public class PlayerGrabComponent : MonoBehaviour
+public class PlayerGrabComponent : IPlayerComponent
 {
     [Header("Grab Settings")]
     [SerializeField] float grabObjectAttemptDuration;
@@ -13,15 +14,21 @@ public class PlayerGrabComponent : MonoBehaviour
     [SerializeField] Vector3 throwVelocity;
     [SerializeField] float throwForce;
 
+    internal float currentGrabObjectAttemptDuration;
+    internal float currentGrabGroundWaitBuffer;
+    internal float currentGrabGroundMaxDuration;
+    internal Vector3 currentThrowVelocity;
+    internal float currentThrowForce;
+
     [Header("Grab Objects")]
     [SerializeField] PlayerGrabTrigger grabTrigger;
-    [SerializeField] Transform pocketTransform;
+    [SerializeField] public Transform pocketTransform;
 
     private GrabbableComponent grabbedGrabbable;
     private Coroutine grabCoroutine;
     private float grabStartTime;
     private bool grabCanceled = true;
-    private void Start()
+    internal override void Start()
     {
         GetComponent<PlayerInputHandler>().RegisterGrabFuncs(OnGrabInput);
         GetComponent<PlayerInputHandler>().RegisterInputAttackFuncs((ctx) => ThrowGrabbable());
@@ -29,8 +36,16 @@ public class PlayerGrabComponent : MonoBehaviour
         GetComponent<PlayerActionHandler>().RegisterDeathAction(OnDie);
         GetComponent<PlayerActionHandler>().RegisterGrabbableAction(CancelGrabAttemptGrab);
         grabTrigger.SetPlayerGrabComponent(this);
+        base.Start();
     }
-
+    internal override void ResetStatsOnRespawn()
+    {
+        currentGrabObjectAttemptDuration = grabObjectAttemptDuration;
+        currentGrabGroundWaitBuffer = grabGroundWaitBuffer;
+        currentGrabGroundMaxDuration = grabGroundMaxDuration;
+        currentThrowVelocity = throwVelocity;
+        currentThrowForce = throwForce;
+    }
     void OnDie()
     {
         ReleaseGrabbable();
@@ -106,15 +121,22 @@ public class PlayerGrabComponent : MonoBehaviour
     }
     public void GrabGrabbable(GrabbableComponent grabbable)
     {
-        GetComponent<PlayerActionHandler>().OnGrab(false);
-
-        if (grabbable.releaseAction != null)
+        if (grabbedGrabbable != null)
         {
-            grabbable.releaseAction();
+            return;
         }
 
-        grabbable.OnRelease();
+        GetComponent<PlayerActionHandler>().OnGrab(false);
 
+        if (grabbable.isGrabbed)
+        {
+            if (grabbable.releaseAction != null)
+            {
+                grabbable.releaseAction();
+            }
+
+            //grabbable.OnRelease();
+        }
         CancelGrabAttemptAction();
 
         Debug.Log("Grabbed Object");
@@ -122,7 +144,10 @@ public class PlayerGrabComponent : MonoBehaviour
 
         grabbedGrabbable = grabbable;
 
-        GetComponent<PlayerActionHandler>().OnGrab(true);
+        if (grabbedGrabbable.isReleasable)
+        {
+            GetComponent<PlayerActionHandler>().OnGrab(true);
+        }
     }
 
     public void ReleaseGrabbable()
@@ -147,13 +172,11 @@ public class PlayerGrabComponent : MonoBehaviour
 
     bool TryGrabGround() {
 
-        float elapsedGrabTime = Time.time - grabStartTime - grabObjectAttemptDuration - grabGroundWaitBuffer;
+        float elapsedGrabTime = Time.time - grabStartTime - currentGrabObjectAttemptDuration - currentGrabGroundWaitBuffer;
 
         Debug.Log("GroundGrabAttempt " + elapsedGrabTime.ToString());
 
         if (elapsedGrabTime > 0) {
-
-
             GetComponent<PlayerGrabTerrainComponent>()?.GrabTerrain(elapsedGrabTime);
         }
 
@@ -164,14 +187,16 @@ public class PlayerGrabComponent : MonoBehaviour
     {
         if (grabbedGrabbable != null)
         {
-            grabbedGrabbable.OnThrow((pocketTransform.forward * throwVelocity.x + pocketTransform.up * throwVelocity.y + pocketTransform.right * throwVelocity.z).normalized * throwForce);
+            grabbedGrabbable.OnThrow((pocketTransform.forward * currentThrowVelocity.x + pocketTransform.up * currentThrowVelocity.y + pocketTransform.right * currentThrowVelocity.z).normalized * currentThrowForce);
             grabbedGrabbable = null;
 
             GetComponent<PlayerActionHandler>().OnGrab(false);
         }
     }
-    private void OnDestroy()
+    internal override void OnDestroy()
     {
+        base.OnDestroy();
+
         GetComponent<PlayerInputHandler>().UnregisterInputGrabFuncs(OnGrabInput);
         GetComponent<PlayerInputHandler>().UnregisterInputAttackFuncs((ctx) => ThrowGrabbable());
 

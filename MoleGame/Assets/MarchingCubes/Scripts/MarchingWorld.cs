@@ -135,6 +135,8 @@ public class MarchingWorld : MonoBehaviour
             mapTexture = map.maps[0];
         }
 
+        ObjectManager.Instance?.SetTextureSpawnLocations(mapTexture);
+
         if (randomColorEnabled)
         {
             mainMat = new Material(mainMat);

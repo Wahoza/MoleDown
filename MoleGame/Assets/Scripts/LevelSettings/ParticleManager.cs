@@ -53,6 +53,16 @@ public class ParticleManager : MonoBehaviour
     {
         DoParticles(particleName, position, Vector3.one);   
     }
+    public void ClearParticles()
+    {
+        foreach (var particle in particles)
+        {
+            foreach(var go in particle.Value.list)
+            {
+                go.gameObject.SetActive(false);
+            }
+        }
+    }
     public void DoParticles(string particleName, Vector3 position, Vector3 scale)
     {
         if (particles.ContainsKey(particleName))
@@ -61,6 +71,7 @@ public class ParticleManager : MonoBehaviour
 
             var particle = particles[particleName].list[iterator];
 
+            particle.gameObject.SetActive(true);
             particle.transform.position = position;
             particle.Emit(particleEmitCount);
 

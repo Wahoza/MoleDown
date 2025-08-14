@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UIElements;
 
 
 public class ObjectManager : MonoBehaviour
@@ -13,21 +14,39 @@ public class ObjectManager : MonoBehaviour
     [SerializedDictionary("ObjectPrefab", "SpawnTop")]
     public SerializedDictionary<GameObject, bool> objectSpawnDictionary;
 
+    public List<GameObject> powerUpList;
+    private List<GameObject> powerupsThisRound;
+
     [Header("SpawnRateSettings")]
     [SerializeField] float minSpawnRate;
     [SerializeField] float maxSpawnRate;
     [SerializeField] float minSpawnRateIncrease;
     [SerializeField] float maxSpawnRateIncrease;
 
+    [Header("PowerupSpawnSettings")]
+    [SerializeField] float minPowerupSpawnRate;
+    [SerializeField] float maxPowerupSpawnRate;
+    [SerializeField] float powerupSpawnRateIncrease;
+    [SerializeField] float powerupSpawnChance;
+    [SerializeField] float powerupRoundChance;
+    [SerializeField] float chunkStepSize;
+    [SerializeField] float textureMaxValue;
+
     [Header("SpawnLocations")]
     [SerializeField] BoxCollider spawnAreaTop;
     [SerializeField] Transform spawnBottomHeight;
     [SerializeField] float spawnBottomRadius;
 
-    private Coroutine spawnRoutine;
+    [SerializeField] Texture2D defaulTexture;
+
+    private List<Vector3> possibleSpawnLocations = new();
+    private Coroutine spawnObjectRoutine;
+    private Coroutine spawnPowerupObjectRoutine;
 
     private float currentSpawnRate;
+    private float currentPowerupSpawnRate;
     private float currentSpawnRateIncrease;
+    private float currentPowerupSpawnRateIncrease;
 
     private Dictionary<GameObject, bool> currentObjectDictionary = new();
     private void Awake()
@@ -35,6 +54,7 @@ public class ObjectManager : MonoBehaviour
         if(Instance == null)
         {
             Instance = this;
+            SetTextureSpawnLocations(defaulTexture);
         }
         else
         {
@@ -42,6 +62,29 @@ public class ObjectManager : MonoBehaviour
         }
     }
 
+    public void SetTextureSpawnLocations(Texture2D texture)
+    {
+        possibleSpawnLocations.Clear();
+
+        var texWidth = texture.width;
+        var texHeight = texture.height;
+
+        for (float u = 0; u < texWidth; u += chunkStepSize)
+        {
+            for (float v = 0; v < texHeight; v += chunkStepSize)
+            {
+                var normalizedU = u / texWidth;
+                var normalizedV = v / texHeight;
+                if(texture.GetPixelBilinear(normalizedU, normalizedV).r < textureMaxValue)
+                {
+                    var adjustedPosition = -spawnAreaTop.size / 2;
+                    adjustedPosition += spawnAreaTop.transform.position;
+                    Vector3 areaSize = spawnAreaTop.size;
+                    possibleSpawnLocations.Add(new Vector3(normalizedU * areaSize.x, spawnAreaTop.transform.position.y, normalizedV * areaSize.z));
+                }
+            }
+        }
+    }
     public void StartNewRound()
     {
         currentObjectDictionary.Clear();
@@ -51,12 +94,43 @@ public class ObjectManager : MonoBehaviour
         currentSpawnRate = minSpawnRate;
         currentSpawnRateIncrease = Random.Range(minSpawnRateIncrease, maxSpawnRateIncrease);
 
-        if(spawnRoutine == null)
+
+        if (spawnObjectRoutine == null)
         {
-            spawnRoutine = StartCoroutine(SpawnCoroutine());
+            spawnObjectRoutine = StartCoroutine(SpawnObjectCoroutine());
+        }
+
+        currentPowerupSpawnRate = minPowerupSpawnRate;
+        currentPowerupSpawnRateIncrease = powerupSpawnRateIncrease;
+
+        powerupsThisRound = GetRandomEntries(powerUpList, Random.Range(1, powerUpList.Count));
+
+        if(Random.value <= powerupRoundChance)
+        {
+            Debug.Log("Powerup Round!");
+            if(spawnPowerupObjectRoutine == null && possibleSpawnLocations.Count > 0)
+            {
+                Debug.Log("Powerup Initiated");
+                spawnPowerupObjectRoutine = StartCoroutine(SpawnPowerupCoroutine());
+            }
         }
     }
-    IEnumerator SpawnCoroutine()
+    IEnumerator SpawnPowerupCoroutine()
+    {
+        while (true)
+        {
+            float delay = 1f / currentPowerupSpawnRate;
+            Debug.Log(delay + "PowerupDelay");
+            yield return new WaitForSeconds(delay);
+
+            currentPowerupSpawnRate += currentPowerupSpawnRateIncrease;
+
+            currentPowerupSpawnRate = currentPowerupSpawnRate > maxPowerupSpawnRate ? maxPowerupSpawnRate : (currentPowerupSpawnRate < minPowerupSpawnRate ? minPowerupSpawnRate : currentPowerupSpawnRate);
+
+            SpawnPowerup();
+        }
+    }
+    IEnumerator SpawnObjectCoroutine()
     {
         while (true)
         {
@@ -68,6 +142,21 @@ public class ObjectManager : MonoBehaviour
             currentSpawnRate = currentSpawnRate > maxSpawnRate ? maxSpawnRate : (currentSpawnRate < minSpawnRate ? minSpawnRate : currentSpawnRate);
             
             SpawnObject();
+        }
+    }
+    void SpawnPowerup()
+    {
+        if (Random.value > powerupSpawnChance)
+            return;
+
+        Debug.Log("Powerup Spawned");
+
+        var objectToSpawn = powerupsThisRound[Random.Range(0, powerupsThisRound.Count)];
+
+        if (objectToSpawn != null)
+        {
+            var powerup = Instantiate(objectToSpawn);
+            powerup.transform.position = possibleSpawnLocations[Random.Range(0, possibleSpawnLocations.Count)];
         }
     }
     void SpawnObject() {
@@ -109,10 +198,15 @@ public class ObjectManager : MonoBehaviour
     }
     public void StopSpawning()
     {
-        if(spawnRoutine != null)
+        if(spawnObjectRoutine != null)
         {
-            StopCoroutine(spawnRoutine);
-            spawnRoutine = null;
+            StopCoroutine(spawnObjectRoutine);
+            spawnObjectRoutine = null;
+        }
+        if(spawnPowerupObjectRoutine != null)
+        {
+            StopCoroutine(spawnPowerupObjectRoutine);
+            spawnPowerupObjectRoutine = null;
         }
     }
     public void RegisterObject(GameObject obj)
@@ -140,5 +234,12 @@ public class ObjectManager : MonoBehaviour
             .OrderBy(x => Random.value) // shuffle
             .Take(count)               // pick N
             .ToDictionary(x => x.Key, x => x.Value);
+    }
+    List<T> GetRandomEntries<T>(List<T> source, int count)
+    {
+        return source
+            .OrderBy(x => Random.value)
+            .Take(count)
+            .ToList();
     }
 }

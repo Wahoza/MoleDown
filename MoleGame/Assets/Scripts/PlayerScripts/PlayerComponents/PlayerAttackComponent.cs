@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 [RequireComponent(typeof(PlayerInputHandler),typeof(PlayerActionHandler))]
-public class PlayerAttackComponent : MonoBehaviour
+public class PlayerAttackComponent : IPlayerComponent
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     [Header("Objects")]
@@ -14,22 +14,35 @@ public class PlayerAttackComponent : MonoBehaviour
     [SerializeField] Transform pushHelper;
     [SerializeField] LayerMask terrainLayer;
     private bool isGrabbing;
-    
-    void Start()
+
+    internal float currentPushForce;
+    internal float currentPushDuration;
+    internal float currentTerrainModRange;
+    internal float currentTerrainModIntensity;
+
+    internal override void Start()
     {
         GetComponent<PlayerInputHandler>().RegisterInputAttackFuncs((ctx) => OnAttack());
         GetComponent<PlayerActionHandler>().RegisterGrabAction(OnGrab);
 
         pushHelper.GetComponent<PlayerPushTrigger>()?.SetPlayerAttackComponent(this);
-    }
 
+        base.Start();
+    }
+    internal override void ResetStatsOnRespawn()
+    {
+        currentPushDuration = pushDuration;
+        currentPushForce = pushForce;
+        currentTerrainModRange = terrainModRange;
+        currentTerrainModIntensity = terrainModIntensity;
+    }
     void OnAttack()
     {
         if (isGrabbing) { return; }
 
         GetComponent<PlayerActionHandler>().OnAttack();
 
-        LevelMarchingPlatform.Instance.DeformSphereAt(pushHelper.position, terrainModRange, terrainModIntensity);
+        LevelMarchingPlatform.Instance.DeformSphereAt(pushHelper.position, currentTerrainModRange, currentTerrainModIntensity);
 
         StartCoroutine(ActivatePushHelper());
     }
@@ -37,7 +50,7 @@ public class PlayerAttackComponent : MonoBehaviour
     {
         pushHelper.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(pushDuration);
+        yield return new WaitForSeconds(currentPushDuration);
 
         pushHelper.gameObject.SetActive(false);
     }
@@ -56,11 +69,13 @@ public class PlayerAttackComponent : MonoBehaviour
 
         if(other.GetComponent<Rigidbody>() is var rb && rb != null)
         {
-            rb.AddForce(pushHelper.forward * pushForce, ForceMode.Impulse);
+            rb.AddForce(pushHelper.forward * currentPushForce, ForceMode.Impulse);
         }
     }
-    void OnDestroy()
+    internal override void OnDestroy()
     {
+        base.OnDestroy();
+
         GetComponent<PlayerInputHandler>().UnregisterInputAttackFuncs((ctx) => OnAttack());
         GetComponent<PlayerActionHandler>().UnregisterGrabAction(OnGrab);
     }

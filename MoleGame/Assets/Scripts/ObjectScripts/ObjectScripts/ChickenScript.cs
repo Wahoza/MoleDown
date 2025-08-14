@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ChickenScript : MonoBehaviour
@@ -22,14 +23,27 @@ public class ChickenScript : MonoBehaviour
    
     private void Start()
     {
-        var players = GameManager.Instance.GetAlivePlayers();
+        ObjectManager.Instance.RegisterObject(gameObject);
 
-        if(players.Count <= 0)
+        var players = GameManager.Instance.GetAlivePlayers();
+        var configTarget = players[Random.Range(0, players.Count)];
+
+        var possibleTargets = GameManager.Instance.GetAllObjectsOfPlayerconfig(configTarget);
+        
+        List<Transform> aliveTargets = new ();
+        foreach ( var possibleTarget in possibleTargets)
         {
-            Destroy(gameObject);
-            return;
+            if (!possibleTarget.GetComponent<PlayerStateComponent>().IsDead())
+            {
+                aliveTargets.Add(possibleTarget);
+            }
         }
-        target = players[Random.Range(0, players.Count)];
+        
+        if(aliveTargets.Count <= 0)
+            return;
+
+        target = aliveTargets[Random.Range(0, aliveTargets.Count)];
+        range *= target.transform.localScale.x;
 
         StartCoroutine(WalkRoutine());
 
@@ -42,17 +56,23 @@ public class ChickenScript : MonoBehaviour
         bool isInRange = false;
         while (!isInRange)
         {
-            var direction = target.position - transform.position;
-            var yVelocity = GetComponent<Rigidbody>().linearVelocity.y;
-            direction.y = 0;
-
-            GetComponent<Rigidbody>().linearVelocity = direction.normalized * moveSpeed + Vector3.up * yVelocity;
-
-            if(Vector3.Magnitude(transform.position - target.position) < range)
+            if (target != null)
             {
-                isInRange = true;
-                GetComponent<DoActionOnCallComponent>().DoActions();
+
+
+                var direction = target.position - transform.position;
+                var yVelocity = GetComponent<Rigidbody>().linearVelocity.y;
+                direction.y = 0;
+
+                GetComponent<Rigidbody>().linearVelocity = direction.normalized * moveSpeed + Vector3.up * yVelocity;
+
+                if (Vector3.Magnitude(transform.position - target.position) < range)
+                {
+                    isInRange = true;
+                    GetComponent<DoActionOnCallComponent>().DoActions();
+                }
             }
+
             yield return null;
         }
     }
@@ -60,9 +80,16 @@ public class ChickenScript : MonoBehaviour
     {
         while (true)
         {
-            var lookAt = target.position;
-            lookAt.y = transform.position.y;
-            modelHolder.LookAt(lookAt);
+            if (target != null)
+            {
+                var lookAt = target.position;
+                lookAt.y = transform.position.y;
+
+                if(modelHolder != null)
+                {
+                    modelHolder.LookAt(lookAt);
+                }
+            }
             yield return null;
         }
     }

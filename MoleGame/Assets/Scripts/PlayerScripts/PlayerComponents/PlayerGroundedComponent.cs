@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(PlayerStateComponent), typeof(PlayerActionHandler))]
-public class PlayerGroundedComponent : MonoBehaviour
+public class PlayerGroundedComponent : IPlayerComponent
 {
     [Header("Setup")]
     [SerializeField] BoxCollider FeetBox;
@@ -20,11 +20,13 @@ public class PlayerGroundedComponent : MonoBehaviour
     private bool isGrabbed;
     private Coroutine disableGroundedRoutine;
 
-    private void Start()
+    internal override void Start()
     {
         GetComponent<PlayerStateComponent>().JoinComponent(this);
         GetComponent<PlayerActionHandler>().RegisterGrabbableAction(OnGrab);
         GetComponent<PlayerActionHandler>().RegisterSpawnAction(OnRespawn);
+
+        base.Start();
     }
     public void DisableGroundedForDuration(float duration)
     {
@@ -59,7 +61,7 @@ public class PlayerGroundedComponent : MonoBehaviour
         isGrounded = false;
         if(groundedDisabled) { return; }
 
-        var colliders = Physics.OverlapBox(FeetBox.transform.position, FeetBox.size / 2, transform.rotation, canStandLayers);
+        var colliders = Physics.OverlapBox(FeetBox.transform.position, FeetBox.size / 2 * transform.localScale.x, transform.rotation, canStandLayers);
 
         if (colliders.Count() > alreadyExistingCols)
         {
@@ -96,8 +98,10 @@ public class PlayerGroundedComponent : MonoBehaviour
         lastWasGroundedTime = Time.time;
     }
 
-    private void OnDestroy()
+    internal override void OnDestroy()
     {
+        base.OnDestroy();
+
         GetComponent<PlayerActionHandler>().UnregisterGrabbableAction(OnGrab);
         GetComponent<PlayerActionHandler>().UnregisterSpawnAction(OnRespawn);
     }

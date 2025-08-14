@@ -1,40 +1,54 @@
 using System;
 using UnityEngine;
 
-public class PlayerStateComponent : MonoBehaviour
+public class PlayerStateComponent : IPlayerComponent
 {
     [SerializeField] private bool isStunned;
     [SerializeField] private bool isCanMove;
-    [SerializeField] private bool isGrounded;
+    [SerializeField] private bool isAlwaysGrounded;
     [SerializeField] private bool isGrabbed;
     [SerializeField] private bool isDead;
 
     private PlayerGroundedComponent groundedComponent;
-    private PlayerJumpComponent jumpComponent;
-    private PlayerMoveComponent moveComponent;
-    private PlayerGrabbableComponent grabbableComponent;
+    private PointerScript pointer;
+
+    private Vector3 transformBaseScale;
+    private float rbBaseMass;
+    private Quaternion transformBaseRotation;
+    internal override void Start()
+    {
+
+        transformBaseScale = transform.localScale;
+        rbBaseMass = GetComponent<Rigidbody>().mass;
+        transformBaseRotation = transform.localRotation;
+        isDead = false;
+        pointer.ShowAlive();
+        base.Start();
+    }
+    internal override void ResetStatsOnRespawn()
+    {
+        transform.localScale = transformBaseScale;
+        transform.localRotation = transformBaseRotation;
+        isAlwaysGrounded = false;
+        isDead = false;
+        GetComponent<Rigidbody>().mass = rbBaseMass;
+    }
+    public void SetPlayerPointer(PointerScript newPointer)
+    {
+        pointer = newPointer;
+    }
     public void JoinComponent(MonoBehaviour component)
     {
         if (component is PlayerGroundedComponent pgc)
         {
             groundedComponent = pgc;
         }
-
-        if(component is PlayerJumpComponent pjc)
-        {
-            jumpComponent = pjc;
-        }
-
-        if(component is PlayerMoveComponent pmc)
-        {
-            moveComponent = pmc;
-        }
     }
     public bool IsGrounded()
     {
         if(groundedComponent != null)
         {
-            return groundedComponent.GetGrounded();
+            return groundedComponent.GetGrounded() || isAlwaysGrounded;
         }
         return true;
     }
@@ -56,11 +70,12 @@ public class PlayerStateComponent : MonoBehaviour
         return isGrabbed;
     }
 
-
-    public void SetGrounded(bool grounded)
+    public void SetAlwaysGrounded(bool alwaysGrounded)
     {
-        isGrounded = grounded;
+        isAlwaysGrounded = alwaysGrounded;
+
     }
+
     public void SetStunned(bool stunned)
     {
         isStunned = stunned;
@@ -68,6 +83,14 @@ public class PlayerStateComponent : MonoBehaviour
 
     public void SetIsDead(bool isDead)
     {
+        if (isDead)
+        {
+            pointer.ShowDead();
+        }
+        else
+        {
+            pointer.ShowAlive();
+        }
         this.isDead = isDead;
     }
     public void SetCanMove(bool canMove)
@@ -78,5 +101,14 @@ public class PlayerStateComponent : MonoBehaviour
     public void SetGrabbed(bool grabbed)
     {
         isGrabbed = grabbed;
+    }
+
+    internal override void OnDestroy()
+    {
+        if(pointer != null)
+        {
+            Destroy(pointer.gameObject);
+        }
+        base.OnDestroy();
     }
 }

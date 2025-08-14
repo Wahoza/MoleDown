@@ -85,13 +85,25 @@ MonoBehaviour:
       Value: 1
     - Key: {fileID: 6475081126689018772, guid: f9b3e41afa5f09d488373102c7570144, type: 3}
       Value: 1
+  powerUpList:
+  - {fileID: 5939242046265247020, guid: 52cd90a3942d10f40829dae4ae7f00da, type: 3}
+  - {fileID: 5939242046265247020, guid: 8147572a8e3255042a66b2c025914d18, type: 3}
+  - {fileID: 5939242046265247020, guid: 8a5887116c5da1743bd289847a40cd32, type: 3}
   minSpawnRate: 0.5
   maxSpawnRate: 4
   minSpawnRateIncrease: 0.01
   maxSpawnRateIncrease: 0.1
+  minPowerupSpawnRate: 0.2
+  maxPowerupSpawnRate: 1
+  powerupSpawnRateIncrease: 0.03
+  powerupSpawnChance: 0.5
+  powerupRoundChance: 0.9
+  chunkStepSize: 2
+  textureMaxValue: 0.7
   spawnAreaTop: {fileID: 8676835913033159183}
   spawnBottomHeight: {fileID: 4082494588324426691}
   spawnBottomRadius: 50
+  defaulTexture: {fileID: 2800000, guid: fb46e5412c48a7e42b298e297048f134, type: 3}
 --- !u!1 &7167713400158477364
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,7 +114,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3504385447547485312}
   - component: {fileID: 8676835913033159183}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: SpawnArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -139,7 +151,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 4294967295
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

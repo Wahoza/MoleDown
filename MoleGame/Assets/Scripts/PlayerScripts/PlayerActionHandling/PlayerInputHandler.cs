@@ -8,7 +8,7 @@ using static UnityEngine.InputSystem.InputAction;
 [RequireComponent(typeof(PlayerActionHandler))]
 public class PlayerInputHandler : MonoBehaviour
 {
-    PlayerConfig playerConfig;
+    public PlayerConfig playerConfig {get; private set;}
     private PlayerInputMap controls;
 
     private PlayerStateComponent playerState;
@@ -19,7 +19,7 @@ public class PlayerInputHandler : MonoBehaviour
     private List<Action<CallbackContext>> inputAttackFuncs = new();
 
 
-    public async void Initialize(PlayerConfig pc)
+    public async void Initialize(PlayerConfig pc, bool isClone)
     {
         controls = new();
 
@@ -31,11 +31,18 @@ public class PlayerInputHandler : MonoBehaviour
         }
 
         playerState = GetComponent<PlayerStateComponent>();
-
-        GameManager.Instance.JoinPlayer(pc, gameObject);
-
         GetComponent<PlayerModelControllerComponent>().SetColor(pc.playerColor);
-        await GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatformAsync(true);
+
+        if (!isClone)
+        {
+            GameManager.Instance.JoinPlayer(pc, gameObject);
+
+            await GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatformAsync(true);
+        }
+        else
+        {
+            GameManager.Instance.RegisterClone(pc, gameObject);
+        }
     }
     void Input_onActionTriggered(CallbackContext ctx)
     {
@@ -149,7 +156,7 @@ public class PlayerInputHandler : MonoBehaviour
         inputGrabFuncs.Clear();
         inputJumpFuncs.Clear();
 
-        if (playerConfig.Input != null && playerConfig.Input != null)
+        if (playerConfig.Input != null)
         {
             playerConfig.Input.onActionTriggered -= Input_onActionTriggered;
         }

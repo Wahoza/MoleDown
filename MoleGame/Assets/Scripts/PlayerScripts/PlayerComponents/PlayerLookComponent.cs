@@ -1,12 +1,12 @@
 using UnityEngine;
 [RequireComponent(typeof(PlayerActionHandler), typeof(PlayerStateComponent), typeof(Rigidbody))]
-public class PlayerLookComponent : MonoBehaviour
+public class PlayerLookComponent : IPlayerComponent
 {
     private PlayerStateComponent movementSettings;
 
     private Rigidbody rb;
 
-    private void Start()
+    internal override void Start()
     {
         GetComponent<PlayerInputHandler>().RegisterMoveFuncs(LookInDirection);
         movementSettings = GetComponent<PlayerStateComponent>();
@@ -22,8 +22,9 @@ public class PlayerLookComponent : MonoBehaviour
         }
     }
 
-    private void OnDestroy()
+    internal override void OnDestroy()
     {
+        base.OnDestroy();
         GetComponent<PlayerInputHandler>().UnregisterInputMoveFuncs(LookInDirection);
     }
 }

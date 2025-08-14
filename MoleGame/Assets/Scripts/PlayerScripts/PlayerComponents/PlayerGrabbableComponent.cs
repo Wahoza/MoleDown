@@ -8,14 +8,12 @@ public class PlayerGrabbableComponent : GrabbableComponent
     [SerializeField] Vector3 grabOffset;
     [SerializeField] int jumpsRequiredForEscape;
 
-    private IEnumerator grabRoutine;
+    private Coroutine grabRoutine;
     private int jumpsSinceGrabbed = 0;
 
 
     private void Start()
     {
-        grabRoutine = GrabUpdateCorutine();
-
         GetComponent<PlayerInputHandler>().RegisterInputJumpFuncs((ctx) => IncrementJumpCtr());
         GetComponent<PlayerActionHandler>().RegisterDeathAction(OnDie);
     }
@@ -35,7 +33,7 @@ public class PlayerGrabbableComponent : GrabbableComponent
 
         base.OnGrab(_grabTransform, releaseFunc);
 
-        StartCoroutine(grabRoutine);
+        grabRoutine = StartCoroutine(GrabUpdateCorutine());
     }
 
     public override void OnRelease()
@@ -48,8 +46,10 @@ public class PlayerGrabbableComponent : GrabbableComponent
             rb.isKinematic = false;
         }
 
-        StopCoroutine(grabRoutine);
-
+        if (grabRoutine != null)
+        {
+            StopCoroutine(grabRoutine);
+        }
         base.OnRelease();
     }
 

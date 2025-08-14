@@ -44,10 +44,10 @@ Material:
     - _SpotFrequency: 0.8
     - _StartOffset: -0.5
     m_Colors:
-    - _BottomColor: {r: 0.05856173, g: 0.20966281, b: 0.3962264, a: 1}
-    - _GrassColor: {r: 0.13333333, g: 1, b: 0.7328248, a: 1}
-    - _SpotColor: {r: 0.7411765, g: 0.2679238, b: 0, a: 1}
-    - _TopColor: {r: 0.8867924, g: 0.2649222, b: 0.2649222, a: 1}
+    - _BottomColor: {r: 0.12078494, g: 0, b: 0.32704395, a: 1}
+    - _GrassColor: {r: 1, g: 0.13333333, b: 0.9316668, a: 1}
+    - _SpotColor: {r: 0, g: 0.7411765, b: 0.33541283, a: 1}
+    - _TopColor: {r: 0.8518443, g: 0.26666674, b: 0.8862745, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &216768385489049861
