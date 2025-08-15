@@ -12,6 +12,7 @@ public class GrowMilkPowerupComponent : IPowerupScript
 
     [Header("Effects (Additive)")]
     [SerializeField] IPlayerPassive passiveEffect;
+    [SerializeField] float radiusScaleIncrease;
     [SerializeField] float scaleChange;
     [SerializeField] float massChange;
     [SerializeField] float jumpStrengthChange;
@@ -67,7 +68,13 @@ public class GrowMilkPowerupComponent : IPowerupScript
             if (config.GetComponent<PlayerPassiveComponent>() is PlayerPassiveComponent playerPassive && playerPassive != null)
             {
                 var passive = Instantiate(passiveEffect);
-                playerPassive.RegisterPassive(passive);
+
+                if (passive is DestroyTerrainOnDistanceWalkPassive p)
+                {
+                    //p.offset *= config.localScale.x;
+                    p.deformRadius *= Mathf.Clamp(config.localScale.x * radiusScaleIncrease, 1, 1000);
+                    playerPassive.RegisterPassive(p);
+                }
                 ParticleManager.Instance.DoParticles(particleEffect, config.position);
 
                 config.localScale += Vector3.one * scaleChange;

@@ -3,10 +3,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "DestroyTerrainOnWalk", menuName = "Scriptable Objects/DestroyTerrainOnWalk")]
 public class DestroyTerrainOnDistanceWalkPassive : IPlayerPassive
 {
-    [SerializeField] float distanceRequiredToDestroySqr;
-    [SerializeField] float deformRadius;
-    [SerializeField] Vector3 offset;
-    [SerializeField] float intensity;
+    [SerializeField] internal float distanceRequiredToDestroySqr;
+    [SerializeField] internal float deformRadius;
+    [SerializeField] internal Vector3 offset;
+    [SerializeField] internal float intensity;
 
     private float distanceWalkedSinceDeform;
     public override void OnStart()
