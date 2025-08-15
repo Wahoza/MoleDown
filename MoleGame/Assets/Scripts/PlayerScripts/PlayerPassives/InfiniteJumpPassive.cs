@@ -26,8 +26,6 @@ public class InfiniteJumpPassive : IPlayerPassive
     public override void OnUpdate() {
         base.OnUpdate();
 
-        Debug.Log("Udated");
-
         elapsedTime += Time.deltaTime;
 
         instantiatedFlower.transform.position = flowerPositionTarget.position;

@@ -536,7 +536,7 @@ MonoBehaviour:
   chunksY: 2
   seed: 819
   randomSeed: 1
-  randomShapeEnabled: 0
+  randomShapeEnabled: 1
   defaultSelectedMap: 4
   map: {fileID: 11400000, guid: d737760eb1b4ee940afbbb370dee0a16, type: 2}
   mainMat: {fileID: 41742023}

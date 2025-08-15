@@ -142,18 +142,21 @@ public class PlayerModelControllerComponent : IPlayerComponent
         if(playerFootWalkRoutine != null)
         {
             StopCoroutine(playerFootWalkRoutine);
+            playerFootWalkRoutine = null;
         }
         playerFootWalkRoutine = StartCoroutine(WalkFootRoutine());
 
         if(playerHandWalkRoutine != null)
         {
             StopCoroutine(playerHandWalkRoutine);
+            playerHandWalkRoutine = null;
         }
         playerHandWalkRoutine = StartCoroutine(WalkHandRoutine());
 
         if(bodyAnimRoutine != null)
         {
             StopCoroutine(bodyAnimRoutine);
+            bodyAnimRoutine = null;
         }
         bodyAnimRoutine = StartCoroutine(HeadBobRoutine());
         lastGrabbed = false;
@@ -351,9 +354,9 @@ public class PlayerModelControllerComponent : IPlayerComponent
 
     private IEnumerator JumpRoutine() 
     {
-        StartCoroutine(RotateRoutine(FootL, startJumpRotation, endJumpRotation, baseJumpDuration));
+        footLRoutine = StartCoroutine(RotateRoutine(FootL, startJumpRotation, endJumpRotation, baseJumpDuration));
 
-        yield return StartCoroutine(RotateRoutine(FootR, startJumpRotation, endJumpRotation, baseJumpDuration));
+        yield return footRRoutine = StartCoroutine(RotateRoutine(FootR, startJumpRotation, endJumpRotation, baseJumpDuration));
 
         if (animationSpeed != 0f)
         {
@@ -417,13 +420,20 @@ public class PlayerModelControllerComponent : IPlayerComponent
                 if(playerHandWalkRoutine != null)
                 {
                     StopCoroutine(playerHandWalkRoutine);
+                    playerHandWalkRoutine = null;
                 }
                 playerGrabRoutine = StartCoroutine(HandGrabRoutine());
 
             }
             else
             {
-                if(playerGrabRoutine == null)
+                if (playerHandWalkRoutine != null)
+                {
+                    StopCoroutine(playerHandWalkRoutine);
+                    playerHandWalkRoutine = null;
+                }
+
+                if (playerGrabRoutine == null)
                 {
                     StopHandCoroutines();
 
@@ -431,7 +441,7 @@ public class PlayerModelControllerComponent : IPlayerComponent
                 }
                 else
                 {
-                    playerReleaseRoutine = StartCoroutine(GrabReleaseRoutine());
+                    playerReleaseRoutine = StartCoroutine(HandReleaseRoutine());
                 }
 
             }
@@ -500,17 +510,14 @@ public class PlayerModelControllerComponent : IPlayerComponent
 
         if (playerAttackRoutine == null)
         {
+            StopHandCoroutines();
+
             if (playerHandWalkRoutine != null)
             {
                 StopCoroutine(playerHandWalkRoutine);
-            }
+                playerHandWalkRoutine = null;
 
-            if (playerGrabRoutine != null)
-            {
-                StopCoroutine(playerGrabRoutine);
             }
-
-            StopHandCoroutines();
 
             playerAttackRoutine = StartCoroutine(AttackRoutine());
         }
@@ -522,27 +529,34 @@ public class PlayerModelControllerComponent : IPlayerComponent
         {
             StopCoroutine(handLRotateRoutine);
             StopCoroutine(handRRotateRoutine);
+            handLRotateRoutine = null;
+            handRRotateRoutine = null;
         }
 
         if (handRMoveRoutine != null)
         {
             StopCoroutine(handRMoveRoutine);
             StopCoroutine(handLMoveRoutine);
+            handRMoveRoutine = null;
+            handLMoveRoutine = null;
         }
 
         if(playerGrabRoutine != null)
         {
             StopCoroutine(playerGrabRoutine);
+            playerGrabRoutine = null;
         }
 
         if(playerAttackRoutine != null)
         {
             StopCoroutine(playerAttackRoutine);
+            playerAttackRoutine = null;
         }
 
         if(playerReleaseRoutine != null)
         {
             StopCoroutine(playerReleaseRoutine);
+            playerReleaseRoutine = null;
         }
 
         HandL.transform.localPosition = Vector3.zero;

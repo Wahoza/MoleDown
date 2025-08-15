@@ -120,7 +120,7 @@ public class PlayerMoveComponent : IPlayerComponent
         moveDirection.Set(inputVector.x, 0, inputVector.y);
 
         moveDirection *= currentMoveSpeed;
-        Vector3 mixedVelocity = Vector3.Lerp(rb.linearVelocity, moveDirection, (isGrounded ? currentgroundControll : currentairControll));
+        Vector3 mixedVelocity = Vector3.Lerp(rb.linearVelocity, moveDirection, (isGrounded ? currentgroundControll : currentairControll) * Time.deltaTime);
 
         if (!isStunned)
         {

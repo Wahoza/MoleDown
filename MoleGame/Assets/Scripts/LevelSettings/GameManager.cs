@@ -327,7 +327,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                playerScores.Add(deadPlayers[deadPlayers.Count], score);
+                playerScores.Add(deadPlayers[deadPlayers.Count - 1], score);
             }
 
             foreach(var player in players)
