@@ -24,7 +24,6 @@ public class PlayerGrabTrigger : MonoBehaviour
         {
             if (other.GetComponent<GrabbableComponent>() is GrabbableComponent grabbable && grabbable != null)
             {
-                Debug.Log("GrabAttempt");
                 grabComponent.GrabGrabbable(grabbable);
                 return;
             }

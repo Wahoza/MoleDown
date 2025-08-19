@@ -17,6 +17,7 @@ public class GameSettingsSelector : MonoBehaviour
     [SerializeField] GameObject AToJoinText;
     [SerializeField] LoadingScreenComponent loadingComp;
     [SerializeField] TextMeshProUGUI selectRoundsText;
+    [SerializeField] TextMeshProUGUI selectInsaneRoundsText;
     [SerializeField] TextMeshProUGUI selectScoringSettingsText;
     [SerializeField] TextMeshProUGUI selectReloadSettingsText;
     [SerializeField] List<GameObject> selectionArrows;
@@ -24,6 +25,9 @@ public class GameSettingsSelector : MonoBehaviour
     [Header("DefaultSettings")]
     [SerializeField] private int defaultRounds;
     [SerializeField] private int defaultScoring;
+    [SerializeField] private float defaultInsaneChance;
+    [SerializeField] private float defaultInsaneChanceIncrease;
+
     [SerializeField] private string allScoreString;
     [SerializeField] private string winnerScoreString;
     [SerializeField] private int defaultReload;
@@ -43,10 +47,9 @@ public class GameSettingsSelector : MonoBehaviour
 
     private int currentRounds;
     private int currentScoring;
+    private float currentInsaneChance;
     private int currentReload;
 
-    private float timeInPhase;
-    private float invertedCurrentSpeed;
     private Vector2 lastDirectionInput;
 
     private void Start()
@@ -59,6 +62,10 @@ public class GameSettingsSelector : MonoBehaviour
 
             selectRoundsText.text = defaultRounds.ToString();
             currentRounds = defaultRounds;
+
+            currentInsaneChance = defaultInsaneChanceIncrease;
+            selectInsaneRoundsText.text = $"{(int)(currentInsaneChance * 100)}%";
+
 
             currentScoring = defaultScoring;
 
@@ -178,15 +185,21 @@ public class GameSettingsSelector : MonoBehaviour
             switch (currentSelectedField)
             {
                 case 0:
-                    Debug.Log("Here");
                     currentRounds += (int)(1 * direction.x);
-                    currentRounds = currentRounds < 1 ? 1 : (currentRounds > maxRounds ? maxRounds : currentRounds);
+                    currentRounds = currentRounds < 1 ? maxRounds : (currentRounds > maxRounds ? 1 : currentRounds);
 
                     selectRoundsText.text = currentRounds.ToString();
 
                     break;
 
                 case 1:
+
+                    currentInsaneChance += defaultInsaneChanceIncrease * direction.x;
+                    currentInsaneChance = currentInsaneChance < 0 ? 1 : (Mathf.Round(currentInsaneChance * 100) > 100 ? 0 : currentInsaneChance);
+
+                    selectInsaneRoundsText.text = $"{Mathf.Round(currentInsaneChance * 100)}%";
+                    break;
+                case 2:
                     currentScoring += (int)(1 * direction.x);
                     currentScoring = currentScoring < 0 ? 1 : (currentScoring > 1 ? 0 : currentScoring);
 
@@ -204,7 +217,7 @@ public class GameSettingsSelector : MonoBehaviour
 
                     selectScoringSettingsText.text = currentScoringSettings;
                     break;
-                case 2:
+                case 3:
                     currentReload += (int)(1 * direction.x);
                     currentReload = currentReload < 0 ? 1 : (currentReload > 1 ? 0 : currentReload);
 
@@ -251,6 +264,7 @@ public class GameSettingsSelector : MonoBehaviour
             settingsStarted = false;
 
             GameSettingsManager.Instance.SetRounds(currentRounds);
+            GameSettingsManager.Instance.SetInsaneRoundChance(currentInsaneChance);
             GameSettingsManager.Instance.SetScoringSettings((GameSettingsManager.ScoringSettings)currentScoring);
             GameSettingsManager.Instance.SetReloadSettings((GameSettingsManager.LevelReloadSettings)currentReload);
 

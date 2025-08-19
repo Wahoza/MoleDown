@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FlowerPetalEffect : MonoBehaviour
+public class RotationEffect : MonoBehaviour
 {
-    [SerializeField] List<Transform> petals;
+    [SerializeField] List<Transform> transforms;
     [SerializeField] Vector3 rotation;
 
     private IEnumerator Start()
     {
         while (true)
         {
-            foreach (Transform t in petals)
+            foreach (Transform t in transforms)
             {
                 t.Rotate(rotation * Time.deltaTime);
             }

@@ -30,6 +30,8 @@ public class InfiniteJumpPassive : IPlayerPassive
 
         instantiatedFlower.transform.position = flowerPositionTarget.position;
 
+        player.GetComponent<PlayerStateComponent>().SetAlwaysGrounded(true);
+
         if (elapsedTime > effectDuration)
         {
             OnEnd();

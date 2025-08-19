@@ -4939,6 +4939,7 @@ MonoBehaviour:
   spawnDistance: 1.2
   transformToAnimate: {fileID: 2670174403558649782}
   particleEffect: Sparkle
+  maxCloneCount: 32
 --- !u!114 &7802719916712703765
 MonoBehaviour:
   m_ObjectHideFlags: 0

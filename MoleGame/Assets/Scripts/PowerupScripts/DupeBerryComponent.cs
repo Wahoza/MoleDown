@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 public class DupeBerryComponent : IPowerupScript
@@ -11,7 +12,7 @@ public class DupeBerryComponent : IPowerupScript
     [SerializeField] float spawnDistance;
     [SerializeField] Transform transformToAnimate;
     [SerializeField] string particleEffect;
-    
+    [SerializeField] int maxCloneCount;
     internal override void Start()
     {
         base.Start();
@@ -49,20 +50,27 @@ public class DupeBerryComponent : IPowerupScript
             return; 
         }
 
-        var allPlayers = GameManager.Instance.GetAllObjectsOfPlayerconfig(inputHandler.playerConfig);
+        var allPlayers = GameManager.Instance.GetAllObjectsOfPlayerconfig(inputHandler.playerConfig).Where(player => !player.GetComponent<PlayerStateComponent>().IsDead()).ToList();
 
         GetComponent<SphereCollider>().enabled = false;
+        int createdClones = 0;
         foreach (var config in allPlayers)
         {
+            if(maxCloneCount < createdClones + allPlayers.Count)
+            {
+                return;
+            }
             if (config.GetComponent<PlayerInputHandler>() is PlayerInputHandler playerI && playerI != null)
             {
-                if(config.GetComponent<PlayerStateComponent>().IsDead() || config.GetComponent<PlayerStateComponent>().IsGrabbed())
+                if(config.GetComponent<PlayerStateComponent>().IsGrabbed())
                     { continue; }
 
                 var clone = Instantiate(config);
                 clone.position = config.forward * config.localScale.x * spawnDistance + config.position;
                 clone.GetComponent<PlayerInputHandler>().Initialize(playerI.playerConfig, true);
                 ParticleManager.Instance.DoParticles(particleEffect, clone.position);
+                
+                createdClones++;
             }
         }
     }

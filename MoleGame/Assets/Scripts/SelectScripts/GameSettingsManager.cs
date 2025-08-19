@@ -4,6 +4,7 @@ public class GameSettingsManager : MonoBehaviour
 {
     public static GameSettingsManager Instance {get; private set;}
 
+    
     public enum ScoringSettings {
         Winner = 0,
         All = 1
@@ -13,6 +14,7 @@ public class GameSettingsManager : MonoBehaviour
         GenerateNew = 0,
         ReloadOld = 1
     }
+    private float insaneRoundChance;
     private int rounds;
     private ScoringSettings scoring;
     private LevelReloadSettings levelReload;
@@ -27,6 +29,15 @@ public class GameSettingsManager : MonoBehaviour
     public void SetReloadSettings(LevelReloadSettings reload)
     {
         this.levelReload = reload;
+    }
+
+    public void SetInsaneRoundChance(float insaneRoundChance)
+    {
+        this.insaneRoundChance = insaneRoundChance;
+    }
+    public float GetInsaneRoundChance()
+    {
+        return insaneRoundChance;
     }
     public int GetRounds()
     {

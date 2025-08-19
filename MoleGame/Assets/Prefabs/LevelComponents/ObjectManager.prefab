@@ -62,6 +62,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3504385447547485312}
+  - {fileID: 4060502049224341004}
   - {fileID: 4082494588324426691}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -79,31 +80,97 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectSpawnDictionary:
     _serializedList:
+    - Key: {fileID: 1104131514185097721, guid: 69dc6882ebd3090459dd1b95ae321e5e, type: 3}
+      Value: 2
     - Key: {fileID: 5370920783011278471, guid: b7b82ec80474e3344af822404876ef74, type: 3}
-      Value: 0
+      Value: 1
     - Key: {fileID: 3400822585114527883, guid: 99caae26a943126489b6c5d9e50f3414, type: 3}
-      Value: 1
+      Value: 0
     - Key: {fileID: 6475081126689018772, guid: f9b3e41afa5f09d488373102c7570144, type: 3}
-      Value: 1
+      Value: 0
   powerUpList:
   - {fileID: 5939242046265247020, guid: 52cd90a3942d10f40829dae4ae7f00da, type: 3}
   - {fileID: 5939242046265247020, guid: 8147572a8e3255042a66b2c025914d18, type: 3}
   - {fileID: 5939242046265247020, guid: 8a5887116c5da1743bd289847a40cd32, type: 3}
+  insaneSpawnRateIncrease: 0.7
+  insaneSpawnIncreaseIncrease: 0.07
   minSpawnRate: 0.5
   maxSpawnRate: 4
   minSpawnRateIncrease: 0.01
   maxSpawnRateIncrease: 0.1
+  maxSpawnCount: 3
+  insanePowerupSpawnRateIncrease: 1.38
+  insanePowerupSpawnIncreaseIncrease: 0.1
   minPowerupSpawnRate: 0.2
-  maxPowerupSpawnRate: 1
+  maxPowerupSpawnRate: 5.6
   powerupSpawnRateIncrease: 0.03
-  powerupSpawnChance: 0.5
+  powerupSpawnChance: 0.7
   powerupRoundChance: 0.9
   chunkStepSize: 2
   textureMaxValue: 0.7
   spawnAreaTop: {fileID: 8676835913033159183}
+  spawnAreaBelow: {fileID: 1604230020018498107}
   spawnBottomHeight: {fileID: 4082494588324426691}
   spawnBottomRadius: 50
   defaulTexture: {fileID: 2800000, guid: fb46e5412c48a7e42b298e297048f134, type: 3}
+  raycastHeight: 22
+  raycastLength: 20
+  groudLayerMask:
+    serializedVersion: 2
+    m_Bits: 64
+--- !u!1 &6056768406224994989
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4060502049224341004}
+  - component: {fileID: 1604230020018498107}
+  m_Layer: 2
+  m_Name: SpawnArea_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4060502049224341004
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6056768406224994989}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 32, y: -10, z: 32}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 214899615017077285}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1604230020018498107
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6056768406224994989}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 70, y: 10.07, z: 70}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &7167713400158477364
 GameObject:
   m_ObjectHideFlags: 0

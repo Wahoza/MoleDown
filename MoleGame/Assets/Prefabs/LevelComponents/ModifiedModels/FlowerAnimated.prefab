@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5ec4d3addb5ed74489d83565d4a4cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  petals:
+  transforms:
   - {fileID: 1451564657984866959}
   rotation: {x: 0, y: 0, z: 360}
 --- !u!1001 &6553226291328912054

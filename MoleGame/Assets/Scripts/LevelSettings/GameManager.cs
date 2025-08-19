@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
     public bool isPaused;
     private int rounds;
     private int currentRound;
-    private bool isFinished;
     private bool isFinishedInput;
 
     private Dictionary<PlayerConfig, PlayerSetup> players = new();
@@ -196,8 +195,6 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator DoFinish()
     {
-        isFinished = false;
-
         UIManager.Instance.scoreBoardHolder.gameObject.SetActive(true);
         
         Time.timeScale = 0;

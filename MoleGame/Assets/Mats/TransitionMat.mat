@@ -45,7 +45,7 @@ Material:
     - _CellOffset: 19.88
     - _CellSize: 0
     - _ColorMask: 15
-    - _FillAmount: 1
+    - _FillAmount: 0
     - _FillThreshold: 0.7
     - _Fillamount: 0.37
     - _Stencil: 0

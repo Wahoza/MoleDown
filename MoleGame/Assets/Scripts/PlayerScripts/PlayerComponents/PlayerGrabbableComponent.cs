@@ -16,6 +16,11 @@ public class PlayerGrabbableComponent : GrabbableComponent
     {
         GetComponent<PlayerInputHandler>().RegisterInputJumpFuncs((ctx) => IncrementJumpCtr());
         GetComponent<PlayerActionHandler>().RegisterDeathAction(OnDie);
+        GetComponent<PlayerActionHandler>().RegisterSpawnAction(OnSpawn);
+    }
+    private void OnSpawn()
+    {
+        OnRelease();
     }
     public override void OnGrab(Transform _grabTransform, Action releaseFunc)
     {
@@ -93,5 +98,6 @@ public class PlayerGrabbableComponent : GrabbableComponent
     {
         GetComponent<PlayerActionHandler>().GetComponent<PlayerInputHandler>().UnregisterInputJumpFuncs((ctx) => IncrementJumpCtr());
         GetComponent<PlayerActionHandler>().UnregisterDeathAction(OnDie);
+        GetComponent<PlayerActionHandler>().UnregisterSpawnAction(OnSpawn);
     }
 }

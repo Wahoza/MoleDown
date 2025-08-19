@@ -8,22 +8,34 @@ using UnityEngine.UIElements;
 
 public class ObjectManager : MonoBehaviour
 {
+    public enum SpawnOptions
+    {
+        Above,
+        Around,
+        Below
+    }
+
     public static ObjectManager Instance { get; private set; }
     private List<GameObject> objects = new();
 
     [SerializedDictionary("ObjectPrefab", "SpawnTop")]
-    public SerializedDictionary<GameObject, bool> objectSpawnDictionary;
+    public SerializedDictionary<GameObject, SpawnOptions> objectSpawnDictionary;
 
     public List<GameObject> powerUpList;
     private List<GameObject> powerupsThisRound;
 
     [Header("SpawnRateSettings")]
+    [SerializeField] float insaneSpawnRateIncrease;
+    [SerializeField] float insaneSpawnIncreaseIncrease;
     [SerializeField] float minSpawnRate;
     [SerializeField] float maxSpawnRate;
     [SerializeField] float minSpawnRateIncrease;
     [SerializeField] float maxSpawnRateIncrease;
+    [SerializeField] int maxSpawnCount;
 
     [Header("PowerupSpawnSettings")]
+    [SerializeField] float insanePowerupSpawnRateIncrease;
+    [SerializeField] float insanePowerupSpawnIncreaseIncrease;
     [SerializeField] float minPowerupSpawnRate;
     [SerializeField] float maxPowerupSpawnRate;
     [SerializeField] float powerupSpawnRateIncrease;
@@ -34,12 +46,21 @@ public class ObjectManager : MonoBehaviour
 
     [Header("SpawnLocations")]
     [SerializeField] BoxCollider spawnAreaTop;
+    [SerializeField] BoxCollider spawnAreaBelow;
     [SerializeField] Transform spawnBottomHeight;
     [SerializeField] float spawnBottomRadius;
 
     [SerializeField] Texture2D defaulTexture;
 
+    [Header("ValidTerrainDetection")]
+    [SerializeField] float raycastHeight;
+    [SerializeField] float raycastLength;
+    [SerializeField] LayerMask groudLayerMask;
+
+
+
     private List<Vector3> possibleSpawnLocations = new();
+    private List<Vector3> validTerrainLocations = new();
     private Coroutine spawnObjectRoutine;
     private Coroutine spawnPowerupObjectRoutine;
 
@@ -47,8 +68,8 @@ public class ObjectManager : MonoBehaviour
     private float currentPowerupSpawnRate;
     private float currentSpawnRateIncrease;
     private float currentPowerupSpawnRateIncrease;
-
-    private Dictionary<GameObject, bool> currentObjectDictionary = new();
+    
+    private Dictionary<GameObject, SpawnOptions> currentObjectDictionary = new();
     private void Awake()
     {
         if(Instance == null)
@@ -84,16 +105,26 @@ public class ObjectManager : MonoBehaviour
                 }
             }
         }
+
+        validTerrainLocations = possibleSpawnLocations;
     }
     public void StartNewRound()
     {
+        bool isInsaneRound;
+        isInsaneRound = Random.value <= GameSettingsManager.Instance.GetInsaneRoundChance();
+
         currentObjectDictionary.Clear();
 
-        currentObjectDictionary = GetRandomEntries(objectSpawnDictionary, Random.Range(1, objectSpawnDictionary.Count));
+        currentObjectDictionary = GetRandomEntries(objectSpawnDictionary, Random.Range(1, maxSpawnCount));
 
         currentSpawnRate = minSpawnRate;
         currentSpawnRateIncrease = Random.Range(minSpawnRateIncrease, maxSpawnRateIncrease);
 
+        if (isInsaneRound)
+        {
+            currentSpawnRate += insaneSpawnRateIncrease;
+            currentSpawnRateIncrease += insaneSpawnIncreaseIncrease;
+        }
 
         if (spawnObjectRoutine == null)
         {
@@ -103,9 +134,14 @@ public class ObjectManager : MonoBehaviour
         currentPowerupSpawnRate = minPowerupSpawnRate;
         currentPowerupSpawnRateIncrease = powerupSpawnRateIncrease;
 
+        if (isInsaneRound)
+        {
+            currentPowerupSpawnRate += insanePowerupSpawnRateIncrease;
+            currentPowerupSpawnRateIncrease += insanePowerupSpawnIncreaseIncrease;
+        }
         powerupsThisRound = GetRandomEntries(powerUpList, Random.Range(1, powerUpList.Count));
 
-        if(Random.value <= powerupRoundChance)
+        if(Random.value <= powerupRoundChance || isInsaneRound)
         {
             Debug.Log("Powerup Round!");
             if(spawnPowerupObjectRoutine == null && possibleSpawnLocations.Count > 0)
@@ -120,7 +156,6 @@ public class ObjectManager : MonoBehaviour
         while (true)
         {
             float delay = 1f / currentPowerupSpawnRate;
-            Debug.Log(delay + "PowerupDelay");
             yield return new WaitForSeconds(delay);
 
             currentPowerupSpawnRate += currentPowerupSpawnRateIncrease;
@@ -149,14 +184,19 @@ public class ObjectManager : MonoBehaviour
         if (Random.value > powerupSpawnChance)
             return;
 
-        Debug.Log("Powerup Spawned");
-
         var objectToSpawn = powerupsThisRound[Random.Range(0, powerupsThisRound.Count)];
 
         if (objectToSpawn != null)
         {
+            var pos = GetRandomValidTerrainPoint();
+            if(pos == -Vector3.one)
+            {
+                return;
+            }
+
             var powerup = Instantiate(objectToSpawn);
-            powerup.transform.position = possibleSpawnLocations[Random.Range(0, possibleSpawnLocations.Count)];
+            pos.y = spawnAreaTop.transform.position.y;
+            powerup.transform.position = pos;//possibleSpawnLocations[Random.Range(0, possibleSpawnLocations.Count)];
         }
     }
     void SpawnObject() {
@@ -168,30 +208,52 @@ public class ObjectManager : MonoBehaviour
 
             if (obstacleObject != null)
             {
-                if (entry.Value)
+                switch (entry.Value)
                 {
-                    var randomVals = Random.ColorHSV();
-                    var position = spawnAreaTop.size;
+                    case SpawnOptions.Above:
+                        {
+                            var randomVals = Random.ColorHSV();
+                            var position = spawnAreaTop.size;
 
-                    position.x *= randomVals.r;
-                    position.y *= randomVals.g;
-                    position.z *= randomVals.b;
+                            position.x *= randomVals.r;
+                            position.y *= randomVals.g;
+                            position.z *= randomVals.b;
 
-                    position -= spawnAreaTop.size / 2;
-                    position += spawnAreaTop.transform.position;
+                            position -= spawnAreaTop.size / 2;
+                            position += spawnAreaTop.transform.position;
 
-                    obstacleObject.transform.position = position;
-                }
-                else
-                {
-                    float angle = Random.Range(0f, Mathf.PI * 2f); // random radians 0–360°
-                    float x = Mathf.Cos(angle) * spawnBottomRadius;
-                    float z = Mathf.Sin(angle) * spawnBottomRadius;
-                    Vector3 center = spawnBottomHeight.position;
+                            obstacleObject.transform.position = position;
+                            return;
+                        }
 
-                    var spawn = new Vector3(center.x + x, center.y, center.z + z);
+                    case SpawnOptions.Around:
+                        {
+                            float angle = Random.Range(0f, Mathf.PI * 2f); // random radians 0–360°
+                            float x = Mathf.Cos(angle) * spawnBottomRadius;
+                            float z = Mathf.Sin(angle) * spawnBottomRadius;
+                            Vector3 center = spawnBottomHeight.position;
 
-                    obstacleObject.transform.position = spawn;
+                            var spawn = new Vector3(center.x + x, center.y, center.z + z);
+
+                            obstacleObject.transform.position = spawn;
+                            return;
+                        }
+
+                    case SpawnOptions.Below:
+                        {
+                            var randomVals = Random.ColorHSV();
+                            var position = spawnAreaBelow.size;
+
+                            position.x *= randomVals.r;
+                            position.y *= randomVals.g;
+                            position.z *= randomVals.b;
+
+                            position -= spawnAreaBelow.size / 2;
+                            position += spawnAreaBelow.transform.position;
+
+                            obstacleObject.transform.position = position;
+                        }
+                    break;
                 }
             }
         }
@@ -212,6 +274,27 @@ public class ObjectManager : MonoBehaviour
     public void RegisterObject(GameObject obj)
     {
         objects.Add(obj);
+    }
+
+    public Vector3 GetRandomValidTerrainPoint()
+    { 
+        while(validTerrainLocations.Count > 0)
+        {
+            int index = Random.Range(0, validTerrainLocations.Count);
+            Vector3 pointToCheck = validTerrainLocations[index];
+            pointToCheck.y = raycastHeight;
+            RaycastHit hit;
+            if (Physics.Raycast(pointToCheck, Vector3.down, out hit, raycastLength, groudLayerMask))
+            {
+                return hit.point;
+            }
+            else
+            {
+                validTerrainLocations.RemoveAt(index);
+            }
+        }
+
+        return -Vector3.one;
     }
 
     public void DestroyAllObjects()
