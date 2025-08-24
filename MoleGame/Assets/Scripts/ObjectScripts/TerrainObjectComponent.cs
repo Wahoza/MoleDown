@@ -52,14 +52,11 @@ public class TerrainObjectComponent : MonoBehaviour
 
         Transform pocketTarget = GetComponent<ObjectGrabbableComponent>().pocketTransform;
 
-
-        var hits = Physics.SphereCastAll(grabEffectCenter + transform.position, grabEffectRadius, transform.forward, maxDist, grabbableModLayer);
+        var hits = Physics.OverlapSphere(grabEffectCenter + transform.position, grabEffectRadius, grabbableModLayer);
 
         foreach (var hit in hits)
         {
-            Debug.Log(hit.transform.gameObject.layer);
-
-            if(hit.transform == pocketTarget.parent.parent)
+            if (hit.transform == pocketTarget.parent.parent || hit.transform.GetComponent<PlayerInputHandler>() == null)
                 continue;
 
             Vector3 offset = hit.transform.position - transform.position;

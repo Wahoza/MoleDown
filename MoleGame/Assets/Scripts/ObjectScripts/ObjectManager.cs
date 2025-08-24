@@ -22,6 +22,7 @@ public class ObjectManager : MonoBehaviour
     public SerializedDictionary<GameObject, SpawnOptions> objectSpawnDictionary;
 
     public List<GameObject> powerUpList;
+    public List<GameObject> groundedObstacles;
     private List<GameObject> powerupsThisRound;
 
     [Header("SpawnRateSettings")]
@@ -43,6 +44,12 @@ public class ObjectManager : MonoBehaviour
     [SerializeField] float powerupRoundChance;
     [SerializeField] float chunkStepSize;
     [SerializeField] float textureMaxValue;
+
+    [Header("GroundedObject Settings")]
+    [SerializeField] int minGroundedObjectCount;
+    [SerializeField] int maxGroundedObjectCount;
+    [SerializeField] float groundedRoundChance;
+    [SerializeField] int maxGroundedVariation;
 
     [Header("SpawnLocations")]
     [SerializeField] BoxCollider spawnAreaTop;
@@ -148,6 +155,22 @@ public class ObjectManager : MonoBehaviour
             {
                 Debug.Log("Powerup Initiated");
                 spawnPowerupObjectRoutine = StartCoroutine(SpawnPowerupCoroutine());
+            }
+        }
+
+        if(Random.value <= groundedRoundChance)
+        {
+            int groundedSelectionCount = Random.Range(1, maxGroundedObjectCount);
+            int groundedTotalCount = Random.Range(minGroundedObjectCount, maxGroundedObjectCount);
+            List<GameObject> currentGroundedObjects =GetRandomEntries(groundedObstacles, groundedSelectionCount);
+
+            foreach (var currentGroundedObject in currentGroundedObjects)
+            {
+                for (int i = 0; i < groundedTotalCount / currentGroundedObjects.Count; i++)
+                {
+                    var currentObject = Instantiate(currentGroundedObject);
+                    currentObject.transform.position = GetRandomValidTerrainPoint();
+                }
             }
         }
     }

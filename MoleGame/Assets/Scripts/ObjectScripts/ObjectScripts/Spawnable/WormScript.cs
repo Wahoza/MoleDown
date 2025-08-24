@@ -85,6 +85,8 @@ public class WormScript : MonoBehaviour
 
             bodyTransform.transform.position = spawnPosition;
 
+            bodyTransform.GetComponent<RotationEffect>().rotation *= i % 2 == 0 ? 1 : -1;
+
             BodyPart part = new BodyPart();
 
             part.body = bodyTransform;

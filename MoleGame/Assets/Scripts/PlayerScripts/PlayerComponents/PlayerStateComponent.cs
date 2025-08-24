@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using UnityEngine;
 
@@ -27,6 +28,7 @@ public class PlayerStateComponent : IPlayerComponent
     }
     internal override void ResetStatsOnRespawn()
     {
+        transform.DOKill();
         transform.localScale = transformBaseScale;
         transform.localRotation = transformBaseRotation;
         isAlwaysGrounded = false;

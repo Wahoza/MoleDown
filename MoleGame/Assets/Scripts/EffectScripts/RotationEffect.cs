@@ -5,7 +5,7 @@ using UnityEngine;
 public class RotationEffect : MonoBehaviour
 {
     [SerializeField] List<Transform> transforms;
-    [SerializeField] Vector3 rotation;
+    [SerializeField] public Vector3 rotation;
 
     private IEnumerator Start()
     {

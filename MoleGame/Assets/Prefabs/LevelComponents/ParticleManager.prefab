@@ -50,6 +50,8 @@ MonoBehaviour:
     _serializedList:
     - Key: {fileID: 3927077010944977547, guid: 01f584574d98f5f42818128266dac99c, type: 3}
       Value: Splash
+    - Key: {fileID: 4312625581351001932, guid: 3620405788e43e44f84b13cece0c980c, type: 3}
+      Value: ExplosionSmoke
     - Key: {fileID: 2115389511553989202, guid: eec4960d952d73c429036005ddf22d33, type: 3}
       Value: Sparkle
     - Key: {fileID: 4418315005878345261, guid: 67a0789f1a2debe4db0a7b527140649c, type: 3}

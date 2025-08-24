@@ -49,9 +49,14 @@ public class ParticleManager : MonoBehaviour
         public List<ParticleSystem> list;
         public int currentIterator;
     }
+
     public void DoParticles(string particleName, Vector3 position)
     {
-        DoParticles(particleName, position, Vector3.one);   
+        DoParticles(particleName, position, Vector3.one, particleEmitCount);   
+    }
+    public void DoParticles(string particleName, Vector3 position, Vector3 scale)
+    {
+        DoParticles(particleName, position, scale, particleEmitCount);
     }
     public void ClearParticles()
     {
@@ -63,7 +68,7 @@ public class ParticleManager : MonoBehaviour
             }
         }
     }
-    public void DoParticles(string particleName, Vector3 position, Vector3 scale)
+    public void DoParticles(string particleName, Vector3 position, Vector3 scale, int count)
     {
         if (particles.ContainsKey(particleName))
         {
@@ -73,7 +78,7 @@ public class ParticleManager : MonoBehaviour
 
             particle.gameObject.SetActive(true);
             particle.transform.position = position;
-            particle.Emit(particleEmitCount);
+            particle.Emit(count);
 
             iterator++;
 

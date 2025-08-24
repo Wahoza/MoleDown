@@ -13,6 +13,7 @@ public class GrowMilkPowerupComponent : IPowerupScript
     [Header("Effects (Additive)")]
     [SerializeField] IPlayerPassive passiveEffect;
     [SerializeField] float radiusScaleIncrease;
+    [SerializeField] float scaleIncreaseDuration;
     [SerializeField] float scaleChange;
     [SerializeField] float massChange;
     [SerializeField] float jumpStrengthChange;
@@ -75,9 +76,8 @@ public class GrowMilkPowerupComponent : IPowerupScript
                     p.deformRadius *= Mathf.Clamp(config.localScale.x * radiusScaleIncrease, 1, 1000);
                     playerPassive.RegisterPassive(p);
                 }
-                ParticleManager.Instance.DoParticles(particleEffect, config.position);
-
-                config.localScale += Vector3.one * scaleChange;
+                ParticleManager.Instance.DoParticles(particleEffect, config.position, config.localScale + Vector3.one * scaleChange);
+                config.DOScale(config.localScale += Vector3.one * scaleChange, scaleIncreaseDuration).SetEase(Ease.OutBounce);
                 config.GetComponent<Rigidbody>().mass += massChange;
                 config.GetComponent<PlayerJumpComponent>().currentJumpStrength += jumpStrengthChange;
                 config.GetComponent<PlayerJumpComponent>().currentMaxJumpVelocity += maxJumpVelChange;

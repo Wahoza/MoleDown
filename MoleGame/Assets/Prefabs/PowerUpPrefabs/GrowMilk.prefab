@@ -4939,6 +4939,7 @@ MonoBehaviour:
   transformToAnimate: {fileID: 535556232880019249}
   passiveEffect: {fileID: 11400000, guid: 21d03d65cfbab9a45b166741945cc78a, type: 2}
   radiusScaleIncrease: 0.5
+  scaleIncreaseDuration: 0.12
   scaleChange: 2
   massChange: 2.1
   jumpStrengthChange: 20

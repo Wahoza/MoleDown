@@ -9,6 +9,7 @@ public class PlayerGrabTerrainComponent : IPlayerComponent
     [SerializeField] private float radiusIncrease;
     [SerializeField] private float heightThreshold = 0.5f;
     [SerializeField] private float intensity;
+    [SerializeField] LayerMask groundedObjectLayer;
     private float radius;
 
 
@@ -29,6 +30,7 @@ public class PlayerGrabTerrainComponent : IPlayerComponent
     private bool[,,] modHeights;
     private List<Vector3> vertices = new List<Vector3>();
     private List<int> triangles = new List<int>();
+    private List<IGroundedObstacle> groundedObstacles = new ();
     private int cubeCount;
     private float lowestHeight;
     public async void GrabTerrain(float holdDuration)
@@ -37,6 +39,19 @@ public class PlayerGrabTerrainComponent : IPlayerComponent
 
         radius = radius < currentMinRadius ? currentMinRadius : radius > currentMaxRadius ? currentMaxRadius : radius;
 
+        var grabbedPosition = grabLocation.position;
+
+        groundedObstacles.Clear();
+        foreach (var collider in Physics.OverlapSphere(grabbedPosition, radius))
+        {
+            if (collider.TryGetComponent<IGroundedObstacle>(out var grounded))
+            {
+                groundedObstacles.Add(grounded);
+                grounded.OnGrabGround();
+            }
+        }
+
+        Debug.Log("Grab Terrain Radius: " + radius);
         var grabResult = await LevelMarchingPlatform.Instance.DeformedSphereReturnValues(grabLocation.position, radius, currentIntensity);
         modHeights = grabResult;
 
@@ -88,6 +103,13 @@ public class PlayerGrabTerrainComponent : IPlayerComponent
 
         var newObject = CreateObject();
         SetMesh(newObject);
+
+        foreach (var groundedObstacle in groundedObstacles)
+        {
+            groundedObstacle.transform.parent = newObject.transform;
+            groundedObstacle.transform.localPosition += Vector3.up * lowestHeight;
+            groundedObstacle.SetNewTerrain(newObject.GetComponent<ObjectActionHandler>());
+        }
     }
     void SetHeights()
     {
@@ -168,15 +190,13 @@ public class PlayerGrabTerrainComponent : IPlayerComponent
     }
     private GameObject CreateObject()
     {
-        var newObject = Instantiate(grabResultPrefab, position: grabLocation.position, rotation: Quaternion.identity);
+        var newObject = Instantiate(grabResultPrefab, position: grabLocation.position - Vector3.up * radius, rotation: Quaternion.identity);
 
         newObject.GetComponent<TerrainObjectComponent>().Initialize();
         newObject.GetComponent<TerrainObjectComponent>()?.SetRigidbodyMassByCubeCount(cubeCount);
         newObject.GetComponent<TerrainObjectComponent>()?.SetRadius(radius);
 
-
         GetComponent<PlayerGrabComponent>().GrabGrabbable(newObject.GetComponent<GrabbableComponent>());
-
         return newObject;
     }
 
@@ -229,7 +249,7 @@ public class PlayerGrabTerrainComponent : IPlayerComponent
 
         for(int i = 0; i < vertices.Count; i++)
         {
-            vertices[i] +=  Vector3.up * lowestHeight;
+            vertices[i] += Vector3.up * lowestHeight;
         }
 
         mesh.vertices = vertices.ToArray();

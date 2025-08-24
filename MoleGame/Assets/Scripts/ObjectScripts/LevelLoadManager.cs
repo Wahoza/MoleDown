@@ -72,6 +72,8 @@ public class LevelLoadManager : MonoBehaviour
     }
     private IEnumerator CompleteLoadRoutine()
     {
+        ObjectManager.Instance.StartNewRound();
+
         GameManager.Instance.StartRound();
         loadingScreen.SetActive(true);
 

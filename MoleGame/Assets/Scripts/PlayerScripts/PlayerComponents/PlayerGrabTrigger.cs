@@ -20,11 +20,13 @@ public class PlayerGrabTrigger : MonoBehaviour
     }
     void CheckColliderForGrab(Collider other)
     {
-        if (other != transform.parent)
+        if (other != transform.parent?.parent)
         {
             if (other.GetComponent<GrabbableComponent>() is GrabbableComponent grabbable && grabbable != null)
             {
                 grabComponent.GrabGrabbable(grabbable);
+
+
                 return;
             }
         }

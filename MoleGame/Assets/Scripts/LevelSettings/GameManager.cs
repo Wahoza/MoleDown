@@ -292,6 +292,8 @@ public class GameManager : MonoBehaviour
 
         StartCoroutine(UIManager.Instance.EndContinuePrompt());
 
+        ObjectManager.Instance.StartNewRound();
+
         yield return StartCoroutine(UIManager.Instance.scoreBoardHolder.Disapear());
 
 
@@ -385,7 +387,6 @@ public class GameManager : MonoBehaviour
 
         currentRound++;
 
-        ObjectManager.Instance.StartNewRound();
         UIManager.Instance.SetCurrentRound(currentRound, rounds);
     }
 

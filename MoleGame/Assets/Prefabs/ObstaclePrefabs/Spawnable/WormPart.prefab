@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   transforms:
-  - {fileID: 4023303547139125487}
-  rotation: {x: 0, y: 0, z: 63.2}
+  - {fileID: 2303604717421507501}
+  rotation: {x: 0, y: 90, z: 0}
 --- !u!1001 &1761669640983925830
 PrefabInstance:
   m_ObjectHideFlags: 0

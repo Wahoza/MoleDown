@@ -22,7 +22,7 @@ public class KnockbackOnActionComponent : IActionComponent
     {
         if (collisionWithKinematicRB)
         {
-            var hits = Physics.SphereCastAll(collisionPoint, range, transform.forward, knockBackLayerMask);
+            var hits = Physics.OverlapSphere(collisionPoint, range, knockBackLayerMask);
 
             foreach (var hit in hits)
             {
@@ -31,7 +31,7 @@ public class KnockbackOnActionComponent : IActionComponent
 
                 if (hit.transform.GetComponent<Rigidbody>() is var rb && rb != null) 
                 {
-                    var force = -(hit.point - collisionPoint).normalized * knockBackForce;
+                    var force = (hit.transform.position - collisionPoint).normalized * knockBackForce;
                     force.y = Mathf.Abs(force.y);
 
                     rb.AddForce(force, ForceMode.Impulse);
@@ -40,7 +40,7 @@ public class KnockbackOnActionComponent : IActionComponent
         }
         else if (GetComponent<Rigidbody>() is var rb && rb != null && !rb.isKinematic)
         {
-            var hits = Physics.SphereCastAll(collisionPoint, range, transform.forward, knockBackLayerMask);
+            var hits = Physics.OverlapSphere(collisionPoint, range, knockBackLayerMask);
 
 
             foreach (var hit in hits)
@@ -50,7 +50,7 @@ public class KnockbackOnActionComponent : IActionComponent
 
                 if (hit.transform.GetComponent<Rigidbody>() is var hitrb && hitrb != null)
                 {
-                    var force = -(hit.point - collisionPoint).normalized * knockBackForce;
+                    var force = (hit.transform.position - collisionPoint).normalized * knockBackForce;
                     force.y = Mathf.Abs(force.y);
 
                     hitrb.AddForce(force, ForceMode.Impulse);

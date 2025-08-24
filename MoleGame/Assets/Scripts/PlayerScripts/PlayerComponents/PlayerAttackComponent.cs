@@ -42,7 +42,10 @@ public class PlayerAttackComponent : IPlayerComponent
 
         GetComponent<PlayerActionHandler>().OnAttack();
 
-        LevelMarchingPlatform.Instance.DeformSphereAt(pushHelper.position, currentTerrainModRange, currentTerrainModIntensity);
+        if(Physics.OverlapSphere(pushHelper.position, currentTerrainModRange, terrainLayer).Length > 0)
+        {
+            LevelMarchingPlatform.Instance.DeformSphereAt(pushHelper.position, currentTerrainModRange, currentTerrainModIntensity);
+        }
 
         StartCoroutine(ActivatePushHelper());
     }

@@ -29,7 +29,7 @@ public class PlayerGrabbableComponent : GrabbableComponent
         GetComponent<PlayerStateComponent>().SetGrabbed(true);
         GetComponent<PlayerActionHandler>().OnGrabbable(true);
 
-
+        Debug.Log("I was grabbed!!");
 
         if (GetComponent<Rigidbody>() is Rigidbody rb && rb != null)
         {
@@ -76,7 +76,6 @@ public class PlayerGrabbableComponent : GrabbableComponent
     private void IncrementJumpCtr()
     {
         jumpsSinceGrabbed++;
-        Debug.Log("JUMPPP" + jumpsSinceGrabbed);
     }
     private IEnumerator GrabUpdateCorutine()
     {

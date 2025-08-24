@@ -1,8 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections;
 using System.Threading;
 using UnityEditor;
 using UnityEngine;
+using System;
 
 [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
 
@@ -65,6 +67,8 @@ public class CubesMarching : MonoBehaviour
     private int[] cachedTriangles;
 
     private object triVertLock = new();
+
+    private List<Action> deformActions = new();
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     //public virtual void Start()
     //{
@@ -98,7 +102,7 @@ public class CubesMarching : MonoBehaviour
 
     public void Initialize(Vector3Int worldChunkPos, int worldSeed, Texture2D worldMap, int width, int worldWidth, int height, int worldHeight)
     {
-        Random.InitState(worldSeed);
+        UnityEngine.Random.InitState(worldSeed);
         m_width = width + 2;
         m_height = height;
 
@@ -112,8 +116,8 @@ public class CubesMarching : MonoBehaviour
         meshfilter = GetComponent<MeshFilter>();
         meshcollider = GetComponent<MeshCollider>();
 
-        seededX = Random.value * 1000;
-        seededZ = Random.value * 1000;
+        seededX = UnityEngine.Random.value * 1000;
+        seededZ = UnityEngine.Random.value * 1000;
 
         //Debug.Log(worldPosition);
         bounds = new(center: worldPosition + new Vector3((float)m_width / 2, (float)m_height / 2, (float)m_width / 2),  size: new Vector3((float) m_width, (float) m_height, (float) m_width));
@@ -161,12 +165,29 @@ public class CubesMarching : MonoBehaviour
                 meshfilter.mesh = mesh;
                 meshcollider.sharedMesh = mesh;
             }
-            
+
+            if (updated)
+            {
+                foreach (var action in deformActions)
+                {
+                    action();
+                }
+            }
         }
 
         return updated;
     }
-
+    public void RegisterMeshDeformListener(Action action)
+    {
+        deformActions.Add(action);
+    }
+    public void UnregisterMeshDeformListener(Action action)
+    {
+        if (deformActions.Contains(action))
+        {
+            deformActions.Remove(action);
+        }
+    }
     private void SetHeights()
     {
 

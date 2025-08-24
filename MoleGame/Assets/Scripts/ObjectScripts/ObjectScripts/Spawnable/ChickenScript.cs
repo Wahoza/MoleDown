@@ -26,6 +26,10 @@ public class ChickenScript : MonoBehaviour
         ObjectManager.Instance.RegisterObject(gameObject);
 
         var players = GameManager.Instance.GetAlivePlayers();
+
+        if(players.Count <= 0)
+            return;
+
         var configTarget = players[Random.Range(0, players.Count)];
 
         var possibleTargets = GameManager.Instance.GetAllObjectsOfPlayerconfig(configTarget);
@@ -66,7 +70,7 @@ public class ChickenScript : MonoBehaviour
 
                 GetComponent<Rigidbody>().linearVelocity = direction.normalized * moveSpeed + Vector3.up * yVelocity;
 
-                if (Vector3.Magnitude(transform.position - target.position) < range)
+                if (Vector3.Magnitude(transform.position - target.position) < range * target.localScale.x)
                 {
                     isInRange = true;
                     GetComponent<DoActionOnCallComponent>().DoActions();

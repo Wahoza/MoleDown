@@ -107,7 +107,7 @@ MonoBehaviour:
   mouth: {fileID: 4698128012613576435}
   mouthRotationSpeed: 82.8
   lookAheadDist: 0.06
-  lookSmoothTime: 0
+  lookSmoothTime: 10.9
   airAnimationCurve:
     serializedVersion: 2
     m_Curve:
@@ -251,6 +251,9 @@ MonoBehaviour:
   range: 1.5
   intensity: -3.2
   collisionWithKinematicRB: 1
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!135 &4715861895086935252
 SphereCollider:
   m_ObjectHideFlags: 0
