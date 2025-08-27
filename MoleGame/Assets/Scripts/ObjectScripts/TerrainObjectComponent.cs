@@ -48,9 +48,14 @@ public class TerrainObjectComponent : MonoBehaviour
     private void OnGrab(bool grabbed)
     {
         if(!grabbed) return;
-        Debug.Log("Grabbed");
+        Debug.Log("Grabbed Terrain Object " + transform.childCount);
 
         Transform pocketTarget = GetComponent<ObjectGrabbableComponent>().pocketTransform;
+
+        foreach(var child in transform.GetComponentsInChildren<IGroundedObstacle>())
+        {
+            child.OnTerrainGrabbedSetPocket(pocketTarget);
+        }
 
         var hits = Physics.OverlapSphere(grabEffectCenter + transform.position, grabEffectRadius, grabbableModLayer);
 

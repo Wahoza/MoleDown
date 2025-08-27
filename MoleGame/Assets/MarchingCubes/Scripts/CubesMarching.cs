@@ -51,6 +51,10 @@ public class CubesMarching : MonoBehaviour
     [SerializeField] int defaultSelectedMap;
     [SerializeField] MapHolder map;
 
+    [Header("Decoration")]
+    [SerializeField] CubeDecorating decoration;
+    [SerializeField] float minDecorThreshold;
+    [SerializeField] float maxDecorThreshold;
     [Header("Testing")]
     [SerializeField] bool debugTick = false;
 
@@ -112,6 +116,9 @@ public class CubesMarching : MonoBehaviour
 
         mapTexture = worldMap;
 
+        decoration?.ClearAllObjects();
+        decoration?.SetChunkSize(width, height, width);
+        decoration?.SetWorldPosition(worldPosition);
 
         meshfilter = GetComponent<MeshFilter>();
         meshcollider = GetComponent<MeshCollider>();
@@ -142,6 +149,9 @@ public class CubesMarching : MonoBehaviour
                     // Store a safe copy
                     cachedVertices = vertices.ToArray();
                     cachedTriangles = triangles.ToArray();
+
+                    decoration.UpdateDecoration();
+
                     updated = true;
                 }
             }
@@ -266,6 +276,17 @@ public class CubesMarching : MonoBehaviour
                     {
                         float[] cubeCorneres = new float[8];
 
+                        if (x > 0 && y > 0 && z > 0)
+                        {
+                            if (heights[x, y, z] > minDecorThreshold && heights[x, y, z] < maxDecorThreshold)
+                            {
+                                decoration.PlaceObject(new Vector3Int(x, y, z));
+                            }
+                            else
+                            {
+                                decoration.RemoveObject(new Vector3Int(x, y, z));
+                            }
+                        }
 
                         for (int i = 0; i < 8; i++)
                         {

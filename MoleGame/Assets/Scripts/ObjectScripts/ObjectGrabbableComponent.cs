@@ -48,9 +48,9 @@ public class ObjectGrabbableComponent : GrabbableComponent
 
         transform.DOKill();
 
-        pocketTransform = null;
-
         GetComponent<ObjectActionHandler>().OnGrab(false);
+
+        pocketTransform = null;
     }
 
     public override void OnThrow(Vector3 velocity)

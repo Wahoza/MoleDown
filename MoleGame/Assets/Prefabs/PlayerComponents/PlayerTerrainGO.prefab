@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: -4536771514843895389}
   - component: {fileID: 4351415949233709142}
   - component: {fileID: 474489790279873633}
+  - component: {fileID: -1593310562534941121}
   m_Layer: 0
   m_Name: PlayerTerrainGO
   m_TagString: Untagged
@@ -127,7 +128,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.01
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -169,7 +170,7 @@ MonoBehaviour:
     - Key: {fileID: 1757085159142919666}
       Value:
         serializedVersion: 2
-        m_Bits: 65
+        m_Bits: 64
 --- !u!114 &8621648263660256769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -233,6 +234,9 @@ MonoBehaviour:
   range: 0
   intensity: -0.83
   collisionWithKinematicRB: 0
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!114 &4351415949233709142
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,7 +249,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d5a1a1177accf42a3a13c82d4ba4f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeToMassConversion: 0.01
+  cubeToMassConversion: 0.05
   baseWeight: 1
   extraEffectRange: 1.43
   terrainGrabRadiusModifier: -0.5
@@ -266,3 +270,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7deb1468e103d094bbc8f91673b2b3f0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-1593310562534941121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 962845958470146338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ff3aa0c2c4b1334995a570824ca391a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minYLevel: 0

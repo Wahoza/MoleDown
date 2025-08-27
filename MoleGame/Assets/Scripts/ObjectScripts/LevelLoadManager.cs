@@ -72,9 +72,10 @@ public class LevelLoadManager : MonoBehaviour
     }
     private IEnumerator CompleteLoadRoutine()
     {
+        GameManager.Instance.SpawnPlayers();
         ObjectManager.Instance.StartNewRound();
-
         GameManager.Instance.StartRound();
+
         loadingScreen.SetActive(true);
 
         yield return loadingScreen.transform.DOLocalMoveY(heightChange, moveUpDuration).SetEase(Ease.InSine).SetUpdate(UpdateType.Normal ,true).WaitForCompletion();

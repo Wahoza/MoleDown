@@ -290,9 +290,12 @@ public class GameManager : MonoBehaviour
             scoreList[i].gameObject.SetActive(false);
         }
 
-        StartCoroutine(UIManager.Instance.EndContinuePrompt());
+        SpawnPlayers();
+
 
         ObjectManager.Instance.StartNewRound();
+
+        StartCoroutine(UIManager.Instance.EndContinuePrompt());
 
         yield return StartCoroutine(UIManager.Instance.scoreBoardHolder.Disapear());
 
@@ -369,17 +372,19 @@ public class GameManager : MonoBehaviour
         }
 
     }
-    public void StartRound()
+    public void SpawnPlayers()
     {
         deadPlayers.Clear();
         alivePlayers.Clear();
 
-        foreach(var player in players)
+        foreach (var player in players)
         {
             alivePlayers.Add(player.Key);
             group.AddMember(player.Value.player.transform, 1, playerCameraRadius);
         }
-
+    }
+    public void StartRound()
+    {
         gameCamera.gameObject.SetActive(true);
         intermissionScoreEvalCamera.gameObject.SetActive(false);
 
@@ -392,6 +397,8 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator ReloadLevel()
     {
+        ObjectManager.Instance.DestroyAllObjects();
+
         switch (GameSettingsManager.Instance.GetReloadSettings())
         {
             case GameSettingsManager.LevelReloadSettings.GenerateNew:
@@ -405,7 +412,6 @@ public class GameManager : MonoBehaviour
                 break;
             }
         }
-        ObjectManager.Instance.DestroyAllObjects();
 
         var scoreList = players
             .OrderBy(kvp => kvp.Key.finalPoints)

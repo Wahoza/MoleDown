@@ -61,7 +61,7 @@ public class PlayerGroundedComponent : IPlayerComponent
         isGrounded = false;
         if(groundedDisabled) { return; }
 
-        var colliders = Physics.OverlapBox(FeetBox.transform.position, FeetBox.size / 2 * transform.localScale.x, transform.rotation, canStandLayers);
+        var colliders = Physics.OverlapBox(FeetBox.transform.position, FeetBox.size / 2 * transform.localScale.x, transform.rotation, canStandLayers, QueryTriggerInteraction.Ignore);
 
         if (colliders.Count() > alreadyExistingCols)
         {

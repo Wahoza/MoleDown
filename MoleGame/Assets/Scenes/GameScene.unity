@@ -568,6 +568,8 @@ MonoBehaviour:
   - {r: 0, g: 0.3883533, b: 0.7411765, a: 1}
   - {r: 0.7411765, g: 0.2679238, b: 0, a: 1}
   randomColorEnabled: 1
+  decorMat: {fileID: 2100000, guid: bc353f6bfde1b0b45bdc7119de6aa119, type: 2}
+  decorColorOffsetToBase: {r: 0.08235294, g: 0.078965, b: 0.078965, a: 0}
   particleName: Ground
   audioName: DestroyTerrain
   particleRadiusAdjustment: 0.8
@@ -2281,13 +2283,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3791756202586340112, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
-      propertyPath: maxSpawnRateIncrease
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3791756202586340112, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
       propertyPath: minSpawnRateIncrease
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3791756202586340112, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
+      propertyPath: groundedObstacles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3791756202586340112, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
+      propertyPath: 'groundedObstacles.Array.data[0]'
+      value: 
+      objectReference: {fileID: 3359579025772358803, guid: 4f0881e3a0713c24a90f71b94752daf2, type: 3}
     - target: {fileID: 5758559166580457566, guid: feb6350da124e4e46b5ea7f1ad87f2ba, type: 3}
       propertyPath: m_Name
       value: ObjectManager
@@ -2384,6 +2390,10 @@ PrefabInstance:
     - target: {fileID: 896369766685095609, guid: 481542da87d91724dbb787ae653b309e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2372059947859862253, guid: 481542da87d91724dbb787ae653b309e, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4855127768170330761, guid: 481542da87d91724dbb787ae653b309e, type: 3}
       propertyPath: m_Name

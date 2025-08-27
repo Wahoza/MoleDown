@@ -10,10 +10,27 @@ public class IGroundedObstacle : MonoBehaviour
     [SerializeField] float rayGroundedCheckLength;
     [SerializeField] float raySuffocateCheckLength;
     [SerializeField] float grabOffsetHeight;
-
+    [SerializeField] float minDistanceFromPlayer;
     internal bool isOnGrabbedTerrain = false;
+
     internal virtual void Start()
     {
+        var players = GameManager.Instance.GetAlivePlayers();
+        foreach (var p in players)
+        {
+            var ptransforms = GameManager.Instance.GetAllObjectsOfPlayerconfig(p);
+            foreach (var playerTransform in ptransforms)
+            {
+                var distVec = playerTransform.position - transform.position;
+                distVec.y = 0;
+                if (Vector3.SqrMagnitude(distVec) < minDistanceFromPlayer * minDistanceFromPlayer)
+                {
+                    Destroy(gameObject);
+                    Debug.Log("TOO CLOSE!!!!");
+                    return;
+                }
+            }
+        }
         RaycastHit hit;
         if (Physics.Raycast(terrainCheckStartPosition.position, Vector3.down, out hit, rayGroundedCheckLength, terrainLayerMask))
         {
@@ -47,6 +64,11 @@ public class IGroundedObstacle : MonoBehaviour
 
     private void OnTerrainDeform()
     {
+        if(Time.timeScale == 0)
+        {
+            return;
+        }
+
         if (isOnGrabbedTerrain)
         {
             return;
@@ -73,6 +95,8 @@ public class IGroundedObstacle : MonoBehaviour
             myChunk.UnregisterMeshDeformListener(OnTerrainDeform);
         }
     }
+
+    public virtual void OnTerrainGrabbedSetPocket(Transform pocketTransform) { }
 
     public virtual void OnGrabGround()
     {

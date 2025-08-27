@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class PlayerStateComponent : IPlayerComponent
@@ -10,6 +11,7 @@ public class PlayerStateComponent : IPlayerComponent
     [SerializeField] private bool isGrabbed;
     [SerializeField] private bool isDead;
 
+    private int ragdollRequestCounter = 0;
     private PlayerGroundedComponent groundedComponent;
     private PointerScript pointer;
 
@@ -34,6 +36,54 @@ public class PlayerStateComponent : IPlayerComponent
         isAlwaysGrounded = false;
         isDead = false;
         GetComponent<Rigidbody>().mass = rbBaseMass;
+        GetComponent<Rigidbody>().freezeRotation = true;
+        ragdollRequestCounter = 0;
+    }
+
+    public void EnableRagdoll()
+    {
+        if (ragdollRequestCounter < 0)
+        {
+            ragdollRequestCounter = 0;
+        }
+
+        ragdollRequestCounter++;
+
+        if (ragdollRequestCounter >= 0)
+        {
+            GetComponent<Rigidbody>().freezeRotation = false;
+        }
+
+        Debug.Log("Ragdoll Rqs: " + ragdollRequestCounter);
+    }
+    public void DisableRagdoll()
+    {
+        ragdollRequestCounter--;
+        if(ragdollRequestCounter < 0)
+        {
+            ragdollRequestCounter = 0;
+        }
+        if(ragdollRequestCounter <= 0)
+        {
+            GetComponent<Rigidbody>().freezeRotation = true;
+
+            var lookDir = GetComponent<Rigidbody>().linearVelocity;
+            lookDir.y = 0;
+
+            Quaternion lookQuart;
+            if (lookDir != Vector3.zero)
+            {
+                lookQuart = Quaternion.LookRotation(lookDir);
+            }
+            else
+            {
+                lookQuart = Quaternion.identity;
+            }
+
+            GetComponent<Rigidbody>().MoveRotation(lookQuart);
+        }
+        Debug.Log("Ragdoll Rqs: " + ragdollRequestCounter);
+
     }
     public void SetPlayerPointer(PointerScript newPointer)
     {
@@ -54,6 +104,7 @@ public class PlayerStateComponent : IPlayerComponent
         }
         return true;
     }
+
 
     public bool CanMove()
     {

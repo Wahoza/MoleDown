@@ -110,6 +110,8 @@ public class PlayerGrabTerrainComponent : IPlayerComponent
             groundedObstacle.transform.localPosition += Vector3.up * lowestHeight;
             groundedObstacle.SetNewTerrain(newObject.GetComponent<ObjectActionHandler>());
         }
+
+        GetComponent<PlayerGrabComponent>().GrabGrabbable(newObject.GetComponent<GrabbableComponent>());
     }
     void SetHeights()
     {
@@ -196,7 +198,6 @@ public class PlayerGrabTerrainComponent : IPlayerComponent
         newObject.GetComponent<TerrainObjectComponent>()?.SetRigidbodyMassByCubeCount(cubeCount);
         newObject.GetComponent<TerrainObjectComponent>()?.SetRadius(radius);
 
-        GetComponent<PlayerGrabComponent>().GrabGrabbable(newObject.GetComponent<GrabbableComponent>());
         return newObject;
     }
 

@@ -60,8 +60,6 @@ public class PlayerAttackComponent : IPlayerComponent
     void OnGrab(bool grab)
     {
         isGrabbing = grab;
-
-        Debug.Log(isGrabbing + "Is grabbing (from attackComponent)");
     }
 
     public void PushObject(GameObject other)

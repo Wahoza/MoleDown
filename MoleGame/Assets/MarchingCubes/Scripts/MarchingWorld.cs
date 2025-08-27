@@ -32,6 +32,10 @@ public class MarchingWorld : MonoBehaviour
 
     [SerializeField] bool randomColorEnabled;
 
+    [Header("Decor")]
+    [SerializeField] Material decorMat;
+    [SerializeField] Color decorColorOffsetToBase;
+
     [Header("Particles")]
     [SerializeField] string particleName;
     [SerializeField] string audioName;
@@ -143,7 +147,9 @@ public class MarchingWorld : MonoBehaviour
         {
             mainMat = new Material(mainMat);
 
-            Color grassColor = grassColors[Random.Range(0, grassColors.Count)];
+            int grassColorID = Random.Range(0, grassColors.Count);
+
+            Color grassColor = grassColors[grassColorID];
             Color groundPrimaryColor = groundPrimaryColors[Random.Range(0, groundPrimaryColors.Count)];
             Color groundSecondaryColor = groundSecondaryColors[Random.Range(0, groundSecondaryColors.Count)];
             Color spotColor = spotColors[Random.Range(0, spotColors.Count)];
@@ -160,6 +166,9 @@ public class MarchingWorld : MonoBehaviour
 
             particleMat.SetColor(grassString, grassColor);
             particleMat.SetColor(groundPrimaryString, groundPrimaryColor);
+
+            decorMat.SetColor(grassString, grassColor - decorColorOffsetToBase);
+            decorMat.SetColor(groundPrimaryString, grassColors[((grassColorID + 1) >= grassColors.Count) ? 0 : (grassColorID + 1)]);
         }
         if (randomSeed)
         {

@@ -160,7 +160,7 @@ public class ObjectManager : MonoBehaviour
 
         if(Random.value <= groundedRoundChance)
         {
-            int groundedSelectionCount = Random.Range(1, maxGroundedObjectCount);
+            int groundedSelectionCount = Random.Range(1, maxGroundedVariation);
             int groundedTotalCount = Random.Range(minGroundedObjectCount, maxGroundedObjectCount);
             List<GameObject> currentGroundedObjects =GetRandomEntries(groundedObstacles, groundedSelectionCount);
 

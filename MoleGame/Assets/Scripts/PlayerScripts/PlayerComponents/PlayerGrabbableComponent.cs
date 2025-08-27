@@ -55,6 +55,11 @@ public class PlayerGrabbableComponent : GrabbableComponent
         {
             StopCoroutine(grabRoutine);
         }
+
+        var forwardVec = transform.forward;
+        forwardVec.y = 0;
+        transform.forward = forwardVec;
+
         base.OnRelease();
     }
 

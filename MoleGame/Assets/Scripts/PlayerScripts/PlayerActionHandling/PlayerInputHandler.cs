@@ -70,26 +70,37 @@ public class PlayerInputHandler : MonoBehaviour
     {
         Vector2 move = ctx.ReadValue<Vector2>();
         if(move == null ) return;
-        foreach (var func in inputMoveFuncs)
+        for (int i = inputMoveFuncs.Count - 1; i >= 0; i--)
         {
-            func(move);
+            if (i >= inputMoveFuncs.Count) { continue; }
+            {
+                {
+                    inputMoveFuncs[i].Invoke(move);
+                }
+            }
         }
     }
 
     void OnGrab(CallbackContext ctx)
     {
-        foreach (var func in inputGrabFuncs)
+        for (int i = inputGrabFuncs.Count - 1; i >= 0; i--)
         {
-            func(ctx);
+            if (i >= inputGrabFuncs.Count) { continue; }
+            {
+                inputGrabFuncs[i].Invoke(ctx);
+            }
         }
     }
     void OnJump(CallbackContext ctx)
     {
         if (ctx.phase == InputActionPhase.Started)
         {
-            foreach (var func in inputJumpFuncs)
+            for (int i = inputJumpFuncs.Count - 1; i >= 0; i--)
             {
-                func(ctx);
+                if (i >= inputJumpFuncs.Count) { continue; }
+                {
+                    inputJumpFuncs[i].Invoke(ctx);
+                }
             }
         }
     }
@@ -97,9 +108,12 @@ public class PlayerInputHandler : MonoBehaviour
     {
         if (ctx.phase == InputActionPhase.Started)
         {
-            foreach (var func in inputAttackFuncs)
+            for (int i = inputAttackFuncs.Count - 1; i >= 0; i--)
             {
-                func(ctx);
+                if (i >= inputAttackFuncs.Count) { continue; }
+                {
+                    inputAttackFuncs[i].Invoke(ctx);
+                }
             }
         }
     }

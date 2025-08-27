@@ -15,45 +15,51 @@ public class PlayerActionHandler : MonoBehaviour
     List<Action> spawnActions = new();
     public void OnWalk(Vector3 walkDirection)
     {
-        foreach (var action in moveActions)
+        for (int i = moveActions.Count - 1; i >= 0; i--)
         {
-            action(walkDirection);
+            if (i >= moveActions.Count) { continue; }
+            moveActions[i].Invoke(walkDirection);
         }
     }
     public void OnJump()
     {
-        foreach(var action in jumpActions)
+        for (int i = jumpActions.Count - 1; i >= 0; i--)
         {
-            action();
+            if (i >= jumpActions.Count) { continue; }
+            jumpActions[i].Invoke();
         }
     }
     public void OnLand(float airTime)
     {
-        foreach(var action in landActions)
+        for (int i = landActions.Count - 1; i >= 0; i--)
         {
-            action(airTime);
+            if (i >= landActions.Count) { continue; }
+            landActions[i].Invoke(airTime);
         }
     }
     public void OnGrabbable(bool grabbed)
     {
-        foreach(var action in grabbableActions)
+        for(int i = grabbableActions.Count - 1; i >= 0; i--)
         {
-            action(grabbed);
+            if(i >= grabbableActions.Count) { continue; }
+            grabbableActions[i].Invoke(grabbed);
         }
     }
     public void OnGrab(bool grab)
     {
-        foreach( var action in grabActions)
+        for (int i = grabActions.Count - 1; i >= 0; i--)
         {
-            action(grab);
+            if (i >= grabActions.Count) { continue; }
+            grabActions[i].Invoke(grab);
         }
     }
 
     public void OnAttack()
     {
-        foreach(var action in attackActions)
+        for (int i = attackActions.Count - 1; i >= 0; i--)
         {
-            action();
+            if (i >= attackActions.Count) { continue; }
+            attackActions[i].Invoke();
         }
     }
 
@@ -66,9 +72,10 @@ public class PlayerActionHandler : MonoBehaviour
         GetComponent<Rigidbody>().freezeRotation = false;
         GetComponent<PlayerStateComponent>().SetIsDead(true);
 
-        foreach(var action in deathActions)
+        for (int i = deathActions.Count - 1; i >= 0; i--)
         {
-            action();
+            if (i >= deathActions.Count) { continue; }
+            deathActions[i].Invoke();
         }
 
         foreach (var behavior in behaviors)
@@ -94,9 +101,10 @@ public class PlayerActionHandler : MonoBehaviour
         GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
         GetComponent<PlayerStateComponent>().SetIsDead(false);
 
-        foreach (var action in spawnActions)
+        for (int i = spawnActions.Count - 1; i >= 0; i--)
         {
-            action();
+            if (i >= spawnActions.Count) { continue; }
+            spawnActions[i].Invoke();
         }
     }
     internal void RegisterAttackAction(Action action)

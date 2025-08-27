@@ -16,7 +16,7 @@ public class PlayerLookComponent : IPlayerComponent
     {
         if (lookDir.x != 0 || lookDir.y != 0)
         {
-            Vector3 targetDir = new Vector3(-lookDir.x, 0, -lookDir.y);
+            Vector3 targetDir = new Vector3(-lookDir.x, transform.forward.y, -lookDir.y);
             Quaternion targetRot = Quaternion.LookRotation(targetDir);
             rb.MoveRotation(targetRot);
         }

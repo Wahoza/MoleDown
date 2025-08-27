@@ -94,6 +94,7 @@ MonoBehaviour:
   - {fileID: 5939242046265247020, guid: 8a5887116c5da1743bd289847a40cd32, type: 3}
   groundedObstacles:
   - {fileID: 8900754559794833716, guid: ca3341ab48ec4d742bf993bd69a66f61, type: 3}
+  - {fileID: 3359579025772358803, guid: 4f0881e3a0713c24a90f71b94752daf2, type: 3}
   insaneSpawnRateIncrease: 0.7
   insaneSpawnIncreaseIncrease: 0.07
   minSpawnRate: 0.5
@@ -101,8 +102,8 @@ MonoBehaviour:
   minSpawnRateIncrease: 0.01
   maxSpawnRateIncrease: 0.1
   maxSpawnCount: 3
-  insanePowerupSpawnRateIncrease: 0.85
-  insanePowerupSpawnIncreaseIncrease: 0.1
+  insanePowerupSpawnRateIncrease: 0.35
+  insanePowerupSpawnIncreaseIncrease: 0.06
   minPowerupSpawnRate: 0.2
   maxPowerupSpawnRate: 5.6
   powerupSpawnRateIncrease: 0.03
@@ -110,10 +111,10 @@ MonoBehaviour:
   powerupRoundChance: 0.9
   chunkStepSize: 2
   textureMaxValue: 0.7
-  minGroundedObjectCount: 5
-  maxGroundedObjectCount: 16
-  groundedRoundChance: 0.38
-  maxGroundedVariation: 2
+  minGroundedObjectCount: 9
+  maxGroundedObjectCount: 35
+  groundedRoundChance: 0.44
+  maxGroundedVariation: 1
   spawnAreaTop: {fileID: 8676835913033159183}
   spawnAreaBelow: {fileID: 1604230020018498107}
   spawnBottomHeight: {fileID: 4082494588324426691}

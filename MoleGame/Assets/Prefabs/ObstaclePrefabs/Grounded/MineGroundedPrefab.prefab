@@ -282,6 +282,7 @@ MonoBehaviour:
   rayGroundedCheckLength: 1.17
   raySuffocateCheckLength: 0.18
   grabOffsetHeight: -0.12
+  minDistanceFromPlayer: 5
   objectActions:
   - {fileID: -3524134488230121598}
   - {fileID: -505399096977046840}
