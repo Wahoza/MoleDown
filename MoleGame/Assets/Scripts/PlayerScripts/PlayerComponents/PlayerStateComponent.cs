@@ -11,6 +11,11 @@ public class PlayerStateComponent : IPlayerComponent
     [SerializeField] private bool isGrabbed;
     [SerializeField] private bool isDead;
 
+
+    [field: SerializeField] public float ragdollWeightChange { get; private set; }
+
+    private bool isRagdoll;
+
     private int ragdollRequestCounter = 0;
     private PlayerGroundedComponent groundedComponent;
     private PointerScript pointer;
@@ -30,7 +35,11 @@ public class PlayerStateComponent : IPlayerComponent
     }
     internal override void ResetStatsOnRespawn()
     {
+        
         transform.DOKill();
+
+        DisableRagdoll();
+
         transform.localScale = transformBaseScale;
         transform.localRotation = transformBaseRotation;
         isAlwaysGrounded = false;
@@ -42,6 +51,9 @@ public class PlayerStateComponent : IPlayerComponent
 
     public void EnableRagdoll()
     {
+        if(isRagdoll) 
+            return;
+
         if (ragdollRequestCounter < 0)
         {
             ragdollRequestCounter = 0;
@@ -52,6 +64,9 @@ public class PlayerStateComponent : IPlayerComponent
         if (ragdollRequestCounter >= 0)
         {
             GetComponent<Rigidbody>().freezeRotation = false;
+            GetComponent<Rigidbody>().mass *= ragdollWeightChange;
+
+            isRagdoll = true;
         }
 
         Debug.Log("Ragdoll Rqs: " + ragdollRequestCounter);
@@ -59,6 +74,10 @@ public class PlayerStateComponent : IPlayerComponent
     public void DisableRagdoll()
     {
         ragdollRequestCounter--;
+
+        if(!isRagdoll)
+            return;
+
         if(ragdollRequestCounter < 0)
         {
             ragdollRequestCounter = 0;
@@ -81,6 +100,9 @@ public class PlayerStateComponent : IPlayerComponent
             }
 
             GetComponent<Rigidbody>().MoveRotation(lookQuart);
+            GetComponent<Rigidbody>().mass /= ragdollWeightChange;
+
+            isRagdoll = false;
         }
         Debug.Log("Ragdoll Rqs: " + ragdollRequestCounter);
 
@@ -105,7 +127,10 @@ public class PlayerStateComponent : IPlayerComponent
         return true;
     }
 
-
+    public bool isRagdolled()
+    {
+        return isRagdoll;
+    }
     public bool CanMove()
     {
         return isCanMove;

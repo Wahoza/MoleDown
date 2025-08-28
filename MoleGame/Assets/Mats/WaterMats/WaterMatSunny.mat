@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WaterMat
+  m_Name: WaterMatSunny
   m_Shader: {fileID: -6465566751694194690, guid: a0745121ca31cbc4195715b9ce0bc1f3, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -54,12 +54,12 @@ Material:
     - _DeepestWaterDist: 1.81
     - _DeepestWaterStartDistance: 1.09
     - _Distance: 1.47
-    - _DistiortionMagnitude: 0
-    - _DistortionBlend: 0
-    - _DistortionDist: 0
-    - _DistortionScale: 0
+    - _DistiortionMagnitude: 1.87
+    - _DistortionBlend: 1.21
+    - _DistortionDist: 5.01
+    - _DistortionScale: 0.64
     - _DistortionSpeed: 1
-    - _DistortionStartDistance: 0
+    - _DistortionStartDistance: 0.9
     - _FoamAmount: 2.22
     - _FoamCutoff: 1.05
     - _FoamScale: -69.82
@@ -69,9 +69,9 @@ Material:
     - _Speed: -0.004
     - _StartDist: -0.05
     m_Colors:
-    - _DeepWater: {r: 0.12621558, g: 0.11044847, b: 0.32075468, a: 1}
-    - _DeepestWater: {r: 0.2742079, g: 0.37430567, b: 0.735849, a: 1}
-    - _FoamColor: {r: 0.7971698, g: 1, b: 0.94400406, a: 1}
-    - _ShallowWater: {r: 0.21124065, g: 0.6194803, b: 0.9528302, a: 1}
+    - _DeepWater: {r: 0.109803915, g: 0.30875856, b: 0.32156864, a: 1}
+    - _DeepestWater: {r: 0.27450982, g: 0.5848476, b: 0.7372549, a: 1}
+    - _FoamColor: {r: 0.8593409, g: 0.99371064, b: 0.9856424, a: 1}
+    - _ShallowWater: {r: 0.62768465, g: 0.93710685, b: 0.86523664, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

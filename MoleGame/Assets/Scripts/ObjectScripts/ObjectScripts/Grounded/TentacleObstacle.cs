@@ -16,6 +16,8 @@ public class TentacleObstacle : IGroundedObstacle
     [SerializeField] SphereCollider attackTriggerArea;
     [SerializeField] LayerMask playerLayer;
     [SerializeField] List<Transform> triggers;
+    [SerializeField] float minScale;
+    [SerializeField] float maxScale;
 
     [Header("Idle Perlin Setup")]
     [SerializeField] float maxVelocity;
@@ -64,7 +66,7 @@ public class TentacleObstacle : IGroundedObstacle
         base.Start();
 
         tentacleHolder.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
-
+        transform.localScale = Vector3.one * UnityEngine.Random.Range(minScale, maxScale);
         rbs = firstRBHolder.GetComponentsInChildren<Rigidbody>();
 
         if (rbs.Count() <= 0)
@@ -96,7 +98,7 @@ public class TentacleObstacle : IGroundedObstacle
 
     internal override void OnGroundInvalidate()
     {
-        StopCoroutine(tentacleRoutine);
+        StopAllCoroutines();
 
         foreach (var trigger in triggers)
         {
@@ -327,6 +329,9 @@ public class TentacleObstacle : IGroundedObstacle
         bool finished = false;
         while (!finished)
         {
+            if(player.player == null)
+                yield break;
+
             if(Vector3.SqrMagnitude(player.player.position - firstRBHolder.position) > Mathf.Pow(maxDistAwayFromTentacle, 2))
             {
                 player.player.GetComponent<PlayerInputHandler>().UnregisterInputJumpFuncs(player.jumpAction);
@@ -382,6 +387,8 @@ public class TentacleObstacle : IGroundedObstacle
     }
     private void OnDestroy()
     {
+        StopAllCoroutines();
+
         foreach(var stuckPlayer in stuckPlayers)
         {
             if(stuckPlayer.player != null)

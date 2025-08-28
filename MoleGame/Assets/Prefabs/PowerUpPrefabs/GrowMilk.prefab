@@ -4938,6 +4938,7 @@ MonoBehaviour:
   particleEffect: Sparkle
   transformToAnimate: {fileID: 535556232880019249}
   passiveEffect: {fileID: 11400000, guid: 21d03d65cfbab9a45b166741945cc78a, type: 2}
+  maxSize: 7
   radiusScaleIncrease: 0.5
   scaleIncreaseDuration: 0.12
   scaleChange: 2

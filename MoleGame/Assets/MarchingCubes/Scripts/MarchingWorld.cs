@@ -142,6 +142,7 @@ public class MarchingWorld : MonoBehaviour
         if (Application.isPlaying)
         {
             ObjectManager.Instance?.SetTextureSpawnLocations(mapTexture);
+            WeatherManager.Instance?.SetRandomWeather();
         }
         if (randomColorEnabled)
         {

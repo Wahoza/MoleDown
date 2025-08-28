@@ -284,10 +284,10 @@ MonoBehaviour:
   grabOffsetHeight: -0.12
   minDistanceFromPlayer: 5
   objectActions:
+  - {fileID: 4685198670968435431}
   - {fileID: -3524134488230121598}
   - {fileID: -505399096977046840}
   - {fileID: 2507210877176281834}
-  - {fileID: 4685198670968435431}
   grabCollisionEffectLayermask:
     serializedVersion: 2
     m_Bits: 65

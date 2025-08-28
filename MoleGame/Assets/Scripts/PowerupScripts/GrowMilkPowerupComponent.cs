@@ -9,9 +9,10 @@ public class GrowMilkPowerupComponent : IPowerupScript
     [SerializeField] Vector3 rotationOverTime;
     [SerializeField] string particleEffect;
     [SerializeField] Transform transformToAnimate;
-
+     
     [Header("Effects (Additive)")]
     [SerializeField] IPlayerPassive passiveEffect;
+    [SerializeField] float maxSize;
     [SerializeField] float radiusScaleIncrease;
     [SerializeField] float scaleIncreaseDuration;
     [SerializeField] float scaleChange;
@@ -66,6 +67,11 @@ public class GrowMilkPowerupComponent : IPowerupScript
 
         foreach (var config in allPlayers)
         {
+            if(config.transform.localScale.x > maxSize)
+            {
+                return;
+            }
+
             if (config.GetComponent<PlayerPassiveComponent>() is PlayerPassiveComponent playerPassive && playerPassive != null)
             {
                 var passive = Instantiate(passiveEffect);
@@ -78,7 +84,15 @@ public class GrowMilkPowerupComponent : IPowerupScript
                 }
                 ParticleManager.Instance.DoParticles(particleEffect, config.position, config.localScale + Vector3.one * scaleChange);
                 config.DOScale(config.localScale += Vector3.one * scaleChange, scaleIncreaseDuration).SetEase(Ease.OutBounce);
-                config.GetComponent<Rigidbody>().mass += massChange;
+
+                if (config.GetComponent<PlayerStateComponent>().isRagdolled())
+                {
+                    config.GetComponent<Rigidbody>().mass += massChange / config.GetComponent<PlayerStateComponent>().ragdollWeightChange;
+                }
+                else
+                {
+                    config.GetComponent<Rigidbody>().mass += massChange;
+                }
                 config.GetComponent<PlayerJumpComponent>().currentJumpStrength += jumpStrengthChange;
                 config.GetComponent<PlayerJumpComponent>().currentMaxJumpVelocity += maxJumpVelChange;
                 config.GetComponent<PlayerLandingDestructionComponent>().currentBaseRadius += landTerrainDeformRadiusChange;

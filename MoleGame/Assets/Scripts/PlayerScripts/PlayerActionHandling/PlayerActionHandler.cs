@@ -69,8 +69,8 @@ public class PlayerActionHandler : MonoBehaviour
 
         GameManager.Instance.OnPlayerDie(gameObject);
 
-        GetComponent<Rigidbody>().freezeRotation = false;
         GetComponent<PlayerStateComponent>().SetIsDead(true);
+        GetComponent<PlayerStateComponent>().EnableRagdoll();
 
         for (int i = deathActions.Count - 1; i >= 0; i--)
         {

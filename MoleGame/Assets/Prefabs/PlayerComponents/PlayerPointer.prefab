@@ -133,6 +133,12 @@ MonoBehaviour:
   playerName: {fileID: 8066725335515981109}
   skullObject: {fileID: 6348307223571438717}
   arrowImage: {fileID: 4244664080550727821}
+  imagesToFadeOut:
+  - {fileID: 5226654684479072022}
+  - {fileID: 145145044551810335}
+  - {fileID: 4244664080550727821}
+  - {fileID: 6348307223571438717}
+  fadeDuration: 0.4
 --- !u!1 &2619143814042531711
 GameObject:
   m_ObjectHideFlags: 0

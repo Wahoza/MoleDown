@@ -56,8 +56,8 @@ Material:
     m_Floats: []
     m_Colors:
     - _BaseColor: {r: 0, g: 0, b: 0, a: 0}
-    - _GrassColor: {r: 0.44109803, g: 0.921035, b: 0.05303497, a: 1}
+    - _GrassColor: {r: 0.91764706, g: 0.15868023, b: 0.054368325, a: 1}
     - _SecondaryColor: {r: 0, g: 0, b: 0, a: 0}
-    - _TopColor: {r: -0.023529407, g: 0.31711343, b: 0.15872416, a: 1}
+    - _TopColor: {r: 0.13333333, g: 1, b: 0.7328248, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

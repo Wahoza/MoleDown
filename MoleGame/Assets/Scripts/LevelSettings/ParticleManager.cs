@@ -13,6 +13,8 @@ public class ParticleManager : MonoBehaviour
     public SerializedDictionary<GameObject, string> particleNameDictionary;
 
     private Dictionary<string, ParticleSetup> particles;
+
+    private Object particleLock;
     private void Awake()
     {
         if(Instance == null)
@@ -70,21 +72,30 @@ public class ParticleManager : MonoBehaviour
     }
     public void DoParticles(string particleName, Vector3 position, Vector3 scale, int count)
     {
-        if (particles.ContainsKey(particleName))
+        lock (particles)
         {
-            int iterator = particles[particleName].currentIterator;
-
-            var particle = particles[particleName].list[iterator];
-
-            particle.gameObject.SetActive(true);
-            particle.transform.position = position;
-            particle.Emit(count);
-
-            iterator++;
-
-            if (iterator >= particles[particleName].list.Count)
+            if (particles.ContainsKey(particleName))
             {
-                iterator = 0;
+                var particleItem = particles[particleName];
+
+                int iterator = particleItem.currentIterator;
+
+                var particle = particleItem.list[iterator];
+
+                particle.gameObject.SetActive(true);
+                particle.transform.position = position;
+                particle.Emit(count);
+
+                iterator++;
+
+                if (iterator >= particleItem.list.Count)
+                {
+                    iterator = 0;
+                }
+
+                particleItem.currentIterator = iterator;
+
+                particles[particleName] = particleItem;
             }
         }
     }

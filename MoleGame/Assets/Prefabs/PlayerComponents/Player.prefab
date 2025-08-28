@@ -1276,6 +1276,7 @@ MonoBehaviour:
   isAlwaysGrounded: 0
   isGrabbed: 0
   isDead: 0
+  <ragdollWeightChange>k__BackingField: 0.8
 --- !u!114 &2655929573217427236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2274,7 +2275,6 @@ GameObject:
   m_Component:
   - component: {fileID: 638554832851406771}
   - component: {fileID: 7524661235978056687}
-  - component: {fileID: 4896038550555289320}
   m_Layer: 0
   m_Name: StandingDecal
   m_TagString: Untagged
@@ -2321,21 +2321,6 @@ MonoBehaviour:
   m_Offset: {x: 0, y: 0, z: 10}
   m_Size: {x: 1.64, y: 1, z: 20}
   m_FadeFactor: 1
---- !u!114 &4896038550555289320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6809849329098519407}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fefbccb951dc8dd4b89e0caab898543f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DecalOffset: {x: 0, y: -0.8, z: 0}
-  DecalDrawOffset: {x: 0, y: 0.1, z: 0}
-  maxDownDist: 10
 --- !u!1 &6834212019853587240
 GameObject:
   m_ObjectHideFlags: 0

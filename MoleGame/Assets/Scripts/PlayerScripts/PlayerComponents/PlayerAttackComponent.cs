@@ -35,6 +35,7 @@ public class PlayerAttackComponent : IPlayerComponent
         currentPushForce = pushForce;
         currentTerrainModRange = terrainModRange;
         currentTerrainModIntensity = terrainModIntensity;
+        //isGrabbing = false;
     }
     void OnAttack()
     {
