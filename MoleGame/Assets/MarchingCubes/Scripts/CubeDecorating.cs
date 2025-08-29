@@ -25,6 +25,9 @@ public class CubeDecorating : MonoBehaviour
 
         while (addedPositions.Count > 0)
         {
+            if (transform == null)
+                return;
+
             var pos = addedPositions.Dequeue();
 
             if(Random.value > decorAmount)
@@ -38,12 +41,25 @@ public class CubeDecorating : MonoBehaviour
             if(removedObjects.Count > 0)
             {
                 obj = removedObjects.Dequeue();
+
+                while (obj == null && removedObjects.Count > 0)
+                {
+                    obj = removedObjects.Dequeue();
+                }
+
+                if(obj == null)
+                {
+                    obj = Instantiate(decor[Random.Range(0, decor.Count - 1)], transform);
+                }
+
                 obj.SetActive(true);
 
                 Debug.Log("Sucessfull Queue");
             }
             else
             {
+
+
                 obj = Instantiate(decor[Random.Range(0, decor.Count - 1)], transform);
             }
 

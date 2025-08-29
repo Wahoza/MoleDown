@@ -170,7 +170,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -212,6 +212,7 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
+  minTimeBetweenDeforms: 0.2
 --- !u!114 &3619552140520077117
 MonoBehaviour:
   m_ObjectHideFlags: 0

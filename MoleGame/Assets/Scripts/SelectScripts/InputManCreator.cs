@@ -77,7 +77,7 @@ public class InputManCreator : MonoBehaviour
         }
 
         //Replace decleration in InputManager thingy
-        ////    public int maxPlayerCount
+        //    public int maxPlayerCount
         //{
         //    get
         //    {
