@@ -30,6 +30,7 @@ public class GameSettingsSelector : MonoBehaviour
 
     [SerializeField] private string allScoreString;
     [SerializeField] private string winnerScoreString;
+    [SerializeField] private string crownScoreString;
     [SerializeField] private int defaultReload;
     [SerializeField] private string generateNewString;
     [SerializeField] private string reloadOldString;
@@ -78,6 +79,9 @@ public class GameSettingsSelector : MonoBehaviour
                     break;
                 case 1:
                     currentScoringSettings = allScoreString;
+                    break;
+                case 2:
+                    currentScoringSettings = crownScoreString;
                     break;
             }
 
@@ -201,21 +205,24 @@ public class GameSettingsSelector : MonoBehaviour
                     break;
                 case 2:
                     currentScoring += (int)(1 * direction.x);
-                    currentScoring = currentScoring < 0 ? 1 : (currentScoring > 1 ? 0 : currentScoring);
+                    currentScoring = currentScoring < 0 ? 2 : (currentScoring > 2 ? 0 : currentScoring);
 
-                    string currentScoringSettings = "";
+                    string currentGameModeSettings = "";
 
                     switch (currentScoring)
                     {
                         case 0:
-                            currentScoringSettings = winnerScoreString;
+                            currentGameModeSettings = winnerScoreString;
                             break;
                         case 1:
-                            currentScoringSettings = allScoreString;
+                            currentGameModeSettings = allScoreString;
+                            break;
+                        case 2:
+                            currentGameModeSettings = crownScoreString;
                             break;
                     }
 
-                    selectScoringSettingsText.text = currentScoringSettings;
+                    selectScoringSettingsText.text = currentGameModeSettings;
                     break;
                 case 3:
                     currentReload += (int)(1 * direction.x);
@@ -265,7 +272,7 @@ public class GameSettingsSelector : MonoBehaviour
 
             GameSettingsManager.Instance.SetRounds(currentRounds);
             GameSettingsManager.Instance.SetInsaneRoundChance(currentInsaneChance);
-            GameSettingsManager.Instance.SetScoringSettings((GameSettingsManager.ScoringSettings)currentScoring);
+            GameSettingsManager.Instance.SetScoringSettings((GameSettingsManager.GameMode)currentScoring);
             GameSettingsManager.Instance.SetReloadSettings((GameSettingsManager.LevelReloadSettings)currentReload);
 
             loadingComp.LoadScene(2);
@@ -320,19 +327,19 @@ public class GameSettingsSelector : MonoBehaviour
     //                currentScoring += (int)(1 * lastDirectionInput.x);
     //                currentScoring = currentScoring < 0 ? 1 : (currentScoring > 1 ? 0 : currentScoring);
 
-    //                string currentScoringSettings = "";
+    //                string currentGameModeSettings = "";
 
     //                switch (currentScoring)
     //                {
     //                    case 0:
-    //                        currentScoringSettings = winnerScoreString;
+    //                        currentGameModeSettings = winnerScoreString;
     //                        break;
     //                    case 1:
-    //                        currentScoringSettings = allScoreString;
+    //                        currentGameModeSettings = allScoreString;
     //                        break;
     //                }
 
-    //                selectScoringSettingsText.text = currentScoringSettings;
+    //                selectScoringSettingsText.text = currentGameModeSettings;
     //                return;
     //        }
     //    }

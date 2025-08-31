@@ -33,6 +33,13 @@ public class GameManager : MonoBehaviour
     [Header("Music")]
     [SerializeField] string menuMusic;
 
+    [Header("Crown GameMode Settings")]
+    [SerializeField] Transform crownPrefab;
+    [SerializeField] Transform crownSpawnPoint;
+    [SerializeField] IPlayerPassive crownPassive;
+
+    private Transform currentlyCrownedPlayer;
+
     public static GameManager Instance;
 
     public bool isPaused;
@@ -41,7 +48,7 @@ public class GameManager : MonoBehaviour
     private bool isFinishedInput;
 
     private Dictionary<PlayerConfig, PlayerSetup> players = new();
-    private Dictionary<PlayerConfig, int> playerScores = new();
+    //private Dictionary<PlayerConfig, int> playerScores = new();
     private List<PlayerConfig> deadPlayers = new();
     private List<PlayerConfig> alivePlayers = new();
 
@@ -99,24 +106,58 @@ public class GameManager : MonoBehaviour
 
         return result;
     }
+    public void RequestCrownSpawn()
+    {
+        var newCrown = Instantiate(crownPrefab);
+
+        newCrown.position = crownSpawnPoint.position;
+    }
+
+    public void RequestCrownTransfer(Transform newCrownedPlayer)
+    {
+        if(newCrownedPlayer == currentlyCrownedPlayer) {  return; }
+
+        if(currentlyCrownedPlayer != null)
+        {
+            //uncrown current
+            currentlyCrownedPlayer.GetComponent<PlayerModelControllerComponent>().HideWinObjects();
+            currentlyCrownedPlayer.GetComponent<PlayerPassiveComponent>()?.GetPassive<CrownedPassive>()?.SetIsCrowned(false);
+        }
+
+        //crown new
+        newCrownedPlayer.GetComponent<PlayerModelControllerComponent>().ShowWinObjects();
+        newCrownedPlayer.GetComponent<PlayerPassiveComponent>()?.GetPassive<CrownedPassive>()?.SetIsCrowned(true);
+
+        currentlyCrownedPlayer = newCrownedPlayer;
+    }
+
     public void OnPlayerDie(GameObject player)
     {
         group.RemoveMember(player.transform);
 
         if (player.GetComponent<PlayerInputHandler>() != null)
         {
+            if(GameSettingsManager.Instance.GetGameModeSettings() == GameSettingsManager.GameMode.Crown)
+            {
+                if (player.transform == currentlyCrownedPlayer)
+                {
+                    player.GetComponent<PlayerModelControllerComponent>().HideWinObjects();
+                    RequestCrownSpawn();
+                }
+            }
+
             OnPlayerDie(player.GetComponent<PlayerInputHandler>().playerConfig);
             return;
         }
 
-        foreach (var playerKVP in players)
-        {
-            if(playerKVP.Value.player == player)
-            {
-                OnPlayerDie(playerKVP.Key);
-                return;
-            }
-        }
+        //foreach (var playerKVP in players)
+        //{
+        //    if(playerKVP.Value.player == player)
+        //    {
+        //        OnPlayerDie(playerKVP.Key);
+        //        return;
+        //    }
+        //}
     }
     public void OnPlayerDie(PlayerConfig player)
     {
@@ -213,7 +254,7 @@ public class GameManager : MonoBehaviour
 
         var scores = players
             .OrderBy(kvp => kvp.Key.finalPoints)
-            .Select(kvp => playerScores[kvp.Key])
+            .Select(kvp => (int)kvp.Key.pointsThisRound)
             .ToList();
 
         scores.Reverse();
@@ -263,6 +304,11 @@ public class GameManager : MonoBehaviour
         }
 
         deadPlayers.Clear();
+
+        foreach (var player in players)
+        {
+            player.Key.pointsThisRound = 0;
+        }
 
         yield return StartCoroutine(ReloadLevel());
 
@@ -317,58 +363,66 @@ public class GameManager : MonoBehaviour
     }
     void EvaluateScores()
     {
-        playerScores.Clear();
+        //playerScores.Clear();
 
-        if (GameSettingsManager.Instance.GetScoreSettings() == GameSettingsManager.ScoringSettings.Winner)
+        if (GameSettingsManager.Instance.GetGameModeSettings() == GameSettingsManager.GameMode.Winner)
         {
             int score = 1;//players.Count;
             
             if(alivePlayers.Count > 0)
             {
-                playerScores.Add(alivePlayers[0], score);
+                foreach(var player in alivePlayers)
+                {
+                    //playerScores.Add(player, score);
+                    player.pointsThisRound += score;
+                }
+                //playerScores.Add(alivePlayers[0], score);
             }
             else
             {
-                playerScores.Add(deadPlayers[deadPlayers.Count - 1], score);
+                //playerScores.Add(deadPlayers[deadPlayers.Count - 1], score);
+
+                deadPlayers[deadPlayers.Count - 1].pointsThisRound += score;
             }
 
-            foreach(var player in players)
-            {
-                if (!playerScores.ContainsKey(player.Key))
-                {
-                    playerScores[player.Key] = 0;
-                }
-            }
+            //foreach(var player in players)
+            //{
+            //    //if (!playerScores.ContainsKey(player.Key))
+            //    //{
+            //    //    playerScores[player.Key] = 0;
+            //    //}
+            //}
         }
-        else
+        else if(GameSettingsManager.Instance.GetGameModeSettings() == GameSettingsManager.GameMode.All)
         {
             Debug.Log("All score");
             int score = 0;
             for (int i = 0; i < deadPlayers.Count; i++)
             {
                 score++;
-                playerScores.Add(deadPlayers[i], score);
+                //playerScores.Add(deadPlayers[i], score);
+                deadPlayers[i].pointsThisRound += score;
             }
 
             if(alivePlayers.Count > 0)
             {
                 foreach(var alivePlayer in alivePlayers)
                 {
-                    if (!playerScores.ContainsKey(alivePlayer))
-                    {
-                        playerScores.Add(alivePlayer, score + 1);
-                    }
+                    alivePlayer.pointsThisRound += (score + 1);
+                    //if (!playerScores.ContainsKey(alivePlayer))
+                    //{
+                    //    playerScores.Add(alivePlayer, score + 1);
+                    //}
                 }
             }
         }
 
-        foreach(var score in playerScores)
+        foreach(var player in players)
         {
-            score.Key.finalPoints += score.Value;
-            Debug.Log($"Game Manager: Score Player : {score.Key.playerIndex} Score: {score.Value} Final Score: {score.Key.finalPoints}");
-            Debug.Log("AlivePlayers" + alivePlayers.Count);
-            Debug.Log("DeadPlayers" + deadPlayers.Count);
-
+            player.Key.finalPoints += (int)player.Key.pointsThisRound;
+            //Debug.Log($"Game Manager: Score Player : {score.Key.playerIndex} Score: {score.Value} Final Score: {score.Key.finalPoints}");
+            //Debug.Log("AlivePlayers" + alivePlayers.Count);
+            //Debug.Log("DeadPlayers" + deadPlayers.Count);
         }
 
     }
@@ -385,6 +439,19 @@ public class GameManager : MonoBehaviour
     }
     public void StartRound()
     {
+        if (GameSettingsManager.Instance.GetGameModeSettings() == GameSettingsManager.GameMode.Crown)
+        {
+            currentlyCrownedPlayer = null;
+
+            RequestCrownSpawn();
+
+            foreach (var player in players)
+            {
+                var newCrownPassive = Instantiate(crownPassive);
+                player.Value.player.GetComponent<PlayerPassiveComponent>().RegisterPassive(newCrownPassive);
+            }
+        }
+
         gameCamera.gameObject.SetActive(true);
         intermissionScoreEvalCamera.gameObject.SetActive(false);
 
@@ -423,14 +490,22 @@ public class GameManager : MonoBehaviour
             player.Value.player.transform.localPosition = Vector3.zero;
             player.Value.player.transform.localRotation = Quaternion.identity;
 
-            if(player.Key == scoreList[scoreList.Count-1] && scoreList[scoreList.Count - 1].finalPoints != scoreList[scoreList.Count - (scoreList.Count == 1 ? 1 : 2)].finalPoints)
+            if(GameSettingsManager.Instance.GetGameModeSettings() != GameSettingsManager.GameMode.Crown)
             {
-                player.Value.player.GetComponent<PlayerModelControllerComponent>().ShowWinObjects();
+                if (player.Key == scoreList[scoreList.Count - 1] && scoreList[scoreList.Count - 1].finalPoints != scoreList[scoreList.Count - (scoreList.Count == 1 ? 1 : 2)].finalPoints)
+                {
+                    player.Value.player.GetComponent<PlayerModelControllerComponent>().ShowWinObjects();
+                }
+                else
+                {
+                    player.Value.player.GetComponent<PlayerModelControllerComponent>().HideWinObjects();
+                }
             }
             else
             {
                 player.Value.player.GetComponent<PlayerModelControllerComponent>().HideWinObjects();
             }
+
 
             player.Value.player.GetComponent<PlayerActionHandler>().OnSpawn();
 
@@ -464,6 +539,10 @@ public class GameManager : MonoBehaviour
         var pointer = Instantiate(playerPointerPrefab, UIManager.Instance.pointerHolder);
         pointer.GetComponent<PointerScript>().InitializePlayer(pc, cloneGo.transform);
         cloneGo.GetComponent<PlayerStateComponent>().SetPlayerPointer(pointer.GetComponent<PointerScript>());
+
+        var passives = players[pc].player.GetComponent<PlayerPassiveComponent>().GetPlayerPassives();
+        //cloneGo.GetComponent<PlayerInputHandler>().Initialize(pc, true);
+        cloneGo.GetComponent<PlayerPassiveComponent>().SetPlayerPassives(passives);
 
         clonedPlayers[pc].clones.Add(cloneGo);
         group.AddMember(cloneGo.transform, 1, playerCameraRadius);

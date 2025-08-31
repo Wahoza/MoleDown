@@ -44,9 +44,29 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3887507459227865311}
     m_Modifications:
+    - target: {fileID: 255963819444132911, guid: de1e3c4140d45734ba9b7dcc3be712c3, type: 3}
+      propertyPath: m_Type
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 255963819444132911, guid: de1e3c4140d45734ba9b7dcc3be712c3, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 2f8936aa1bdf3bc4aae55085f9b2509d, type: 3}
+    - target: {fileID: 255963819444132911, guid: de1e3c4140d45734ba9b7dcc3be712c3, type: 3}
+      propertyPath: m_PixelsPerUnitMultiplier
+      value: 3.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 2481747956449414973, guid: de1e3c4140d45734ba9b7dcc3be712c3, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3816314093995587690, guid: de1e3c4140d45734ba9b7dcc3be712c3, type: 3}
       propertyPath: m_Name
       value: NewPlayerSetup
+      objectReference: {fileID: 0}
+    - target: {fileID: 5766456460688500546, guid: de1e3c4140d45734ba9b7dcc3be712c3, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6436067224336968667, guid: de1e3c4140d45734ba9b7dcc3be712c3, type: 3}
       propertyPath: m_Pivot.x
@@ -127,6 +147,10 @@ PrefabInstance:
     - target: {fileID: 6436067224336968667, guid: de1e3c4140d45734ba9b7dcc3be712c3, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166009876926642775, guid: de1e3c4140d45734ba9b7dcc3be712c3, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4294967295
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -150,7 +150,10 @@ public class CubesMarching : MonoBehaviour
                     cachedVertices = vertices.ToArray();
                     cachedTriangles = triangles.ToArray();
 
-                    decoration.UpdateDecoration();
+                    if (decoration != null)
+                    {
+                        decoration.UpdateDecoration();
+                    }
 
                     updated = true;
                 }

@@ -67,6 +67,8 @@ public class PlayerAttackComponent : IPlayerComponent
     {
         if(other == gameObject) return;
 
+        GetComponent<PlayerActionHandler>().OnPush(other.transform);
+
         other.GetComponent<PlayerGroundedComponent>()?.DisableGroundedForDuration(playerDisableGroundedDuration);
 
         if(other.GetComponent<Rigidbody>() is var rb && rb != null)

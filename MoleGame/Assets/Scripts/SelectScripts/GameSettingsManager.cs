@@ -5,9 +5,10 @@ public class GameSettingsManager : MonoBehaviour
     public static GameSettingsManager Instance {get; private set;}
 
     
-    public enum ScoringSettings {
+    public enum GameMode {
         Winner = 0,
-        All = 1
+        All = 1,
+        Crown = 2
     }
     public enum LevelReloadSettings
     {
@@ -16,9 +17,9 @@ public class GameSettingsManager : MonoBehaviour
     }
     private float insaneRoundChance;
     private int rounds;
-    private ScoringSettings scoring;
+    private GameMode scoring;
     private LevelReloadSettings levelReload;
-    public void SetScoringSettings(ScoringSettings settings)
+    public void SetScoringSettings(GameMode settings)
     {
         scoring = settings;
     }
@@ -43,7 +44,7 @@ public class GameSettingsManager : MonoBehaviour
     {
         return rounds;
     }
-    public ScoringSettings GetScoreSettings()
+    public GameMode GetGameModeSettings()
     {
         return scoring;
     }

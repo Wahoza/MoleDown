@@ -58,4 +58,7 @@ MonoBehaviour:
   numberShowDuration: 0.6
   endSceneId: 3
   menuMusic: Menu
+  crownPrefab: {fileID: 8438817173938163927, guid: 6494ee98f03d6b44ca1e3de1e12bc553, type: 3}
+  crownSpawnPoint: {fileID: 0}
+  crownPassive: {fileID: 11400000, guid: f53d7a7c50566c940b129f9719e61524, type: 2}
   isPaused: 0
