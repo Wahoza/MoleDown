@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: CrownPassive
   m_EditorClassIdentifier: 
   pointsPerSecond: 1
+  audioClipName: Crown

@@ -72,8 +72,18 @@ MonoBehaviour:
       Value: {fileID: 8300000, guid: f72c588f6f0e6484ca279d25d3b8731d, type: 3}
     - Key: Egg
       Value: {fileID: 8300000, guid: c25d75cf1afd4b84e823ea28bca6537d, type: 3}
+    - Key: Explosion
+      Value: {fileID: 8300000, guid: 2f0813861015bbf4287a442b76094a87, type: 3}
     - Key: Chicken
       Value: {fileID: 8300000, guid: 29601486f7facee4cac0965d8fc3f31f, type: 3}
+    - Key: Trigger
+      Value: {fileID: 8300000, guid: f5e7499c2413611438791e2de958f680, type: 3}
+    - Key: Dupe
+      Value: {fileID: 8300000, guid: 28acc5e1df9b34645b8d688ff3acae37, type: 3}
+    - Key: Milk
+      Value: {fileID: 8300000, guid: d0777f1ba1f4a9841b5033fb146cfa80, type: 3}
+    - Key: Crown
+      Value: {fileID: 8300000, guid: 798b0c3fb2f9ea941a8cf696cef9be8c, type: 3}
   audioMusicNameDict:
     _serializedList:
     - Key: Game

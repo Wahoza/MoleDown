@@ -5,7 +5,7 @@ using UnityEngine;
 public class CrownedPassive : IPlayerPassive
 {
     [SerializeField] float pointsPerSecond = 1.0f;
-
+    [SerializeField] string audioClipName;
     PlayerConfig myPlayer;
     internal bool isCrowned { get; private set; }
 
@@ -31,6 +31,8 @@ public class CrownedPassive : IPlayerPassive
             player.GetComponent<PlayerModelControllerComponent>().ShowWinObjects();
 
             myPlayer.pointsThisRound++; //Add an extra point for aquiring the crown for a more snappy feel
+
+            AudioManager.Instance.Play3DAudioAtPosition(audioClipName, player.transform.position, true);
         }
         else
         {

@@ -199,6 +199,7 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
+  minTimeBetweenDeforms: 0.1
 --- !u!114 &7111964809659977275
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,7 +213,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clipName: Egg
-  spatial: 0
+  spatial: 1
 --- !u!114 &6486328322873189519
 MonoBehaviour:
   m_ObjectHideFlags: 0

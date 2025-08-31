@@ -4937,6 +4937,7 @@ MonoBehaviour:
   rotationOverTime: {x: 0, y: 40, z: 0}
   particleEffect: Sparkle
   transformToAnimate: {fileID: 535556232880019249}
+  milkAudioName: Milk
   passiveEffect: {fileID: 11400000, guid: 21d03d65cfbab9a45b166741945cc78a, type: 2}
   maxSize: 7
   radiusScaleIncrease: 0.5

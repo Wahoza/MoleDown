@@ -9,7 +9,8 @@ public class GrowMilkPowerupComponent : IPowerupScript
     [SerializeField] Vector3 rotationOverTime;
     [SerializeField] string particleEffect;
     [SerializeField] Transform transformToAnimate;
-     
+    [SerializeField] string milkAudioName;
+
     [Header("Effects (Additive)")]
     [SerializeField] IPlayerPassive passiveEffect;
     [SerializeField] float maxSize;
@@ -101,6 +102,9 @@ public class GrowMilkPowerupComponent : IPowerupScript
                 config.GetComponent<PlayerGrabTerrainComponent>().currentRadiusIncrease += grabTerrainRadiusIncreaseChange;
                 config.GetComponent<PlayerGrabComponent>().currentThrowForce += pushStrengthChange;
                 config.GetComponent<PlayerAttackComponent>().currentTerrainModRange += deformOnAttackRadiusIncrease;
+
+
+                AudioManager.Instance.Play3DAudioAtPosition(milkAudioName, config.position, true);
             }
         }
     }

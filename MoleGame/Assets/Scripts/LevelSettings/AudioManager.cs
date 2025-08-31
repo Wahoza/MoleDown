@@ -61,8 +61,11 @@ public class AudioManager : MonoBehaviour
 
     public void Play3DAudioAtPosition(string clipName, Vector3 position, bool randomPitch) 
     {
-        if(!audioClipNameDict.ContainsKey(clipName)) 
+        if (!audioClipNameDict.ContainsKey(clipName))
+        {
+            Debug.Log("Couldnt find clip!");
             return;
+        }
 
         if (randomPitch)
         {
@@ -82,7 +85,10 @@ public class AudioManager : MonoBehaviour
     public void Play2DAudio(string clipName, bool randomPitch) 
     {
         if (!audioClipNameDict.ContainsKey(clipName))
+        {
+            Debug.Log("Couldnt find clip!");
             return;
+        }
 
         if (randomPitch)
         {

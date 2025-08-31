@@ -63,8 +63,10 @@ public class TentacleObstacle : IGroundedObstacle
     private Coroutine tentacleRoutine;
     internal override void Start()
     {
-        base.Start();
-
+        if (ObjectManager.Instance != null)
+        {
+            base.Start();
+        }
         tentacleHolder.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
         transform.localScale = Vector3.one * UnityEngine.Random.Range(minScale, maxScale);
         rbs = firstRBHolder.GetComponentsInChildren<Rigidbody>();
@@ -93,7 +95,10 @@ public class TentacleObstacle : IGroundedObstacle
             index++;
         }
 
-        tentacleRoutine = StartCoroutine(TentacleCycle());
+        if (ObjectManager.Instance != null)
+        {
+            tentacleRoutine = StartCoroutine(TentacleCycle());
+        }
     }
 
     internal override void OnGroundInvalidate()

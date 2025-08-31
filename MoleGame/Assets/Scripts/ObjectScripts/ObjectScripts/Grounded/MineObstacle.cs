@@ -4,6 +4,7 @@ public class MineObstacle : IGroundedObstacle
 {
     [SerializeField] List<IActionComponent> objectActions = new List<IActionComponent>();
     [SerializeField] LayerMask grabCollisionEffectLayermask;
+    [SerializeField] string explosionSoundName;
     public void TriggerExplosion()
     {
         if (!isOnGrabbedTerrain)
@@ -13,7 +14,7 @@ public class MineObstacle : IGroundedObstacle
     }
     private void Explode() {
         Debug.Log("Exploded");
-
+        AudioManager.Instance.Play3DAudioAtPosition(explosionSoundName, transform.position, true);
         foreach (var action in objectActions)
         {
             action.DoAction();

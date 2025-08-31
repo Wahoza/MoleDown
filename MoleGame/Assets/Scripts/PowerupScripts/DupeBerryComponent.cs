@@ -13,6 +13,7 @@ public class DupeBerryComponent : IPowerupScript
     [SerializeField] Transform transformToAnimate;
     [SerializeField] string particleEffect;
     [SerializeField] int maxCloneCount;
+    [SerializeField] string dupeAudioName;
     internal override void Start()
     {
         base.Start();
@@ -70,6 +71,7 @@ public class DupeBerryComponent : IPowerupScript
                 clone.GetComponent<PlayerInputHandler>().Initialize(playerI.playerConfig, true);
                 ParticleManager.Instance.DoParticles(particleEffect, clone.position);
                 
+                AudioManager.Instance.Play3DAudioAtPosition(dupeAudioName, clone.position, true);
                 createdClones++;
             }
         }

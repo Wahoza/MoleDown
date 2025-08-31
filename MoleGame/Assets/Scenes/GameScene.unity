@@ -448,94 +448,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &342455019
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 342455021}
-  - component: {fileID: 342455020}
-  m_Layer: 0
-  m_Name: MarchingLevel
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &342455020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 342455019}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd72b793b2cfb1d43895b644719bd52c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chunkPrefab: {fileID: 5144890583248161775, guid: 1dbabfac11a4b9a48a131eee83ed8612, type: 3}
-  chunkSize: 16
-  chunksX: 4
-  chunksY: 2
-  seed: 468
-  randomSeed: 1
-  randomShapeEnabled: 1
-  defaultSelectedMap: 4
-  map: {fileID: 11400000, guid: d737760eb1b4ee940afbbb370dee0a16, type: 2}
-  mainMat: {fileID: 747553311}
-  grabbedGroundMat: {fileID: 2100000, guid: dd8cd228914d4314089465ea58831cc0, type: 2}
-  particleMat: {fileID: 2100000, guid: 62b6a71cf75368c43b6f81128525a493, type: 2}
-  grassColors:
-  - {r: 0.523451, g: 1, b: 0.13199997, a: 1}
-  - {r: 1, g: 0.13333333, b: 0.9316668, a: 1}
-  - {r: 1, g: 0.62390095, b: 0.13333333, a: 1}
-  - {r: 1, g: 0.23764524, b: 0.13333333, a: 1}
-  - {r: 0.13333333, g: 1, b: 0.7328248, a: 1}
-  groundPrimaryColors:
-  - {r: 0.8867924, g: 0.2649222, b: 0.2649222, a: 1}
-  - {r: 0.8518443, g: 0.26666674, b: 0.8862745, a: 1}
-  - {r: 0.3979148, g: 0.26666674, b: 0.8862745, a: 1}
-  - {r: 0.26666674, g: 0.6427221, b: 0.8862745, a: 1}
-  - {r: 0.26666674, g: 0.8862745, b: 0.61388564, a: 1}
-  - {r: 0.7636805, g: 0.8862745, b: 0.26666674, a: 1}
-  groundSecondaryColors:
-  - {r: 0.12078494, g: 0, b: 0.32704395, a: 1}
-  - {r: 0.05856173, g: 0.20966281, b: 0.3962264, a: 1}
-  - {r: 0.058823537, g: 0.39607844, b: 0.23768915, a: 1}
-  - {r: 0.3038445, g: 0.39607844, b: 0.058823537, a: 1}
-  - {r: 0.39607844, g: 0.2166868, b: 0.058823537, a: 1}
-  - {r: 0.39607844, g: 0.058823537, b: 0.27595153, a: 1}
-  spotColors:
-  - {r: 0.5883661, g: 0, b: 0.74213827, a: 1}
-  - {r: 0, g: 0.7411765, b: 0.33541283, a: 1}
-  - {r: 0, g: 0.3883533, b: 0.7411765, a: 1}
-  - {r: 0.7411765, g: 0.2679238, b: 0, a: 1}
-  randomColorEnabled: 1
-  decorMat: {fileID: 2100000, guid: bc353f6bfde1b0b45bdc7119de6aa119, type: 2}
-  decorColorOffsetToBase: {r: 0.08235294, g: 0.078965, b: 0.078965, a: 0}
-  particleName: Ground
-  audioName: DestroyTerrain
-  particleRadiusAdjustment: 0.8
-  debugToggle: 0
---- !u!4 &342455021
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 342455019}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &544086143
 GameObject:
   m_ObjectHideFlags: 0
@@ -861,59 +773,6 @@ MeshRenderer:
   m_CorrespondingSourceObject: {fileID: 4835754828027983214, guid: f71ca984ce0458b459b61a462f1d853b, type: 3}
   m_PrefabInstance: {fileID: 717715768}
   m_PrefabAsset: {fileID: 0}
---- !u!21 &747553311
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: FancyGroundMat
-  m_Shader: {fileID: -6465566751694194690, guid: bda6237ac7c827e48b3678039cd12910, type: 3}
-  m_Parent: {fileID: 0}
-  m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
-  m_InvalidKeywords: []
-  m_LightmapFlags: 2
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses:
-  - MOTIONVECTORS
-  m_LockedProperties: 
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - unity_Lightmaps:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_LightmapsInd:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - unity_ShadowMasks:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - _CellDensity: 0.5
-    - _ChunkCountX: 4
-    - _ChunkCountY: 3
-    - _ChunkSize: 10.43
-    - _QueueControl: 0
-    - _QueueOffset: 0
-    - _SpotFrequency: 0.8
-    - _StartOffset: 0
-    m_Colors:
-    - _BottomColor: {r: 0.39607844, g: 0.058823537, b: 0.27595153, a: 1}
-    - _GrassColor: {r: 1, g: 0.13333333, b: 0.9316668, a: 1}
-    - _SpotColor: {r: 0.7411765, g: 0.2679238, b: 0, a: 1}
-    - _TopColor: {r: 0.26666674, g: 0.6427221, b: 0.8862745, a: 1}
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -2149,6 +2008,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e6260a74376ac1c469df305c52f470f8, type: 3}
+--- !u!1001 &4839755085254777555
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7839323354453664604, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_Name
+      value: MarchingLevel
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8936764438379317369, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 3ef62b12a41998b41ab41bb901e5237a, type: 3}
 --- !u!1001 &5116199978374883509
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2430,7 +2346,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 832575519}
-  - {fileID: 342455021}
+  - {fileID: 4839755085254777555}
   - {fileID: 1940720129}
   - {fileID: 717715768}
   - {fileID: 1748104984467088789}
