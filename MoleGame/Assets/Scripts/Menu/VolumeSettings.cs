@@ -47,7 +47,7 @@ public class VolumeSettings : MonoBehaviour
     public void SetSFXVolume()
     {
         SFXVolume = SFXSlider.value;
-        mixer.SetFloat(sfxExposed, Mathf.Log10(MusicVolume) * 20);
+        mixer.SetFloat(sfxExposed, Mathf.Log10(SFXVolume) * 20);
         PlayerPrefs.SetFloat(sfxExposed, SFXVolume);
     }
     public void LoadVolume()
