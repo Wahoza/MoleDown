@@ -92,3 +92,5 @@ crashlytics-build.properties
 !ProjectSettings/**/*
 !Packages/
 !Packages/**/*
+MoleGame/Assets/TextMesh Pro/Fonts/OpenDyslexic-Bold SDF.asset
+MoleGame/Assets/TextMesh Pro/Fonts/OpenDyslexic-Bold SDF.asset
