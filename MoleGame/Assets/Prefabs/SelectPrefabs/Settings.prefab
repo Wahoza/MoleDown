@@ -3889,8 +3889,8 @@ MonoBehaviour:
   winnerScoreString: Default - Winner Scores
   crownScoreString: Crown Game
   defaultReload: 0
-  generateNewString: Generate New Map
-  reloadOldString: Regenerate Old Map
+  generateNewString: Generate new Map
+  reloadOldString: Recreate old map
   maxRounds: 10
   optionCount: 4
 --- !u!114 &676292168541179950
