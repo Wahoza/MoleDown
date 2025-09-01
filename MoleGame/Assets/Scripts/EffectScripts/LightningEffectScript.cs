@@ -12,11 +12,13 @@ public class LightningEffectScript : MonoBehaviour
     [SerializeField] float maxTimeBetweenLight;
     [SerializeField] int minLightUseCount;
     [SerializeField] int maxLightUseCount;
+    [SerializeField] string thunderSFXName;
 
     [Header("LighningSpawning")]
     [SerializeField] float minTimeBetweenLightning;
     [SerializeField] float maxTimeBetweenLightning;
-    
+    [SerializeField] float minThunderDelay;
+    [SerializeField] float maxThunderDelay;
     private IEnumerator LightningUpdate()
     {
         while (true)
@@ -31,6 +33,8 @@ public class LightningEffectScript : MonoBehaviour
 
     private IEnumerator DoLightning()
     {
+        StartCoroutine(DoThunder());
+
         int lightningCount = Random.Range(minLightUseCount, maxLightUseCount);
 
         var lightningsThisLightning = lightningLights.OrderBy(x => Random.value)
@@ -46,6 +50,14 @@ public class LightningEffectScript : MonoBehaviour
 
             light.gameObject.SetActive(false);
         }
+    }
+
+    private IEnumerator DoThunder()
+    {
+        float waitTime = Random.Range(minThunderDelay, maxThunderDelay);
+        yield return new WaitForSeconds(waitTime);
+
+        AudioManager.Instance.Play2DAudio(thunderSFXName, true);
     }
     private void OnEnable()
     {

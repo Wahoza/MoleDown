@@ -10914,5 +10914,8 @@ MonoBehaviour:
   maxTimeBetweenLight: 0.3
   minLightUseCount: 2
   maxLightUseCount: 5
+  thunderSFXName: Thunder
   minTimeBetweenLightning: 4
   maxTimeBetweenLightning: 9
+  minThunderDelay: 0.1
+  maxThunderDelay: 0.2

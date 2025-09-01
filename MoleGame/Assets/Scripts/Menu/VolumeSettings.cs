@@ -6,15 +6,17 @@ public class VolumeSettings : MonoBehaviour
     [SerializeField] private AudioMixer mixer;
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider musicSlider;
+    [SerializeField] private Slider ambienceSlider;
     [SerializeField] private Slider SFXSlider;
 
     float MasterVolume = 0.4f;
     float MusicVolume = 0.6f;
     float SFXVolume = 0.7f;
-
+    float AmbienceVolume = 0.3f;
     string masterExposed = "MasterVol";
     string musicExposed = "MusicVol";
     string sfxExposed = "SFXVol";
+    string ambientExposed = "AmbienceExposed";
     private void Start()
     {
         if ((PlayerPrefs.HasKey(musicExposed) && PlayerPrefs.HasKey(sfxExposed) && PlayerPrefs.HasKey(masterExposed)))
@@ -26,11 +28,20 @@ public class VolumeSettings : MonoBehaviour
             masterSlider.value = MasterVolume;
             musicSlider.value = MusicVolume;
             SFXSlider.value = SFXVolume;
+            ambienceSlider.value = AmbienceVolume;
+
             SetMasterVolume();
             SetMusicVolume();
             SetSFXVolume();
+            SetAmbienceVolume();
         }
-    } 
+    }
+    public void SetAmbienceVolume()
+    {
+        AmbienceVolume = ambienceSlider.value;
+        mixer.SetFloat(ambientExposed, Mathf.Log10(AmbienceVolume) * 20);
+        PlayerPrefs.SetFloat(ambientExposed, AmbienceVolume);
+    }
     public void SetMasterVolume()
     {
        MasterVolume = masterSlider.value;
@@ -58,6 +69,8 @@ public class VolumeSettings : MonoBehaviour
         musicSlider.value = MusicVolume;
         SFXVolume = PlayerPrefs.GetFloat(sfxExposed);
         SFXSlider.value = SFXVolume;
+        AmbienceVolume = PlayerPrefs.GetFloat(ambientExposed);
+        ambienceSlider.value = AmbienceVolume;
 
         SaveVolumeSettings();
     }
@@ -66,5 +79,6 @@ public class VolumeSettings : MonoBehaviour
         SetMasterVolume();
         SetMusicVolume();
         SetSFXVolume();
+        SetAmbienceVolume();
     }
 }

@@ -14,11 +14,13 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] GameObject windObject;
     [SerializeField] Material windyWaterMat;
     [SerializeField] float spawnWeightWindy;
+    [SerializeField] string ambientNameWindy;
 
     [Header("Rainy")]
     [SerializeField] GameObject rainObject;
     [SerializeField] Material rainyWaterMat;
     [SerializeField] float spawnWeightRainy;
+    [SerializeField] string ambientNameRainy;
 
     [Header("Sunny")]
     [SerializeField] GameObject sunObject;
@@ -70,16 +72,22 @@ public class WeatherManager : MonoBehaviour
             case Weather.Sunny:
                 water.material = sunnyWaterMat;
                 sunObject.SetActive(true);
+                AudioManager.Instance.StopAmbient();
+
                 break;
 
             case Weather.Windy:
                 water.material = windyWaterMat;
                 windObject.SetActive(true);
+                AudioManager.Instance.SetAmbient(ambientNameWindy);
+                AudioManager.Instance.PlayAmbient();
                 break;
 
             case Weather.Rainy:
                 water.material = rainyWaterMat;
                 rainObject.SetActive(true);
+                AudioManager.Instance.SetAmbient(ambientNameRainy);
+                AudioManager.Instance.PlayAmbient();
                 break;
         }
     }
