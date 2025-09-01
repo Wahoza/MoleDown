@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerAttackComponent : IPlayerComponent
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] string attackSfxName;
     [Header("Objects")]
     [SerializeField] float pushForce;
     [SerializeField] float pushDuration;
@@ -40,6 +41,8 @@ public class PlayerAttackComponent : IPlayerComponent
     void OnAttack()
     {
         if (isGrabbing) { return; }
+
+        AudioManager.Instance.Play3DAudioAtPosition(attackSfxName, transform.position, true);
 
         GetComponent<PlayerActionHandler>().OnAttack();
 

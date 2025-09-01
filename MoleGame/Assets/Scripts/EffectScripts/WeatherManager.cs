@@ -28,7 +28,7 @@ public class WeatherManager : MonoBehaviour
     [SerializeField] float spawnWeightSunny;
 
     [Header("OtherSettings")]
-    [SerializeField] MeshRenderer water;
+    [SerializeField] List<MeshRenderer> waters;
     private void Start()
     {
         if(Instance == null)
@@ -70,21 +70,30 @@ public class WeatherManager : MonoBehaviour
         switch (weather)
         {
             case Weather.Sunny:
-                water.material = sunnyWaterMat;
+                foreach (var water in waters)
+                {
+                    water.material = sunnyWaterMat;
+                }
                 sunObject.SetActive(true);
                 AudioManager.Instance.StopAmbient();
 
                 break;
 
             case Weather.Windy:
-                water.material = windyWaterMat;
+                foreach (var water in waters)
+                {
+                    water.material = windyWaterMat;
+                }
                 windObject.SetActive(true);
                 AudioManager.Instance.SetAmbient(ambientNameWindy);
                 AudioManager.Instance.PlayAmbient();
                 break;
 
             case Weather.Rainy:
-                water.material = rainyWaterMat;
+                foreach (var water in waters)
+                {
+                    water.material = rainyWaterMat;
+                }
                 rainObject.SetActive(true);
                 AudioManager.Instance.SetAmbient(ambientNameRainy);
                 AudioManager.Instance.PlayAmbient();

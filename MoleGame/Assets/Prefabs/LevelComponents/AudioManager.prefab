@@ -88,6 +88,10 @@ MonoBehaviour:
       Value: {fileID: 8300000, guid: 798b0c3fb2f9ea941a8cf696cef9be8c, type: 3}
     - Key: Thunder
       Value: {fileID: 8300000, guid: 04be5c6a2e1f6724c8bc4feb48dd688a, type: 3}
+    - Key: Attack
+      Value: {fileID: 8300000, guid: e335114349383964db2f8ea70da6cb19, type: 3}
+    - Key: Tentacle
+      Value: {fileID: 8300000, guid: e37fdca351e08894baa2d585fcb4c0ce, type: 3}
   audioMusicNameDict:
     _serializedList:
     - Key: Game

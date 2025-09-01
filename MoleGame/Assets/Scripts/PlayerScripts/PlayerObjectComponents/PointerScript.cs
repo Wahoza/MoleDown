@@ -9,7 +9,7 @@ public class PointerScript : MonoBehaviour
     [SerializeField] TextMeshProUGUI playerName;
     [SerializeField] RawImage skullObject;
     [SerializeField] RawImage arrowImage;
-
+    [SerializeField] RawImage crownImage;
     [SerializeField] List<RawImage> imagesToFadeOut;
     [SerializeField] float fadeDuration;
     float speed = 0.1f;
@@ -92,5 +92,12 @@ public class PointerScript : MonoBehaviour
 
         arrowImage.color = playerColor;
         skullObject.color = playerColor;
+    }
+
+    public void ShowCrown() {
+        crownImage.gameObject.SetActive(true);
+    }
+    public void HideCrown() {
+        crownImage.gameObject.SetActive(false);
     }
 }

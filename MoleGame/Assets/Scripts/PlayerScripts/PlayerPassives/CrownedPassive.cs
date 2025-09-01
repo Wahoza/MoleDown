@@ -17,10 +17,12 @@ public class CrownedPassive : IPlayerPassive
         myPlayer = player.GetComponent<PlayerInputHandler>().playerConfig;
 
         player.GetComponent<PlayerActionHandler>().RegisterPushAction(OnPlayerPush);
-        player.GetComponent<PlayerActionHandler>().RegisterDeathAction(OnPlayerDie);
+        //player.GetComponent<PlayerActionHandler>().RegisterDeathAction(OnPlayerDie);
 
         isCrowned = false;
         player.GetComponent<PlayerModelControllerComponent>().HideWinObjects();
+        player.GetComponent<PlayerStateComponent>().pointer.HideCrown();
+
     }
     public void SetIsCrowned(bool isCrowned)
     {
@@ -29,6 +31,7 @@ public class CrownedPassive : IPlayerPassive
         if (isCrowned)
         {
             player.GetComponent<PlayerModelControllerComponent>().ShowWinObjects();
+            player.GetComponent<PlayerStateComponent>().pointer.ShowCrown();
 
             myPlayer.pointsThisRound++; //Add an extra point for aquiring the crown for a more snappy feel
 
@@ -37,6 +40,8 @@ public class CrownedPassive : IPlayerPassive
         else
         {
             player.GetComponent<PlayerModelControllerComponent>().HideWinObjects();
+            player.GetComponent<PlayerStateComponent>().pointer.HideCrown();
+
         }
     }
 
@@ -54,14 +59,14 @@ public class CrownedPassive : IPlayerPassive
         }
     }
 
-    private void OnPlayerDie()
-    {
-        if (isCrowned)
-        {
-            GameManager.Instance.RequestCrownSpawn();
-            isCrowned = false;
-        }
-    }
+    //private void OnPlayerDie()
+    //{
+    //    if (isCrowned)
+    //    {
+    //        GameManager.Instance.RequestCrownSpawn();
+    //        isCrowned = false;
+    //    }
+    //}
     public override void OnUpdate()
     {
         base.OnUpdate();
@@ -74,9 +79,10 @@ public class CrownedPassive : IPlayerPassive
     public override void OnEnd()
     {
         player.GetComponent<PlayerActionHandler>().UnregisterPushAction(OnPlayerPush);
-        player.GetComponent<PlayerActionHandler>().UnregisterDeathAction(OnPlayerDie);
+        //player.GetComponent<PlayerActionHandler>().UnregisterDeathAction(OnPlayerDie);
 
         player.GetComponent<PlayerModelControllerComponent>().HideWinObjects();
+        player.GetComponent<PlayerStateComponent>().pointer.HideCrown();
 
         base.OnEnd();
     }

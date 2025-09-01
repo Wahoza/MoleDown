@@ -46,6 +46,8 @@ public class TentacleObstacle : IGroundedObstacle
     [SerializeField] float maxDistAwayFromTentacle;
     [SerializeField] float maxDistAwayOnGrab;
     [SerializeField] float attackRangeOnGrab;
+    [SerializeField] string stickSFXName;
+
     private Transform grabber;
 
     private Queue<Transform> targetTransforms = new();
@@ -298,6 +300,7 @@ public class TentacleObstacle : IGroundedObstacle
         if(stickyJoint == null)
             return;
 
+        AudioManager.Instance.Play3DAudioAtPosition(stickSFXName, stickTarget.position, true);
 
         StuckPlayerSetup stuckPlayer = new();
 

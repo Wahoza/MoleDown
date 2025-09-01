@@ -18,7 +18,7 @@ public class PlayerStateComponent : IPlayerComponent
 
     private int ragdollRequestCounter = 0;
     private PlayerGroundedComponent groundedComponent;
-    private PointerScript pointer;
+    internal PointerScript pointer;
 
     private Vector3 transformBaseScale;
     private float rbBaseMass;
@@ -31,6 +31,7 @@ public class PlayerStateComponent : IPlayerComponent
         transformBaseRotation = transform.localRotation;
         isDead = false;
         pointer.ShowAlive();
+        pointer.HideCrown();
         base.Start();
     }
     internal override void ResetStatsOnRespawn()

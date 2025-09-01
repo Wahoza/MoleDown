@@ -242,6 +242,7 @@ MonoBehaviour:
   maxDistAwayFromTentacle: 10
   maxDistAwayOnGrab: 2.1
   attackRangeOnGrab: 10
+  stickSFXName: Tentacle
 --- !u!114 &3553421636559593153
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -19,7 +19,6 @@ public class PlayerDeathComponent : IPlayerComponent
     {
         while (true)
         {
-
             if (transform.position.y < lowestHeight)
             {
 

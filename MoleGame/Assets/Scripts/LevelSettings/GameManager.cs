@@ -37,6 +37,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Transform crownPrefab;
     [SerializeField] Transform crownSpawnPoint;
     [SerializeField] IPlayerPassive crownPassive;
+    [SerializeField] int bonusPointsOnCrownEnd;
 
     private Transform currentlyCrownedPlayer;
 
@@ -108,6 +109,8 @@ public class GameManager : MonoBehaviour
     }
     public void RequestCrownSpawn()
     {
+        Debug.Log("Rqing new Crown");
+
         var newCrown = Instantiate(crownPrefab);
 
         newCrown.position = crownSpawnPoint.position;
@@ -368,10 +371,10 @@ public class GameManager : MonoBehaviour
         if (GameSettingsManager.Instance.GetGameModeSettings() == GameSettingsManager.GameMode.Winner)
         {
             int score = 1;//players.Count;
-            
-            if(alivePlayers.Count > 0)
+
+            if (alivePlayers.Count > 0)
             {
-                foreach(var player in alivePlayers)
+                foreach (var player in alivePlayers)
                 {
                     //playerScores.Add(player, score);
                     player.pointsThisRound += score;
@@ -393,7 +396,7 @@ public class GameManager : MonoBehaviour
             //    //}
             //}
         }
-        else if(GameSettingsManager.Instance.GetGameModeSettings() == GameSettingsManager.GameMode.All)
+        else if (GameSettingsManager.Instance.GetGameModeSettings() == GameSettingsManager.GameMode.All)
         {
             Debug.Log("All score");
             int score = 0;
@@ -404,9 +407,9 @@ public class GameManager : MonoBehaviour
                 deadPlayers[i].pointsThisRound += score;
             }
 
-            if(alivePlayers.Count > 0)
+            if (alivePlayers.Count > 0)
             {
-                foreach(var alivePlayer in alivePlayers)
+                foreach (var alivePlayer in alivePlayers)
                 {
                     alivePlayer.pointsThisRound += (score + 1);
                     //if (!playerScores.ContainsKey(alivePlayer))
@@ -416,15 +419,21 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+        else if (GameSettingsManager.Instance.GetGameModeSettings() == GameSettingsManager.GameMode.Crown)
+        {
+            if (alivePlayers.Count > 0)
+            {
+                alivePlayers[0].pointsThisRound += bonusPointsOnCrownEnd;
+            }
+        }
 
-        foreach(var player in players)
+        foreach (var player in players)
         {
             player.Key.finalPoints += (int)player.Key.pointsThisRound;
             //Debug.Log($"Game Manager: Score Player : {score.Key.playerIndex} Score: {score.Value} Final Score: {score.Key.finalPoints}");
             //Debug.Log("AlivePlayers" + alivePlayers.Count);
             //Debug.Log("DeadPlayers" + deadPlayers.Count);
         }
-
     }
     public void SpawnPlayers()
     {
@@ -516,7 +525,7 @@ public class GameManager : MonoBehaviour
 
         foreach (var player in players)
         {
-            yield return StartCoroutine(player.Value.player.GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatformWithWait());
+            yield return StartCoroutine(player.Value.player.GetComponent<SpawnPlatformCreator>().SpawnPlatformWithWait());
         }
 
         LevelMarchingPlatform.Instance.ForceUpdateAllMeshes();

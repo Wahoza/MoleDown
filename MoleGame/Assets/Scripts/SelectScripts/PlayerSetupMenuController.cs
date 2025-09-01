@@ -22,7 +22,7 @@ public class PlayerSetupMenuController : MonoBehaviour
     [SerializeField] private GameObject MatPreviewArrows;
     [SerializeField] private List<Color> materials;
     [SerializeField] private GameObject colorTaken;
-    private List<int> takenColors;
+    private List<int> takenColors = new();
     private bool currentColorTaken;
     private int colorIndex = 0;
 
@@ -59,10 +59,19 @@ public class PlayerSetupMenuController : MonoBehaviour
         currentColorTaken = false;
         ChangeSelection(Vector2Int.zero);
 
-        takenColors = new List<int>();
         PlayerConfigManager.Instance.JoinSetupMenu(this);
 
-        SelectColor(0);
+        int initColor = 0;
+        for(int i = 0; i < materials.Count; i++)
+        {
+            if (!takenColors.Contains(initColor))
+            {
+                break;
+            }
+        }
+
+        colorIndex = initColor;
+        SelectColor(initColor);
 
         animRoutine = StartCoroutine(WaitForInputEnable());
     }

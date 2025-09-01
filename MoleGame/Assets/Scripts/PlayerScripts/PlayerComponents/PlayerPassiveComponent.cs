@@ -79,6 +79,11 @@ public class PlayerPassiveComponent : IPlayerComponent
 
         foreach (var passive in newPassives)
         {
+            if(passive == null)
+            {
+                continue;
+            }
+
             var passiveVariant = Instantiate(passive);
 
             passiveVariant.SetPlayer(this);

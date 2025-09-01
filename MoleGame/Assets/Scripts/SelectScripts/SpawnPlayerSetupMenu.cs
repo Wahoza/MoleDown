@@ -9,7 +9,7 @@ public class SpawnPlayerSetupMenu : MonoBehaviour
     private void Awake()
     {
         var rootMenu = GameObject.Find("MainLayout");
-        Debug.Log("Here AAAAAAAAAAAAAAAAAH");
+
         if(rootMenu != null)
         {
             PlayerConfigManager.Instance.HandlePlayerJoin(input);

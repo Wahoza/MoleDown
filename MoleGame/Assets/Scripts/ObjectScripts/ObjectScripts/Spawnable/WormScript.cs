@@ -1,8 +1,6 @@
-using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class WormScript : MonoBehaviour
 {
@@ -37,7 +35,8 @@ public class WormScript : MonoBehaviour
     [SerializeField] int minBounces;
     [SerializeField] int maxBounces;
 
-
+    [Header("Other")]
+    [SerializeField] float wormSpawnChance;
 
     private int currentBounces;
     private int totalBounces;
@@ -51,6 +50,13 @@ public class WormScript : MonoBehaviour
     private List<Coroutine> bodyRoutines = new();  
     public IEnumerator Start()
     {
+        if(!(Random.value <= wormSpawnChance))
+        {
+            Destroy(gameObject);
+            yield break;
+        }
+
+
         float size = sizeDistribution.Evaluate(Random.value) * maxSize;
         transform.localScale *= size;
 

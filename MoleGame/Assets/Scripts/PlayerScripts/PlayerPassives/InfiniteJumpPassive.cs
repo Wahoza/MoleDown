@@ -34,18 +34,21 @@ public class InfiniteJumpPassive : IPlayerPassive
 
         if (elapsedTime > effectDuration)
         {
-            OnEnd();
+            if (instantiatedFlower != null)
+            {
+                instantiatedFlower.transform.DOScale(Vector3.zero, flowerMoveUpTime).SetEase(Ease.OutQuad);
+                instantiatedFlower.transform.DOMoveY(flowerMoveUpHeight, flowerMoveUpHeight).SetEase(Ease.InSine).OnComplete(() => Destroy(instantiatedFlower));
+            }
+
             Destroy(this);
         }
     }
     public override void OnEnd() {
 
         player.GetComponent<PlayerStateComponent>().SetAlwaysGrounded(false);
-        if(instantiatedFlower != null)
-        {
-            instantiatedFlower.transform.DOScale(Vector3.zero, flowerMoveUpTime).SetEase(Ease.OutQuad);
-            instantiatedFlower.transform.DOMoveY(flowerMoveUpHeight, flowerMoveUpHeight).SetEase(Ease.InSine).OnComplete(() => Destroy(instantiatedFlower));
-        }
+
+        Destroy(instantiatedFlower);
+
         base.OnEnd();
     }
 }
