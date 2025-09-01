@@ -57,6 +57,8 @@ public class GameManager : MonoBehaviour
     private Dictionary<PlayerConfig, PlayerCloneSetup> clonedPlayers = new();
 
     private PlayerInputMap controls;
+
+    private float roundStartTime;
     private void Awake()
     {
         if(Instance == null)
@@ -448,6 +450,8 @@ public class GameManager : MonoBehaviour
     }
     public void StartRound()
     {
+        roundStartTime = Time.time;
+
         if (GameSettingsManager.Instance.GetGameModeSettings() == GameSettingsManager.GameMode.Crown)
         {
             currentlyCrownedPlayer = null;
@@ -570,6 +574,10 @@ public class GameManager : MonoBehaviour
             }
         }
         return allPlayersOfConfig;
+    }
+    public float GetElapsedTime()
+    {
+        return Time.time - roundStartTime;
     }
     private void OnDestroy()
     {

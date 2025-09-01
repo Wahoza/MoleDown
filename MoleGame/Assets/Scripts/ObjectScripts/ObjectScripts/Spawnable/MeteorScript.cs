@@ -4,11 +4,14 @@ using DG.Tweening;
 using System.Collections;
 public class MeteorScript : MonoBehaviour
 {
+    [Header("Radius")]
     [SerializeField] float minRandomSize;
     [SerializeField] float maxRandomSize;
     [SerializeField] AnimationCurve distributionCurve;
     [SerializeField] float destroyRadiusIncrease;
     [SerializeField] float knockBackRadiusIncrease;
+    [SerializeField] float radiusIncreasePerElapsedSecond;
+
     [Header ("Visuals")]
     [SerializeField] Transform modelController;
     [SerializeField] DecalProjector projector;
@@ -22,7 +25,7 @@ public class MeteorScript : MonoBehaviour
 
     private void Awake()
     {
-        float radiusIncrease = minRandomSize + distributionCurve.Evaluate(Random.value) * maxRandomSize;
+        float radiusIncrease = minRandomSize + distributionCurve.Evaluate(Random.value) * maxRandomSize * Mathf.Clamp(GameManager.Instance.GetElapsedTime() * radiusIncreasePerElapsedSecond, 0 , 100);
         transform.localScale *= radiusIncrease;
 
         GetComponent<DeformTerrainOnActionComponent>().range = radiusIncrease * destroyRadiusIncrease;

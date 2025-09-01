@@ -239,6 +239,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   destroyRadiusIncrease: 2.2
   knockBackRadiusIncrease: 1.4
+  radiusIncreasePerElapsedSecond: 1.01
   modelController: {fileID: 1844926384365054358}
   projector: {fileID: 0}
   projectorExpandDuration: 1.2
