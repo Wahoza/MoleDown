@@ -216,7 +216,6 @@ public class GameManager : MonoBehaviour
         EvaluateScores();
 
         ObjectManager.Instance.StopSpawning();
-        ParticleManager.Instance.ClearParticles();
 
         if (currentRound >= rounds)
         {
@@ -328,6 +327,8 @@ public class GameManager : MonoBehaviour
         Physics.simulationMode = SimulationMode.FixedUpdate;
 
         UIManager.Instance.SetCurrentRound(currentRound + 1, rounds);
+
+        ParticleManager.Instance.ClearParticles();
 
         yield return StartCoroutine(UIManager.Instance.StartContinuePrompt());
 

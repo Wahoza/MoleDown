@@ -7,6 +7,7 @@ public class MeteorScript : MonoBehaviour
     [Header("Radius")]
     [SerializeField] float minRandomSize;
     [SerializeField] float maxRandomSize;
+    [SerializeField] float trueMaxSize;
     [SerializeField] AnimationCurve distributionCurve;
     [SerializeField] float destroyRadiusIncrease;
     [SerializeField] float knockBackRadiusIncrease;
@@ -14,18 +15,21 @@ public class MeteorScript : MonoBehaviour
 
     [Header ("Visuals")]
     [SerializeField] Transform modelController;
-    [SerializeField] DecalProjector projector;
-    [SerializeField] float projectorExpandDuration;
 
     [Header("Physics")]
     [SerializeField] Vector3 gravityDirection;
     [SerializeField] float gravityStrength;
     [SerializeField] Rigidbody rb;
     [SerializeField] float minY;
-
+    [SerializeField] float radiusToMassConversion;
     private void Awake()
     {
-        float radiusIncrease = minRandomSize + distributionCurve.Evaluate(Random.value) * maxRandomSize * Mathf.Clamp(GameManager.Instance.GetElapsedTime() * radiusIncreasePerElapsedSecond, 0 , 100);
+        float radiusIncrease = minRandomSize + distributionCurve.Evaluate(Random.value) * (maxRandomSize - minRandomSize) + Mathf.Clamp(GameManager.Instance.GetElapsedTime() * radiusIncreasePerElapsedSecond, 0 , 100);
+
+        Debug.Log(GameManager.Instance.GetElapsedTime());
+
+        radiusIncrease = Mathf.Clamp(radiusIncrease, 0, trueMaxSize);
+
         transform.localScale *= radiusIncrease;
 
         GetComponent<DeformTerrainOnActionComponent>().range = radiusIncrease * destroyRadiusIncrease;
@@ -47,6 +51,7 @@ public class MeteorScript : MonoBehaviour
         //);
 
         rb.useGravity = false;
+        rb.mass = radiusToMassConversion * Mathf.Pow(radiusIncrease, 3);
 
         StartCoroutine(ApplyGravity());
         StartCoroutine(DestroyWhenBelowMinY());

@@ -66,7 +66,7 @@ public class ParticleManager : MonoBehaviour
         {
             foreach(var go in particle.Value.list)
             {
-                go.gameObject.SetActive(false);
+                go.Stop(false, stopBehavior: ParticleSystemStopBehavior.StopEmittingAndClear);
             }
         }
     }

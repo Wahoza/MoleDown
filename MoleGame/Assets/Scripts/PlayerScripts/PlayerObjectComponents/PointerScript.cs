@@ -95,9 +95,9 @@ public class PointerScript : MonoBehaviour
     }
 
     public void ShowCrown() {
-        crownImage.gameObject.SetActive(true);
+        if (crownImage != null) { crownImage.gameObject.SetActive(true); }
     }
     public void HideCrown() {
-        crownImage.gameObject.SetActive(false);
+        if(crownImage != null) {  crownImage.gameObject.SetActive(false); }
     }
 }

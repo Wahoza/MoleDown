@@ -113,7 +113,7 @@ Rigidbody:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
@@ -185,7 +185,7 @@ MonoBehaviour:
     - Key: {fileID: 8927476235282964368}
       Value:
         serializedVersion: 2
-        m_Bits: 65
+        m_Bits: 64
     - Key: {fileID: 359807838707022606}
       Value:
         serializedVersion: 2
@@ -203,7 +203,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minRandomSize: 2
-  maxRandomSize: 4.41
+  maxRandomSize: 4.45
+  trueMaxSize: 8.06
   distributionCurve:
     serializedVersion: 2
     m_Curve:
@@ -239,14 +240,13 @@ MonoBehaviour:
     m_RotationOrder: 4
   destroyRadiusIncrease: 2.2
   knockBackRadiusIncrease: 1.4
-  radiusIncreasePerElapsedSecond: 1.01
+  radiusIncreasePerElapsedSecond: 0.1
   modelController: {fileID: 1844926384365054358}
-  projector: {fileID: 0}
-  projectorExpandDuration: 1.2
   gravityDirection: {x: 0, y: -1, z: 0}
   gravityStrength: 4
   rb: {fileID: 1184446764634348542}
   minY: -10
+  radiusToMassConversion: 0.1
 --- !u!114 &359807838707022606
 MonoBehaviour:
   m_ObjectHideFlags: 0
