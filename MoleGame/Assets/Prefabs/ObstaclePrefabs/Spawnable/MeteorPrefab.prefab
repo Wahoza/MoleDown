@@ -185,7 +185,7 @@ MonoBehaviour:
     - Key: {fileID: 8927476235282964368}
       Value:
         serializedVersion: 2
-        m_Bits: 64
+        m_Bits: 65
     - Key: {fileID: 359807838707022606}
       Value:
         serializedVersion: 2

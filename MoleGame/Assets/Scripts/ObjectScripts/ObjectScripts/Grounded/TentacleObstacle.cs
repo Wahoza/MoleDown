@@ -18,6 +18,7 @@ public class TentacleObstacle : IGroundedObstacle
     [SerializeField] List<Transform> triggers;
     [SerializeField] float minScale;
     [SerializeField] float maxScale;
+    [SerializeField] float maxRbVelocity;
 
     [Header("Idle Perlin Setup")]
     [SerializeField] float maxVelocity;
@@ -63,6 +64,8 @@ public class TentacleObstacle : IGroundedObstacle
     private bool isAttacking;
 
     private Coroutine tentacleRoutine;
+
+    private bool isInvalidated = false;
     internal override void Start()
     {
         if (ObjectManager.Instance != null)
@@ -95,6 +98,8 @@ public class TentacleObstacle : IGroundedObstacle
             initYOffsets.Add(transform.localPosition.y + minJointUpVelocityHeight);
 
             index++;
+
+            rb.maxLinearVelocity = maxRbVelocity;
         }
 
         if (ObjectManager.Instance != null)
@@ -105,6 +110,8 @@ public class TentacleObstacle : IGroundedObstacle
 
     internal override void OnGroundInvalidate()
     {
+        isInvalidated = true;   
+
         StopAllCoroutines();
 
         foreach (var trigger in triggers)
@@ -128,6 +135,7 @@ public class TentacleObstacle : IGroundedObstacle
         {
             rb.useGravity = true;
         }
+
         firstRBHolder.parent.GetComponent<Rigidbody>().isKinematic = false;
 
         stuckPlayers.Clear();
@@ -292,7 +300,11 @@ public class TentacleObstacle : IGroundedObstacle
         {
             return;
         }
-
+        if (stickTarget.GetComponent<PlayerStateComponent>().IsGrabbed())
+        {
+            return;
+        }
+        
         Debug.Log("Stick New!");
 
         var stickyJoint = stickyPrefab.GetComponent<ConfigurableJoint>();
@@ -350,6 +362,11 @@ public class TentacleObstacle : IGroundedObstacle
 
                 stuckPlayers.Remove(player);
 
+                foreach(var rb in rbs)
+                {
+                    rb.linearVelocity = Vector3.zero;
+                }
+
                 finished = true;
             }
             yield return null;
@@ -371,6 +388,9 @@ public class TentacleObstacle : IGroundedObstacle
     }
     public override void OnTerrainGrabbedSetPocket(Transform pocketTransform)
     {
+        if(isInvalidated)
+            return;
+
         base.OnTerrainGrabbedSetPocket(pocketTransform);
 
         attackTriggerArea.radius = attackRangeOnGrab;

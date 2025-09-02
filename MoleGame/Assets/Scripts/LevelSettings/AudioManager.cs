@@ -67,6 +67,9 @@ public class AudioManager : MonoBehaviour
 
     public void Play3DAudioAtPosition(string clipName, Vector3 position, bool randomPitch) 
     {
+        if(Time.timeScale <= 0)
+            return;
+
         if (!audioClipNameDict.ContainsKey(clipName))
         {
             Debug.Log("Couldnt find clip!");

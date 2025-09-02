@@ -47,7 +47,10 @@ public class PlayerJumpComponent : IPlayerComponent
     }
     public void TryJump()
     {
-        if (movementSettings.IsGrounded() && Time.time > jumpTimer && movementSettings.CanMove() && Time.timeScale != 0)
+        if(Time.timeScale == 0)
+            return;
+
+        if (movementSettings.IsGrounded() && Time.time > jumpTimer && movementSettings.CanMove())
         {
             Jump();
         }else{

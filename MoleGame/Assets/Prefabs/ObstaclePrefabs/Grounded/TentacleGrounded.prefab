@@ -156,6 +156,7 @@ MonoBehaviour:
   - {fileID: 7695058028450588192}
   minScale: 1
   maxScale: 1.3
+  maxRbVelocity: 40
   maxVelocity: 19.34
   perlinEffectVelocity: 10.06
   perlinScrollSpeed: 0.74
