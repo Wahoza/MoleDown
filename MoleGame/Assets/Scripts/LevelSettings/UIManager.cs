@@ -17,14 +17,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private float startHeight;
     [SerializeField] private float moveUpTime;
     [SerializeField] private Transform aToContinue;
-    private float initHeight;
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-
-            initHeight = aToContinue.localPosition.y;
         }
         else
         {
@@ -46,12 +43,13 @@ public class UIManager : MonoBehaviour
         aToContinue.gameObject.SetActive(true);
 
         aToContinue.DOKill();
-        yield return aToContinue.DOLocalMoveY(initHeight, moveUpTime).SetEase(Ease.OutSine).SetUpdate(UpdateType.Normal, true).WaitForCompletion();
+
+        yield return aToContinue.DOLocalMoveY(0, moveUpTime).SetEase(Ease.OutSine).SetUpdate(UpdateType.Normal, true).WaitForCompletion();
     }
     public IEnumerator EndContinuePrompt()
     {
         var pos = aToContinue.localPosition;
-        pos.y = initHeight;
+        pos.y = 0;
         aToContinue.localPosition = pos;
 
         aToContinue.DOKill();

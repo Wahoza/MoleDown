@@ -10,6 +10,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] GameObject audioSpatialPrefab;
     [SerializeField] GameObject audioFlatPrefab;
     [SerializeField] AudioSource musicPlayer;
+    [SerializeField] AudioSource ambientPlayer;
 
     [SerializeField] int spatialSourceCount;
     [SerializeField] int flatSourceCount;
@@ -22,6 +23,11 @@ public class AudioManager : MonoBehaviour
 
     [SerializedDictionary("Name", "Music")]
     public SerializedDictionary<string, AudioClip> audioMusicNameDict;
+    
+    [SerializedDictionary("Name", "Ambient")]
+    public SerializedDictionary<string, AudioClip> audioAmbientNameDict;
+
+
     private int currentAudioSpatial;
     private int currentAudioFlat;
 
@@ -61,8 +67,14 @@ public class AudioManager : MonoBehaviour
 
     public void Play3DAudioAtPosition(string clipName, Vector3 position, bool randomPitch) 
     {
-        if(!audioClipNameDict.ContainsKey(clipName)) 
+        if(Time.timeScale <= 0)
             return;
+
+        if (!audioClipNameDict.ContainsKey(clipName))
+        {
+            Debug.Log("Couldnt find clip!");
+            return;
+        }
 
         if (randomPitch)
         {
@@ -82,7 +94,10 @@ public class AudioManager : MonoBehaviour
     public void Play2DAudio(string clipName, bool randomPitch) 
     {
         if (!audioClipNameDict.ContainsKey(clipName))
+        {
+            Debug.Log("Couldnt find clip!");
             return;
+        }
 
         if (randomPitch)
         {
@@ -107,6 +122,21 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    public void SetAmbient(string ambientName)
+    {
+        if (audioAmbientNameDict.ContainsKey(ambientName))
+        {
+            ambientPlayer.clip = audioAmbientNameDict[ambientName];
+        }
+    }
+    public void PlayAmbient()
+    {
+        ambientPlayer.Play();
+    }
+    public void StopAmbient()
+    {
+        ambientPlayer.Stop();
+    }
     public void PlayMusic()
     {
         musicPlayer.Play();

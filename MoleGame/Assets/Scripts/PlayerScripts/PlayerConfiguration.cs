@@ -16,4 +16,6 @@ public class PlayerConfig
     public bool isPlaying { get; set; }
     public Color playerColor { get; set; }
     public int finalPoints { get; set; }
+
+    public float pointsThisRound { get; set; }
 }

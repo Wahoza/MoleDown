@@ -18,6 +18,7 @@ public class TentacleObstacle : IGroundedObstacle
     [SerializeField] List<Transform> triggers;
     [SerializeField] float minScale;
     [SerializeField] float maxScale;
+    [SerializeField] float maxRbVelocity;
 
     [Header("Idle Perlin Setup")]
     [SerializeField] float maxVelocity;
@@ -46,6 +47,8 @@ public class TentacleObstacle : IGroundedObstacle
     [SerializeField] float maxDistAwayFromTentacle;
     [SerializeField] float maxDistAwayOnGrab;
     [SerializeField] float attackRangeOnGrab;
+    [SerializeField] string stickSFXName;
+
     private Transform grabber;
 
     private Queue<Transform> targetTransforms = new();
@@ -61,10 +64,14 @@ public class TentacleObstacle : IGroundedObstacle
     private bool isAttacking;
 
     private Coroutine tentacleRoutine;
+
+    private bool isInvalidated = false;
     internal override void Start()
     {
-        base.Start();
-
+        if (ObjectManager.Instance != null)
+        {
+            base.Start();
+        }
         tentacleHolder.rotation = Quaternion.Euler(0, UnityEngine.Random.Range(0, 360), 0);
         transform.localScale = Vector3.one * UnityEngine.Random.Range(minScale, maxScale);
         rbs = firstRBHolder.GetComponentsInChildren<Rigidbody>();
@@ -91,13 +98,20 @@ public class TentacleObstacle : IGroundedObstacle
             initYOffsets.Add(transform.localPosition.y + minJointUpVelocityHeight);
 
             index++;
+
+            rb.maxLinearVelocity = maxRbVelocity;
         }
 
-        tentacleRoutine = StartCoroutine(TentacleCycle());
+        if (ObjectManager.Instance != null)
+        {
+            tentacleRoutine = StartCoroutine(TentacleCycle());
+        }
     }
 
     internal override void OnGroundInvalidate()
     {
+        isInvalidated = true;   
+
         StopAllCoroutines();
 
         foreach (var trigger in triggers)
@@ -121,6 +135,7 @@ public class TentacleObstacle : IGroundedObstacle
         {
             rb.useGravity = true;
         }
+
         firstRBHolder.parent.GetComponent<Rigidbody>().isKinematic = false;
 
         stuckPlayers.Clear();
@@ -285,7 +300,11 @@ public class TentacleObstacle : IGroundedObstacle
         {
             return;
         }
-
+        if (stickTarget.GetComponent<PlayerStateComponent>().IsGrabbed())
+        {
+            return;
+        }
+        
         Debug.Log("Stick New!");
 
         var stickyJoint = stickyPrefab.GetComponent<ConfigurableJoint>();
@@ -293,6 +312,7 @@ public class TentacleObstacle : IGroundedObstacle
         if(stickyJoint == null)
             return;
 
+        AudioManager.Instance.Play3DAudioAtPosition(stickSFXName, stickTarget.position, true);
 
         StuckPlayerSetup stuckPlayer = new();
 
@@ -342,6 +362,11 @@ public class TentacleObstacle : IGroundedObstacle
 
                 stuckPlayers.Remove(player);
 
+                foreach(var rb in rbs)
+                {
+                    rb.linearVelocity = Vector3.zero;
+                }
+
                 finished = true;
             }
             yield return null;
@@ -363,6 +388,9 @@ public class TentacleObstacle : IGroundedObstacle
     }
     public override void OnTerrainGrabbedSetPocket(Transform pocketTransform)
     {
+        if(isInvalidated)
+            return;
+
         base.OnTerrainGrabbedSetPocket(pocketTransform);
 
         attackTriggerArea.radius = attackRangeOnGrab;

@@ -92,3 +92,5 @@ crashlytics-build.properties
 !ProjectSettings/**/*
 !Packages/
 !Packages/**/*
+*OpenDyslexic-Bold SDF.asset
+*OpenDyslexic-Regular.asset

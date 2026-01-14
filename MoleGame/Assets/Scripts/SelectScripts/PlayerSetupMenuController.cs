@@ -18,10 +18,11 @@ public class PlayerSetupMenuController : MonoBehaviour
     [SerializeField] private float moveInDuration;
 
     [Header("MatPreview")]
-    [SerializeField] private RawImage MaterialPreview;
+    [SerializeField] private List<RawImage> MaterialPreviews;
+    [SerializeField] private GameObject MatPreviewArrows;
     [SerializeField] private List<Color> materials;
     [SerializeField] private GameObject colorTaken;
-    private List<int> takenColors;
+    private List<int> takenColors = new();
     private bool currentColorTaken;
     private int colorIndex = 0;
 
@@ -58,10 +59,19 @@ public class PlayerSetupMenuController : MonoBehaviour
         currentColorTaken = false;
         ChangeSelection(Vector2Int.zero);
 
-        takenColors = new List<int>();
         PlayerConfigManager.Instance.JoinSetupMenu(this);
 
-        SelectColor(0);
+        int initColor = 0;
+        for(int i = 0; i < materials.Count; i++)
+        {
+            if (!takenColors.Contains(initColor))
+            {
+                break;
+            }
+        }
+
+        colorIndex = initColor;
+        SelectColor(initColor);
 
         animRoutine = StartCoroutine(WaitForInputEnable());
     }
@@ -109,7 +119,10 @@ public class PlayerSetupMenuController : MonoBehaviour
         if (colorIndex >= materials.Count) { colorIndex = 0; }
         Debug.Log(colorIndex);
 
-        MaterialPreview.color = materials[colorIndex];
+        foreach (var prev in MaterialPreviews)
+        {
+            prev.color = materials[colorIndex];
+        }
         currentColorTaken = takenColors.Contains(colorIndex);
         colorTaken.SetActive(currentColorTaken);
     }
@@ -148,18 +161,18 @@ public class PlayerSetupMenuController : MonoBehaviour
             switch (selectedSlot)
             {
                 case 0:
-                    MaterialPreview.transform.GetChild(0).gameObject.SetActive(true);
+                    MatPreviewArrows.SetActive(true);
                     Ready.transform.GetChild(0).gameObject.SetActive(false);
                     Leave.transform.GetChild(0).gameObject.SetActive(false);
 
                     return;
                 case 1:
-                    MaterialPreview.transform.GetChild(0).gameObject.SetActive(false);
+                    MatPreviewArrows.SetActive(false);
                     Ready.transform.GetChild(0).gameObject.SetActive(true);
                     Leave.transform.GetChild(0).gameObject.SetActive(false);
                     return;
                 case 2:
-                    MaterialPreview.transform.GetChild(0).gameObject.SetActive(false);
+                    MatPreviewArrows.SetActive(false);
                     Ready.transform.GetChild(0).gameObject.SetActive(false);
                     Leave.transform.GetChild(0).gameObject.SetActive(true);
                     return;

@@ -6,12 +6,17 @@ public class DeformTerrainOnActionComponent : IActionComponent
     [SerializeField] private float intensity;
     [SerializeField] bool collisionWithKinematicRB;
     [SerializeField] LayerMask terrainLayer;
+    [SerializeField] float minTimeBetweenDeforms = 0.1f;
+    private float deformTimer;
     public override void DoAction()
     {
         DoDeform();
     }
     void DoDeform()
     {
+        if(!(Time.time > deformTimer))
+            return;
+
         if (collisionWithKinematicRB)
         {
             DeformTerrain();
@@ -28,6 +33,6 @@ public class DeformTerrainOnActionComponent : IActionComponent
         {
             LevelMarchingPlatform.Instance.DeformSphereAt(transform.position, Mathf.CeilToInt(range), intensity);
         }
-
+        deformTimer = Time.time + minTimeBetweenDeforms;
     }
 }

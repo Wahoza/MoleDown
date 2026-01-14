@@ -10,6 +10,8 @@ public class PlayerActionHandler : MonoBehaviour
     List<Action<bool>> grabbableActions = new(); //bool true: grabbed, false: released
     List<Action<bool>> grabActions = new();
     List<Action<float>> landActions = new();
+    List<Action<Transform>> pushActions = new();
+
     List<Action> attackActions = new();
     List<Action> deathActions = new();
     List<Action> spawnActions = new();
@@ -62,7 +64,16 @@ public class PlayerActionHandler : MonoBehaviour
             attackActions[i].Invoke();
         }
     }
+    public void OnPush(Transform target)
+    {
+        for (int i = pushActions.Count - 1; i >= 0; i--)
+        {
+            if (i >= pushActions.Count) { continue; }
+            pushActions[i].Invoke(target);
+        }
+    }
 
+    
     public void OnDie()
     {
         var behaviors = GetComponents<MonoBehaviour>();
@@ -141,6 +152,12 @@ public class PlayerActionHandler : MonoBehaviour
     {
         spawnActions.Add(action);
     }
+
+    public void RegisterPushAction(Action<Transform> action)
+    {
+        pushActions.Add(action);
+    }
+
     public void UnregisterMoveAction(Action<Vector3> action)
     {
         if (moveActions.Contains(action))
@@ -194,6 +211,14 @@ public class PlayerActionHandler : MonoBehaviour
         if (deathActions.Contains(action))
         {
             deathActions.Remove(action);
+        }
+    }
+
+    public void UnregisterPushAction(Action<Transform> action)
+    {
+        if (pushActions.Contains(action))
+        {
+            pushActions.Remove(action);
         }
     }
 }

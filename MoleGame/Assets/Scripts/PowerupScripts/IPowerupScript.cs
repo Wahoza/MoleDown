@@ -35,6 +35,6 @@ public class IPowerupScript : GrabbableComponent
 
     internal virtual void DoPowerupEffect(Transform effectTransform)
     {
-
+      
     }
 }

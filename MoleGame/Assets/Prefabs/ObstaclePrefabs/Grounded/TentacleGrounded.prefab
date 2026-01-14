@@ -156,6 +156,7 @@ MonoBehaviour:
   - {fileID: 7695058028450588192}
   minScale: 1
   maxScale: 1.3
+  maxRbVelocity: 40
   maxVelocity: 19.34
   perlinEffectVelocity: 10.06
   perlinScrollSpeed: 0.74
@@ -242,6 +243,7 @@ MonoBehaviour:
   maxDistAwayFromTentacle: 10
   maxDistAwayOnGrab: 2.1
   attackRangeOnGrab: 10
+  stickSFXName: Tentacle
 --- !u!114 &3553421636559593153
 MonoBehaviour:
   m_ObjectHideFlags: 0

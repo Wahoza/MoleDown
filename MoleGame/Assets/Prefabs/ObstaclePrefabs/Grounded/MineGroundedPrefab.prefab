@@ -67,6 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mine: {fileID: 7563598538869873230}
+  triggerSoundName: Trigger
 --- !u!1 &2547080575390178443
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,6 +292,7 @@ MonoBehaviour:
   grabCollisionEffectLayermask:
     serializedVersion: 2
     m_Bits: 65
+  explosionSoundName: Explosion
 --- !u!114 &-2467305185518153786
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,6 +341,7 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
+  minTimeBetweenDeforms: 0.1
 --- !u!114 &2507210877176281834
 MonoBehaviour:
   m_ObjectHideFlags: 0

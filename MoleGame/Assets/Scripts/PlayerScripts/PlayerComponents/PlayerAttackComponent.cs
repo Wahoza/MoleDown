@@ -4,6 +4,7 @@ using UnityEngine;
 public class PlayerAttackComponent : IPlayerComponent
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] string attackSfxName;
     [Header("Objects")]
     [SerializeField] float pushForce;
     [SerializeField] float pushDuration;
@@ -41,6 +42,8 @@ public class PlayerAttackComponent : IPlayerComponent
     {
         if (isGrabbing) { return; }
 
+        AudioManager.Instance.Play3DAudioAtPosition(attackSfxName, transform.position, true);
+
         GetComponent<PlayerActionHandler>().OnAttack();
 
         if(Physics.OverlapSphere(pushHelper.position, currentTerrainModRange, terrainLayer).Length > 0)
@@ -66,6 +69,8 @@ public class PlayerAttackComponent : IPlayerComponent
     public void PushObject(GameObject other)
     {
         if(other == gameObject) return;
+
+        GetComponent<PlayerActionHandler>().OnPush(other.transform);
 
         other.GetComponent<PlayerGroundedComponent>()?.DisableGroundedForDuration(playerDisableGroundedDuration);
 

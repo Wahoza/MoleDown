@@ -37,7 +37,7 @@ public class PlayerInputHandler : MonoBehaviour
         {
             GameManager.Instance.JoinPlayer(pc, gameObject);
 
-            await GetComponentInChildren<SpawnPlatformCreator>().SpawnPlatformAsync(true);
+            await GetComponent<SpawnPlatformCreator>().SpawnPlatformAsync(true);
         }
         else
         {

@@ -74,7 +74,7 @@ AudioSource:
       outWeight: 0.07497466
     - serializedVersion: 3
       time: 1
-      value: 0.047698975
+      value: 0.19073486
       inSlope: 0
       outSlope: 0
       tangentMode: 0

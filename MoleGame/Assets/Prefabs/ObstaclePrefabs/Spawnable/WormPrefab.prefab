@@ -209,6 +209,7 @@ MonoBehaviour:
   distanceAdjustment: 0.27
   minBounces: 1
   maxBounces: 10
+  wormSpawnChance: 0.4
 --- !u!114 &8960989847695682660
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,6 +255,7 @@ MonoBehaviour:
   terrainLayer:
     serializedVersion: 2
     m_Bits: 64
+  minTimeBetweenDeforms: 0.1
 --- !u!135 &4715861895086935252
 SphereCollider:
   m_ObjectHideFlags: 0

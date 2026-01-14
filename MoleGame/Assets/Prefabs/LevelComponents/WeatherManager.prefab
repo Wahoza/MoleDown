@@ -292,9 +292,11 @@ MonoBehaviour:
   windObject: {fileID: 3521590470854057281}
   windyWaterMat: {fileID: 2100000, guid: 8b2c879eb33d96246913dfd540c55cf1, type: 2}
   spawnWeightWindy: 3
+  ambientNameWindy: Windy
   rainObject: {fileID: 6218303307333624450}
   rainyWaterMat: {fileID: 2100000, guid: 337f5ff257f07394a82bdd1996a8b390, type: 2}
   spawnWeightRainy: 2
+  ambientNameRainy: Rainy
   sunObject: {fileID: 7329267916966850354}
   sunnyWaterMat: {fileID: 2100000, guid: e3911e93e6c66d74baad4193f0b90f4e, type: 2}
   spawnWeightSunny: 3
