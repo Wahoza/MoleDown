@@ -45,6 +45,7 @@ public class TentacleObstacle : IGroundedObstacle
     [SerializeField] int maxStartJumps;
     [SerializeField] int jumpsRequiredToEscape;
     [SerializeField] float maxDistAwayFromTentacle;
+    [SerializeField] float maxDistTentacleElemAwayFromTentacle;
     [SerializeField] float maxDistAwayOnGrab;
     [SerializeField] float attackRangeOnGrab;
     [SerializeField] string stickSFXName;
@@ -66,6 +67,8 @@ public class TentacleObstacle : IGroundedObstacle
     private Coroutine tentacleRoutine;
 
     private bool isInvalidated = false;
+    private Transform lastBone;
+
     internal override void Start()
     {
         if (ObjectManager.Instance != null)
@@ -80,6 +83,8 @@ public class TentacleObstacle : IGroundedObstacle
         {
             return;
         }
+
+        lastBone = rbs[rbs.Count() - 1].transform;
 
         int index = 0;
         foreach (var rb in rbs)
@@ -195,6 +200,30 @@ public class TentacleObstacle : IGroundedObstacle
             
             while(stuckPlayers.Count > 0)
             {
+                if(Vector3.SqrMagnitude(lastBone.position - firstRBHolder.transform.position) > Mathf.Pow(maxDistTentacleElemAwayFromTentacle, 2))
+                {
+                    foreach(var player in stuckPlayers)
+                    {
+                        if (player.player != null)
+                        {
+                            player.player.GetComponent<PlayerInputHandler>().UnregisterInputJumpFuncs(player.jumpAction);
+
+                            if (!player.player.GetComponent<PlayerStateComponent>().IsDead())
+                                player.player.GetComponent<PlayerStateComponent>().DisableRagdoll();
+
+                        }
+
+                        Destroy(player.joint);
+
+                        stuckPlayers.Remove(player);
+                    }
+
+                    foreach (var rb in rbs)
+                    {
+                        rb.linearVelocity = Vector3.zero;
+                    }
+                }
+
                 yield return null;
             }
         }
