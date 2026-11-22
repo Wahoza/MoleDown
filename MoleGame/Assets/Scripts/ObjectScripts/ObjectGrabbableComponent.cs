@@ -7,10 +7,16 @@ using UnityEngine;
 public class ObjectGrabbableComponent : GrabbableComponent
 {
     [SerializeField] public Vector3 grabOffset;
+    [SerializeField] public Vector3 grabRotation;
+
     [SerializeField] private float moveToHoldTime = 0.1f;
+    [SerializeField] Transform overridenOwner;
 
     private IEnumerator grabUpdate;
     public Transform pocketTransform { get; private set; }
+
+    private float grabOffsetLength = 0;
+
     public override void OnGrab(Transform _grabTransform, Action releaseFunc)
     {
         if (GetComponent<Rigidbody>() is var rb && rb != null)
@@ -27,7 +33,10 @@ public class ObjectGrabbableComponent : GrabbableComponent
 
         pocketTransform = _grabTransform;
 
-        transform.DOMove(_grabTransform.position, moveToHoldTime).SetEase(Ease.InQuad).OnComplete(() => StartCoroutine(grabUpdate));
+        transform.DOMove(pocketTransform.position + pocketTransform.TransformDirection(grabOffset).normalized * grabOffsetLength, moveToHoldTime).SetEase(Ease.InQuad).OnComplete(() => StartCoroutine(grabUpdate));
+        transform.DORotate(_grabTransform.eulerAngles + grabRotation, moveToHoldTime);
+
+        grabOffsetLength = grabOffset.magnitude;
 
         GetComponent<ObjectActionHandler>().OnGrab(true);
     }
@@ -74,8 +83,8 @@ public class ObjectGrabbableComponent : GrabbableComponent
     {
         while (true)
         {
-            transform.position = pocketTransform.position + grabOffset;
-            transform.rotation = pocketTransform.rotation;
+            transform.position = pocketTransform.position + pocketTransform.TransformDirection(grabOffset).normalized * grabOffsetLength;
+            transform.rotation = Quaternion.Euler(pocketTransform.rotation.eulerAngles + grabRotation);
             yield return null;
         }
     }

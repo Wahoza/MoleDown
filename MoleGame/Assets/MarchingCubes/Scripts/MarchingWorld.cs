@@ -181,7 +181,7 @@ public class MarchingWorld : MonoBehaviour
         RegenerateWorld();
     }
 
-    public async Task<bool[,,]> DeformedSphereReturnValues(Vector3 worldPos, float radius, float intensity)
+    public async Task<bool[,,]> DeformedSphereReturnValues(Vector3 worldPos, float radius, float intensity, bool doEffect = true)
     {
         List<ChunkDeformationResult> results = new();
 
@@ -284,7 +284,8 @@ public class MarchingWorld : MonoBehaviour
             }
         }
 
-        DoEffectRequest(worldPos, radius);
+        if(result.Length > 0 && doEffect)
+            DoEffectRequest(worldPos, radius);
 
         return (CleanReturnBools(result));
     }
@@ -345,7 +346,7 @@ public class MarchingWorld : MonoBehaviour
 
         return trimmed;
     }
-    public async Task DeformSphereAt(Vector3 worldPos, float radius, float intensity)
+    public async Task DeformSphereAt(Vector3 worldPos, float radius, float intensity, bool doEffect = true)
     {
         List<ChunkDeformationResult> results = new();
         List<Task> tasks = new();
@@ -371,7 +372,8 @@ public class MarchingWorld : MonoBehaviour
 
         await Task.WhenAll(tasks);
 
-        DoEffectRequest(worldPos, radius);
+        if (results.Count > 0 && doEffect)
+            DoEffectRequest(worldPos, radius);
 
         bool atLeastOneTrue = results.Any(item => item.deformed);
         if (!atLeastOneTrue)
@@ -390,7 +392,7 @@ public class MarchingWorld : MonoBehaviour
     }
 
 
-    public async Task DeformCylinderAt(Vector3 worldPos, float radius, float height, float intensity)
+    public async Task DeformCylinderAt(Vector3 worldPos, float radius, float height, float intensity, bool doEffect = true)
     {
         List<ChunkDeformationResult> results = new();
         List<Task> tasks = new();
@@ -420,7 +422,8 @@ public class MarchingWorld : MonoBehaviour
         if (!atLeastOneTrue)
             return;
 
-        DoEffectRequest(worldPos, radius);
+        if (results.Count > 0 && doEffect)
+            DoEffectRequest(worldPos, radius);
 
         lock (pendingMeshUpdates)
         {
@@ -434,7 +437,7 @@ public class MarchingWorld : MonoBehaviour
         }
     }
 
-    public async Task DeformCubeAt(Bounds bounds, float intensity)
+    public async Task DeformCubeAt(Bounds bounds, float intensity, bool doEffect = true)
     {
         //Debug.Log("Deforming CUbe!! min" + bounds.min + " max: " + bounds.max + " center: "+ bounds.center);
         List<ChunkDeformationResult> results = new();
@@ -465,7 +468,8 @@ public class MarchingWorld : MonoBehaviour
         if (!atLeastOneTrue)
             return;
 
-        DoEffectRequest(bounds.center, Vector3.Magnitude(new Vector3(bounds.size.x, bounds.size.y, bounds.size.z)));
+        if(results.Count > 0 && doEffect) 
+            DoEffectRequest(bounds.center, Vector3.Magnitude(new Vector3(bounds.size.x, bounds.size.y, bounds.size.z)));
 
         lock (pendingMeshUpdates)
         {

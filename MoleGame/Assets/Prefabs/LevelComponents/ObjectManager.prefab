@@ -95,6 +95,7 @@ MonoBehaviour:
   groundedObstacles:
   - {fileID: 8900754559794833716, guid: ca3341ab48ec4d742bf993bd69a66f61, type: 3}
   - {fileID: 3359579025772358803, guid: 4f0881e3a0713c24a90f71b94752daf2, type: 3}
+  - {fileID: 3346187588219762337, guid: e1b4220504d3f3f4dba87a244c1babee, type: 3}
   insaneSpawnRateIncrease: 0.7
   insaneSpawnIncreaseIncrease: 0.07
   minSpawnRate: 0.5

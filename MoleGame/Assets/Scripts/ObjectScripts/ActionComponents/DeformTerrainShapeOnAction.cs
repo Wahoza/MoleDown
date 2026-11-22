@@ -5,6 +5,7 @@ public class DeformTerrainShapeOnAction : IActionComponent
     [SerializeField] GameObject collisionShapeHolder;
     [SerializeField] float intensity;
     [SerializeField] DeformationType type;
+    [SerializeField] bool doEffect = true;
     enum DeformationType
     {
         Sphere,
@@ -18,7 +19,7 @@ public class DeformTerrainShapeOnAction : IActionComponent
             case DeformationType.Sphere:
                 if (collisionShapeHolder.GetComponent<SphereCollider>() is var sc && sc != null)
                 {
-                    LevelMarchingPlatform.Instance.DeformSphereAt(sc.center, sc.radius, intensity);
+                    LevelMarchingPlatform.Instance.DeformSphereAt(sc.bounds.center, sc.radius, intensity, doEffect);
                 }
                 else
                 {
@@ -30,7 +31,7 @@ public class DeformTerrainShapeOnAction : IActionComponent
                 {
                     var radius = cc.radius;
                     var height = cc.height;
-                    LevelMarchingPlatform.Instance.DeformCylinderAt(cc.bounds.center, radius, height, intensity);
+                    LevelMarchingPlatform.Instance.DeformCylinderAt(cc.bounds.center, radius, height, intensity, doEffect);
                 }
                 else
                 {
@@ -42,7 +43,7 @@ public class DeformTerrainShapeOnAction : IActionComponent
                 {
                     var bounds = bc.bounds;
                     bounds.size *= 0.3f;
-                    LevelMarchingPlatform.Instance.DeformCubeAt(bounds, intensity);
+                    LevelMarchingPlatform.Instance.DeformCubeAt(bounds, intensity, doEffect);
                 }
                 else
                 {

@@ -57,8 +57,8 @@ Material:
     m_Colors:
     - White: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColor: {r: 0, g: 0, b: 0, a: 0}
-    - _GrassColor: {r: 0.91764706, g: 0.54493594, b: 0.054368325, a: 1}
+    - _GrassColor: {r: 0.91764706, g: 0.054368325, b: 0.8527018, a: 1}
     - _SecondaryColor: {r: 0, g: 0, b: 0, a: 0}
-    - _TopColor: {r: 1, g: 0.23764524, b: 0.13333333, a: 1}
+    - _TopColor: {r: 1, g: 0.62390095, b: 0.13333333, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
